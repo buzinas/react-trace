@@ -1,8 +1,9 @@
 import { Menu as MenuPrimitive } from '@base-ui/react/menu'
 import { Popover as PopoverPrimitive } from '@base-ui/react/popover'
-import { type RefObject } from 'react'
+import type { RefObject } from 'react'
 
 import type {
+  Action,
   ComponentContext,
   ComponentSource,
   RVEPlugin,
@@ -173,6 +174,8 @@ export function ActionPanel({
       <PopoverPrimitive.Portal container={portalRef}>
         <PopoverPrimitive.Positioner
           anchor={context?.element}
+          side="bottom"
+          align="start"
           sideOffset={8}
           collisionPadding={8}
           positionMethod="fixed"
@@ -288,75 +291,17 @@ export function ActionPanel({
                       )
                     }
 
-                    // Has plugin actions — Menu with hover submenu to the right
                     return (
-                      <MenuPrimitive.Root key={`entry-${gi}`}>
-                        <MenuPrimitive.Trigger
-                          openOnHover
-                          delay={0}
-                          closeDelay={0}
-                          style={(state) => entryStyle(state.open)}
-                        >
-                          {entryContent}
-                          <ChevronRight />
-                        </MenuPrimitive.Trigger>
-
-                        <MenuPrimitive.Portal container={portalRef}>
-                          <MenuPrimitive.Positioner
-                            side="right"
-                            sideOffset={4}
-                            collisionPadding={8}
-                            style={{ zIndex: 999999, pointerEvents: 'auto' }}
-                          >
-                            <MenuPrimitive.Popup
-                              style={{
-                                ...popupStyle,
-                                minWidth: 200,
-                                paddingBlock: actions.length > 0 ? 4 : 0,
-                              }}
-                            >
-                              {/* Plugin subpanels (e.g. source preview) */}
-                              {plugins.map((p, pi) => {
-                                if (!p.subpanel) return null
-                                const Subpanel = p.subpanel
-                                return <Subpanel key={pi} ctx={entryCtx} services={services} />
-                              })}
-
-                              {/* Divider between subpanels and actions */}
-                              {plugins.some((p) => p.subpanel) && actions.length > 0 && (
-                                <div style={{ borderTop: '1px solid #27272a', margin: '2px 0' }} />
-                              )}
-
-                              {/* Action buttons */}
-                              {actions.map((action) => (
-                                <MenuPrimitive.Item
-                                  key={action.id}
-                                  closeOnClick
-                                  onClick={() => {
-                                    action.onClick(entryCtx, services)
-                                    onClose()
-                                  }}
-                                  style={(state) =>
-                                    actionStyle(state.highlighted)
-                                  }
-                                >
-                                  {action.icon && (
-                                    <span
-                                      style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                      }}
-                                    >
-                                      {action.icon}
-                                    </span>
-                                  )}
-                                  {action.label}
-                                </MenuPrimitive.Item>
-                              ))}
-                            </MenuPrimitive.Popup>
-                          </MenuPrimitive.Positioner>
-                        </MenuPrimitive.Portal>
-                      </MenuPrimitive.Root>
+                      <Submenu
+                        key={`entry-${gi}`}
+                        entryContent={entryContent}
+                        portalRef={portalRef}
+                        actions={actions}
+                        plugins={plugins}
+                        entryCtx={entryCtx}
+                        services={services}
+                        onClose={onClose}
+                      />
                     )
                   })}
                 </div>
@@ -366,5 +311,97 @@ export function ActionPanel({
         </PopoverPrimitive.Positioner>
       </PopoverPrimitive.Portal>
     </PopoverPrimitive.Root>
+  )
+}
+
+function Submenu({
+  entryContent,
+  portalRef,
+  actions,
+  plugins,
+  entryCtx,
+  services,
+  onClose,
+}: {
+  entryContent: React.ReactNode
+  portalRef: RefObject<HTMLDivElement | null>
+  actions: Action[]
+  plugins: RVEPlugin[]
+  entryCtx: ComponentContext
+  services: RVEServices
+  onClose(): void
+}) {
+  // Has plugin actions — Menu with hover submenu to the right
+  return (
+    <MenuPrimitive.Root>
+      <MenuPrimitive.Trigger
+        openOnHover
+        delay={0}
+        closeDelay={0}
+        style={(state) => entryStyle(state.open)}
+      >
+        {entryContent}
+        <ChevronRight />
+      </MenuPrimitive.Trigger>
+
+      <MenuPrimitive.Portal container={portalRef}>
+        <MenuPrimitive.Positioner
+          side="right"
+          sideOffset={4}
+          collisionPadding={8}
+          style={{ zIndex: 999999, pointerEvents: 'auto' }}
+        >
+          <MenuPrimitive.Popup
+            style={{
+              ...popupStyle,
+              minWidth: 200,
+              paddingBlock: actions.length > 0 ? 4 : 0,
+            }}
+          >
+            {/* Plugin subpanels (e.g. source preview) */}
+            {plugins.map((p, pi) => {
+              if (!p.subpanel) return null
+              const Subpanel = p.subpanel
+              return <Subpanel key={pi} ctx={entryCtx} services={services} />
+            })}
+
+            {/* Divider between subpanels and actions */}
+            {plugins.some((p) => p.subpanel) && actions.length > 0 && (
+              <div
+                style={{
+                  borderTop: '1px solid #27272a',
+                  margin: '2px 0',
+                }}
+              />
+            )}
+
+            {/* Action buttons */}
+            {actions.map((action) => (
+              <MenuPrimitive.Item
+                key={action.id}
+                closeOnClick
+                onClick={() => {
+                  action.onClick(entryCtx, services)
+                  onClose()
+                }}
+                style={(state) => actionStyle(state.highlighted)}
+              >
+                {action.icon && (
+                  <span
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {action.icon}
+                  </span>
+                )}
+                {action.label}
+              </MenuPrimitive.Item>
+            ))}
+          </MenuPrimitive.Popup>
+        </MenuPrimitive.Positioner>
+      </MenuPrimitive.Portal>
+    </MenuPrimitive.Root>
   )
 }

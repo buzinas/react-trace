@@ -33,7 +33,8 @@ async function loadHandle(): Promise<FileSystemDirectoryHandle | null> {
     return new Promise((resolve, reject) => {
       const tx = db.transaction(IDB_STORE, 'readonly')
       const req = tx.objectStore(IDB_STORE).get(IDB_KEY)
-      req.onsuccess = () => resolve((req.result as FileSystemDirectoryHandle) ?? null)
+      req.onsuccess = () =>
+        resolve((req.result as FileSystemDirectoryHandle) ?? null)
       req.onerror = () => reject(req.error)
     })
   } catch {
@@ -173,7 +174,8 @@ class FileSystemServiceImpl implements FileSystemService {
 
   async read(path: string): Promise<string> {
     const ok = await this.ensureAccess()
-    if (!ok || !this._handle) throw new Error('[react-xray] File system access denied')
+    if (!ok || !this._handle)
+      throw new Error('[react-xray] File system access denied')
 
     const rel = toRelativePath(path, this._handle.name)
     if (rel == null) {
@@ -191,7 +193,8 @@ class FileSystemServiceImpl implements FileSystemService {
 
   async write(path: string, content: string): Promise<void> {
     const ok = await this.ensureAccess()
-    if (!ok || !this._handle) throw new Error('[react-xray] File system access denied')
+    if (!ok || !this._handle)
+      throw new Error('[react-xray] File system access denied')
 
     const rel = toRelativePath(path, this._handle.name)
     if (rel == null) {
@@ -201,7 +204,8 @@ class FileSystemServiceImpl implements FileSystemService {
     }
 
     const file = await getFileHandle(this._handle, rel, true)
-    if (!file) throw new Error(`[react-xray] Cannot open file for writing: ${rel}`)
+    if (!file)
+      throw new Error(`[react-xray] Cannot open file for writing: ${rel}`)
 
     const writable = await file.createWritable()
     await writable.write(content)

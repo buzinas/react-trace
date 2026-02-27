@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')!).render(
     <App />
     <XRay
       plugins={[
-        PreviewPlugin(),
+        PreviewPlugin({ editable: true }),
         OpenEditorPlugin({ root: import.meta.env.VITE_ROOT }),
       ]}
     />

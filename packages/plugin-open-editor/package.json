@@ -1,6 +1,9 @@
 {
   "name": "@react-xray/plugin-open-editor",
   "version": "0.0.1",
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -17,22 +20,21 @@
       }
     }
   },
-  "files": ["dist"],
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch --no-clean",
     "lint": "oxlint src"
-  },
-  "peerDependencies": {
-    "@react-xray/core": "workspace:*",
-    "react": ">=18"
   },
   "devDependencies": {
     "@react-xray/core": "workspace:*",
     "@types/react": "^19",
     "oxlint": "latest",
     "react": "^19",
-    "tsdown": "latest",
+    "tsdown": "^0.21.0-beta.2",
     "typescript": "^5"
+  },
+  "peerDependencies": {
+    "@react-xray/core": "workspace:*",
+    "react": ">=18"
   }
 }
