@@ -1,0 +1,12 @@
+import { defineConfig } from 'tsdown'
+
+export default defineConfig({
+  entry: ['src/index.tsx'],
+  format: ['esm', 'cjs'],
+  dts: true,
+  platform: 'neutral',
+  deps: {
+    neverBundle: ['react', 'react/jsx-runtime', '@react-xray/core'],
+  },
+  sourcemap: true,
+})
