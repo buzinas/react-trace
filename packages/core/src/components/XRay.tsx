@@ -86,6 +86,7 @@ export function XRay({ plugins = [], position = 'bottom-right' }: XRayProps) {
 
   // Inspector mouse + keyboard listeners — active whenever enabled
   useEffect(() => {
+    document.body.style.cursor = enabled ? 'crosshair' : ''
     if (!enabled) return
 
     let lastHoveredElement: HTMLElement | null = null
@@ -96,20 +97,31 @@ export function XRay({ plugins = [], position = 'bottom-right' }: XRayProps) {
       if (portalRef.current?.contains(target)) return
 
       lastHoveredElement = target
-      const ctx = getComponentContext(target, { x: e.clientX, y: e.clientY })
+      const ctx = getComponentContext(target)
       setHoveredContext(ctx)
 
       // Async: remap compiled positions → original TypeScript positions via source map.
-      // Runs after the initial render so the component name appears immediately,
-      // then the line number is corrected once the source map resolves (cached after
-      // the first hover on a given file, so usually <50ms the first time, instant after).
-      if (ctx?.source) {
-        resolveSource(ctx.source).then((resolved) => {
-          if (lastHoveredElement === target) {
-            setHoveredContext((prev) =>
-              prev?.element === target ? { ...prev, source: resolved } : prev,
-            )
-          }
+      // Resolves the top-level source AND every entry in ctx.all in parallel (all
+      // cached per URL, so only the first hover on each file incurs a fetch).
+      if (ctx) {
+        Promise.all([
+          ctx.source ? resolveSource(ctx.source) : Promise.resolve(null),
+          ...ctx.all.map((e) =>
+            e.source ? resolveSource(e.source) : Promise.resolve(null),
+          ),
+        ]).then(([resolvedSource, ...resolvedAll]) => {
+          if (lastHoveredElement !== target) return
+          setHoveredContext((prev) => {
+            if (prev?.element !== target) return prev
+            return {
+              ...prev,
+              ...(resolvedSource && { source: resolvedSource }),
+              all: prev.all.map((e, i) => ({
+                ...e,
+                source: resolvedAll[i] ?? e.source,
+              })),
+            }
+          })
         })
       }
     }

@@ -1,5 +1,6 @@
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping'
 import type { EncodedSourceMap } from '@jridgewell/trace-mapping'
+
 import type { ComponentContext, ComponentSource } from './types'
 
 // ---------------------------------------------------------------------------
@@ -66,7 +67,9 @@ function loadTraceMap(fileUrl: string): Promise<TraceMap | null> {
  * so the UI updates the line number once the source map resolves (usually <50ms
  * after the first hover on a given file, instant on subsequent hovers).
  */
-export async function resolveSource(source: ComponentSource): Promise<ComponentSource> {
+export async function resolveSource(
+  source: ComponentSource,
+): Promise<ComponentSource> {
   // Only attempt resolution for URL-form fileNames
   try {
     new URL(source.fileName)
@@ -123,7 +126,9 @@ type ComponentType =
  */
 function findFiber(element: Element): ReactFiber | null {
   const key = Object.keys(element).find((k) => k.startsWith('__reactFiber$'))
-  return key ? ((element as unknown as Record<string, unknown>)[key] as ReactFiber) : null
+  return key
+    ? ((element as unknown as Record<string, unknown>)[key] as ReactFiber)
+    : null
 }
 
 function getDisplayName(type: ComponentType): string {
@@ -223,11 +228,16 @@ function getSource(fiber: ReactFiber | null): ComponentSource | null {
  *   <Card title="About" />  →  "About" matches `title` prop  →  show App.tsx
  *   <Header />              →  no string props               →  show Header.tsx
  */
-function isContentFromProps(element: HTMLElement, componentFiber: ReactFiber): boolean {
+function isContentFromProps(
+  element: HTMLElement,
+  componentFiber: ReactFiber,
+): boolean {
   const text = element.textContent?.trim()
   if (!text) return false
   const props = componentFiber.memoizedProps as Record<string, unknown>
-  return Object.values(props).some((v) => typeof v === 'string' && v.trim() === text)
+  return Object.values(props).some(
+    (v) => typeof v === 'string' && v.trim() === text,
+  )
 }
 
 /**
@@ -280,18 +290,7 @@ function getTextNodeAtPoint(x: number, y: number): Text | null {
  */
 export function getComponentContext(
   element: HTMLElement,
-  point?: { x: number; y: number },
 ): ComponentContext | null {
-  // When the cursor is over a text node, use its direct parent element instead
-  // of the event target — it's more specific (e.g. <h3> rather than an outer <div>).
-  if (point) {
-    const textNode = getTextNodeAtPoint(point.x, point.y)
-    const directParent = textNode?.parentElement
-    if (directParent && directParent !== element) {
-      element = directParent
-    }
-  }
-
   const domFiber = findFiber(element)
   if (!domFiber) return null
 
@@ -300,18 +299,24 @@ export function getComponentContext(
   // e.g. hovering <code> inside <p> inside <Card>:
   //   raw  → ['code', 'p', 'Card']
   //   display → ['Card', 'p', 'code']
-  const MAX_BREADCRUMB = 5
-  const parts: string[] = []
+  const parts: Array<{ source: ComponentSource | null; names: string[] }> = []
   let fiber: ReactFiber | null = domFiber
+  let i = 0
 
   while (fiber) {
+    if (!parts[i]) {
+      parts[i] = { source: getSource(fiber), names: [] }
+    }
+
     if (fiber.tag === 5 && typeof fiber.type === 'string') {
       // Host element (div, p, code, …)
-      parts.push(fiber.type)
+      parts[i]!.names.push(fiber.type)
     } else if (COMPONENT_TAGS.has(fiber.tag)) {
       const name = getDisplayName(fiber.type)
-      if (name !== 'Unknown' && name !== 'Anonymous') parts.push(name)
-      break
+      if (name !== 'Unknown' && name !== 'Anonymous') {
+        parts[i]!.names.push(name)
+      }
+      i++
     }
     fiber = fiber.return
   }
@@ -325,14 +330,14 @@ export function getComponentContext(
   const source = getSource(useCallsite ? fiber : domFiber)
 
   // parts: [hovered, …ancestors, Component] — reverse for display order
-  const all = parts.reverse()
+  const all = parts.map((part) => ({
+    source: part.source,
+    names: part.names.reverse(),
+  }))
 
   // If there are too many intermediate nodes, keep the component name (first)
   // and the MAX_BREADCRUMB-1 items closest to the hovered element (last).
-  const breadcrumb =
-    all.length <= MAX_BREADCRUMB
-      ? all
-      : [all[0]!, ...all.slice(-(MAX_BREADCRUMB - 1))]
+  const breadcrumb = parts[0]!.names
 
   const displayName = breadcrumb[0] ?? 'Unknown'
 
@@ -341,6 +346,7 @@ export function getComponentContext(
     displayName,
     breadcrumb,
     source,
+    all,
     props: domFiber.memoizedProps ?? {},
   }
 }

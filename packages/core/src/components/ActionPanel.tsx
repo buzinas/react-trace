@@ -1,10 +1,15 @@
+import { Menu as MenuPrimitive } from '@base-ui/react/menu'
 import { Popover as PopoverPrimitive } from '@base-ui/react/popover'
 import { type RefObject } from 'react'
 
-import type { ComponentContext, RVEPlugin, RVEServices } from '../types'
+import type {
+  ComponentContext,
+  ComponentSource,
+  RVEPlugin,
+  RVEServices,
+} from '../types'
 
 interface ActionPanelProps {
-  /** null = panel is closed */
   context: ComponentContext | null
   plugins: RVEPlugin[]
   services: RVEServices
@@ -12,35 +17,142 @@ interface ActionPanelProps {
   onClose(): void
 }
 
-function SourceBadge({ source }: { source: ComponentContext['source'] }) {
-  if (!source) return null
+// ---------------------------------------------------------------------------
+// Third-party grouping
+// ---------------------------------------------------------------------------
 
+type ChainGroup =
+  | { kind: 'entry'; names: string[]; source: ComponentSource; index: number }
+  | { kind: 'third-party'; names: string[][]; count: number }
+
+function groupChain(all: ComponentContext['all']): ChainGroup[] {
+  const result: ChainGroup[] = []
+  let tpCount = 0
+  let names: string[][] = []
+
+  for (let i = 0; i < all.length; i++) {
+    const entry = all[i]!
+    if (!entry.source) {
+      tpCount++
+      names.push(entry.names)
+    } else {
+      if (tpCount > 0) {
+        result.push({ kind: 'third-party', names, count: tpCount })
+        tpCount = 0
+        names = []
+      }
+      result.push({
+        kind: 'entry',
+        names: entry.names,
+        source: entry.source,
+        index: i,
+      })
+    }
+  }
+  if (tpCount > 0) result.push({ kind: 'third-party', names, count: tpCount })
+
+  return result
+}
+
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
+
+function SourceLabel({ source }: { source: ComponentSource }) {
   let file = source.fileName
   try {
     file = new URL(file).pathname
   } catch {
-    // not a URL, use as-is
+    // already a path
   }
   file = file.split('?')[0] ?? file
   const short = file.split('/').slice(-2).join('/')
 
   return (
-    <div
+    <span
       style={{
         fontSize: 11,
         fontFamily: 'ui-monospace, monospace',
-        color: '#71717a',
-        marginTop: 2,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
+        color: '#97979b',
       }}
       title={`${file}:${source.lineNumber}`}
     >
       {short}:{source.lineNumber}
-    </div>
+    </span>
   )
 }
+
+function ChevronRight() {
+  return (
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 10 10"
+      fill="none"
+      style={{ flexShrink: 0, marginLeft: 'auto', color: '#52525b' }}
+    >
+      <path
+        d="M3.5 1.5L7 5L3.5 8.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Styles
+// ---------------------------------------------------------------------------
+
+const popupStyle: React.CSSProperties = {
+  minWidth: 280,
+  background: '#18181b',
+  border: '1px solid #27272a',
+  borderRadius: 8,
+  boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
+  fontFamily: 'system-ui, sans-serif',
+  overflow: 'hidden',
+}
+
+function entryStyle(active: boolean): React.CSSProperties {
+  return {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '7px 12px',
+    cursor: 'default',
+    userSelect: 'none',
+    outline: 'none',
+    background: active ? 'rgba(59,130,246,0.2)' : 'transparent',
+    width: '100%',
+    boxSizing: 'border-box',
+    border: 'none',
+    textAlign: 'left',
+    transition: 'background 0.1s',
+  }
+}
+
+function actionStyle(highlighted: boolean): React.CSSProperties {
+  return {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 6,
+    padding: '7px 12px',
+    cursor: 'default',
+    userSelect: 'none',
+    outline: 'none',
+    fontSize: 12,
+    color: '#d4d4d8',
+    background: highlighted ? 'rgba(59,130,246,0.08)' : 'transparent',
+    transition: 'background 0.1s',
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 
 export function ActionPanel({
   context,
@@ -49,9 +161,7 @@ export function ActionPanel({
   portalRef,
   onClose,
 }: ActionPanelProps) {
-  const actions = context
-    ? plugins.flatMap((p) => p.actions?.(context, services) ?? [])
-    : []
+  const groups = context ? groupChain(context.all) : []
 
   return (
     <PopoverPrimitive.Root
@@ -68,100 +178,175 @@ export function ActionPanel({
           positionMethod="fixed"
           style={{ pointerEvents: 'auto', zIndex: 999999 }}
         >
-          <PopoverPrimitive.Popup
-            initialFocus={false}
-            style={{
-              width: 260,
-              background: '#18181b',
-              border: '1px solid #3f3f46',
-              borderRadius: 8,
-              boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
-              fontFamily: 'system-ui, sans-serif',
-              overflow: 'hidden',
-            }}
-          >
+          <PopoverPrimitive.Popup initialFocus={false} style={popupStyle}>
             {context && (
               <>
                 {/* Header */}
                 <div
                   style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
                     padding: '10px 12px 8px',
-                    borderBottom:
-                      actions.length > 0 ? '1px solid #3f3f46' : 'none',
+                    borderBottom: '1px solid #27272a',
+                    position: 'sticky',
+                    top: 0,
+                    background: '#18181b',
+                    zIndex: 1,
                   }}
                 >
-                  <div
+                  <span
                     style={{
+                      color: '#fafafa',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      fontFamily: 'ui-monospace, monospace',
+                    }}
+                  >
+                    {context.displayName}
+                  </span>
+                  <PopoverPrimitive.Close
+                    title="Close (Esc)"
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#52525b',
+                      cursor: 'pointer',
+                      padding: '0 2px',
+                      fontSize: 18,
+                      lineHeight: 1,
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'space-between',
                     }}
                   >
-                    <span
-                      style={{
-                        color: '#fafafa',
-                        fontSize: 13,
-                        fontWeight: 600,
-                        fontFamily: 'ui-monospace, monospace',
-                      }}
-                    >
-                      {context.displayName}
-                    </span>
-                    <PopoverPrimitive.Close
-                      title="Close (Esc)"
-                      style={{
-                        background: 'transparent',
-                        border: 'none',
-                        color: '#71717a',
-                        cursor: 'pointer',
-                        padding: '0 2px',
-                        fontSize: 18,
-                        lineHeight: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      ×
-                    </PopoverPrimitive.Close>
-                  </div>
-                  <SourceBadge source={context.source} />
+                    ×
+                  </PopoverPrimitive.Close>
                 </div>
 
-                {/* Plugin actions */}
-                {actions.length > 0 && (
-                  <div
-                    style={{
-                      padding: 8,
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: 4,
-                    }}
-                  >
-                    {actions.map((action) => (
-                      <button
-                        key={action.id}
-                        onClick={() => action.onClick(context, services)}
+                {/* Owner chain */}
+                <div
+                  style={{ maxHeight: 300, overflowY: 'auto', paddingBlock: 4 }}
+                >
+                  {groups.map((group, gi) => {
+                    // Third-party group — greyed out, no actions
+                    if (group.kind === 'third-party') {
+                      console.log(group.names.length)
+                      return (
+                        <div
+                          key={`tp-${gi}`}
+                          style={{
+                            padding: '6px 12px',
+                            fontSize: 11,
+                            color: '#7f7f7a',
+                            fontStyle: 'italic',
+                          }}
+                        >
+                          {group.count === 1
+                            ? (group.names[0]?.join(' › ') ?? '') +
+                              '(Third-party component)'
+                            : `${group.count} third-party components…`}
+                        </div>
+                      )
+                    }
+
+                    const entryCtx = { ...context, source: group.source }
+                    const actions = plugins.flatMap(
+                      (p) => p.actions?.(entryCtx, services) ?? [],
+                    )
+
+                    const entryContent = (
+                      <div
                         style={{
                           display: 'flex',
-                          alignItems: 'center',
-                          gap: 4,
-                          background: '#27272a',
-                          border: '1px solid #3f3f46',
-                          borderRadius: 5,
-                          color: '#d4d4d8',
-                          cursor: 'pointer',
-                          fontSize: 12,
-                          padding: '4px 8px',
+                          flexDirection: 'column',
+                          gap: 2,
+                          minWidth: 0,
+                          flex: 1,
                         }}
                       >
-                        {action.icon && (
-                          <span style={{ fontSize: 13 }}>{action.icon}</span>
-                        )}
-                        {action.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                        <span
+                          style={{
+                            fontSize: 12,
+                            color: '#d4d4d8',
+                            fontFamily: 'ui-monospace, monospace',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
+                        >
+                          {group.names.join(' › ')}
+                        </span>
+                        <SourceLabel source={group.source} />
+                      </div>
+                    )
+
+                    // No plugin actions — plain highlighted row
+                    if (!actions.length) {
+                      return (
+                        <div key={`entry-${gi}`} style={entryStyle(false)}>
+                          {entryContent}
+                        </div>
+                      )
+                    }
+
+                    // Has plugin actions — Menu with hover submenu to the right
+                    return (
+                      <MenuPrimitive.Root key={`entry-${gi}`}>
+                        <MenuPrimitive.Trigger
+                          openOnHover
+                          delay={0}
+                          closeDelay={0}
+                          style={(state) => entryStyle(state.open)}
+                        >
+                          {entryContent}
+                          <ChevronRight />
+                        </MenuPrimitive.Trigger>
+
+                        <MenuPrimitive.Portal container={portalRef}>
+                          <MenuPrimitive.Positioner
+                            side="right"
+                            sideOffset={4}
+                            collisionPadding={8}
+                          >
+                            <MenuPrimitive.Popup
+                              style={{
+                                ...popupStyle,
+                                minWidth: 160,
+                                paddingBlock: 4,
+                              }}
+                            >
+                              {actions.map((action) => (
+                                <MenuPrimitive.Item
+                                  key={action.id}
+                                  closeOnClick
+                                  onClick={() => {
+                                    action.onClick(entryCtx, services)
+                                    onClose()
+                                  }}
+                                  style={(state) =>
+                                    actionStyle(state.highlighted)
+                                  }
+                                >
+                                  {action.icon && (
+                                    <span
+                                      style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                      }}
+                                    >
+                                      {action.icon}
+                                    </span>
+                                  )}
+                                  {action.label}
+                                </MenuPrimitive.Item>
+                              ))}
+                            </MenuPrimitive.Popup>
+                          </MenuPrimitive.Positioner>
+                        </MenuPrimitive.Portal>
+                      </MenuPrimitive.Root>
+                    )
+                  })}
+                </div>
               </>
             )}
           </PopoverPrimitive.Popup>

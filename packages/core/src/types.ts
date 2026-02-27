@@ -11,6 +11,7 @@ export interface ComponentContext {
   displayName: string
   /** e.g. ['Card', 'p', 'code'] — nearest React component down to the hovered DOM element */
   breadcrumb: string[]
+  all: Array<{ source: ComponentSource | null; names: string[] }>
   /** Location of the component's definition. fileName may be a URL in Vite dev mode. */
   source: ComponentSource | null
   props: Record<string, unknown>
