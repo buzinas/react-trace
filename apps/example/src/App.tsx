@@ -1,7 +1,7 @@
 import { Card } from './Card'
 import { Header } from './Header'
 
-const CONSTANT_TEXT = 'Constant text'
+const CONSTANT_TEXT = 'Constant Text'
 
 export default function App() {
   return (
@@ -21,7 +21,7 @@ export default function App() {
             components.
           </p>
         </Card>
-        <Card title="Getting started">
+        <Card title="Getting Started">
           <p>
             Add <code>{'<XRay />'}</code> anywhere in your app tree.
           </p>
