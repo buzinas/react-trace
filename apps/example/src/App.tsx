@@ -1,6 +1,8 @@
 import { Card } from './Card'
 import { Header } from './Header'
 
+const CONSTANT_TEXT = 'Constant text'
+
 export default function App() {
   return (
     <>
@@ -21,9 +23,10 @@ export default function App() {
         </Card>
         <Card title="Getting started">
           <p>
-            Add <code>{'<VisualEditor />'}</code> anywhere in your app tree.
+            Add <code>{'<XRay />'}</code> anywhere in your app tree.
           </p>
         </Card>
+        <Card title="Direct text">{CONSTANT_TEXT}</Card>
       </div>
     </>
   )
