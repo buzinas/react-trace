@@ -86,7 +86,6 @@ export function XRay({ plugins = [], position = 'bottom-right' }: XRayProps) {
 
   // Inspector mouse + keyboard listeners — active whenever enabled
   useEffect(() => {
-    document.body.style.cursor = enabled ? 'crosshair' : ''
     if (!enabled) return
 
     let lastHoveredElement: HTMLElement | null = null

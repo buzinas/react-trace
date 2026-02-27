@@ -122,7 +122,7 @@ function entryStyle(active: boolean): React.CSSProperties {
     alignItems: 'center',
     gap: 8,
     padding: '7px 12px',
-    cursor: 'default',
+    cursor: 'pointer',
     userSelect: 'none',
     outline: 'none',
     background: active ? 'rgba(59,130,246,0.2)' : 'transparent',
@@ -140,12 +140,12 @@ function actionStyle(highlighted: boolean): React.CSSProperties {
     alignItems: 'center',
     gap: 6,
     padding: '7px 12px',
-    cursor: 'default',
+    cursor: 'pointer',
     userSelect: 'none',
     outline: 'none',
     fontSize: 12,
     color: '#d4d4d8',
-    background: highlighted ? 'rgba(59,130,246,0.08)' : 'transparent',
+    background: highlighted ? 'rgba(59,130,246,0.2)' : 'transparent',
     transition: 'background 0.1s',
   }
 }

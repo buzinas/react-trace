@@ -76,6 +76,18 @@ function HighlightRect({
 }
 
 export function Overlay({ hoveredContext, selectedContext }: OverlayProps) {
+  const [mouse, setMouse] = useState<{ x: number; y: number } | null>(null)
+
+  useEffect(() => {
+    function onMove(e: MouseEvent) {
+      setMouse({ x: e.clientX, y: e.clientY })
+    }
+    document.addEventListener('mousemove', onMove, { passive: true })
+    return () => {
+      document.removeEventListener('mousemove', onMove)
+    }
+  }, [])
+
   // Track rects separately so we can update them on scroll/resize
   const [hoveredRect, setHoveredRect] = useState<Rect | null>(null)
   const [selectedRect, setSelectedRect] = useState<Rect | null>(null)
@@ -87,6 +99,10 @@ export function Overlay({ hoveredContext, selectedContext }: OverlayProps) {
 
   useEffect(() => {
     setSelectedRect(selectedContext ? toRect(selectedContext.element) : null)
+    document.body.style.cursor = selectedContext ? '' : 'crosshair'
+    return () => {
+      document.body.style.cursor = ''
+    }
   }, [selectedContext])
 
   // Keep rects in sync with scroll and resize
@@ -121,6 +137,33 @@ export function Overlay({ hoveredContext, selectedContext }: OverlayProps) {
         zIndex: 999998,
       }}
     >
+      {/* Crosshair */}
+      {mouse && !selectedRect && (
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: mouse.x,
+              width: 1,
+              height: '100dvh',
+              background: 'rgba(59,130,246,0.5)',
+              pointerEvents: 'none',
+            }}
+          />
+          <div
+            style={{
+              position: 'fixed',
+              left: 0,
+              top: mouse.y,
+              height: 1,
+              width: '100dvw',
+              background: 'rgba(59,130,246,0.5)',
+              pointerEvents: 'none',
+            }}
+          />
+        </>
+      )}
       {showHovered && (
         <HighlightRect
           rect={hoveredRect}
