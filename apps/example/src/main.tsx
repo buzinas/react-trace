@@ -1,5 +1,6 @@
 import { XRay } from '@react-xray/core'
 import { OpenEditorPlugin } from '@react-xray/plugin-open-editor'
+import { PreviewPlugin } from '@react-xray/plugin-preview'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
@@ -10,9 +11,8 @@ createRoot(document.getElementById('root')!).render(
     <App />
     <XRay
       plugins={[
-        OpenEditorPlugin({
-          root: import.meta.env.VITE_ROOT,
-        }),
+        PreviewPlugin(),
+        OpenEditorPlugin({ root: import.meta.env.VITE_ROOT }),
       ]}
     />
   </StrictMode>,

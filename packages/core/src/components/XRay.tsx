@@ -45,6 +45,11 @@ export function XRay({ plugins = [], position = 'bottom-right' }: XRayProps) {
     }
   }, [])
 
+  // Silently try to restore a previously granted FS handle on mount
+  useEffect(() => {
+    fileSystemService.tryRestore()
+  }, [])
+
   const deselect = useCallback(() => setSelectedContext(null), [])
 
   const toggle = useCallback(() => setEnabled((prev) => !prev), [])

@@ -3,3 +3,4 @@ dist
 .turbo
 *.tsbuildinfo
 .react
+.DS_Store

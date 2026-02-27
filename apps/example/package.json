@@ -10,6 +10,7 @@
   "dependencies": {
     "@react-xray/core": "workspace:*",
     "@react-xray/plugin-open-editor": "workspace:*",
+    "@react-xray/plugin-preview": "workspace:*",
     "react": "^19",
     "react-dom": "^19"
   },

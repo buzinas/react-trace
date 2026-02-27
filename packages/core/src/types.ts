@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 
 export interface ComponentSource {
   fileName: string
@@ -22,10 +22,32 @@ export interface FileSystemService {
   isSupported: boolean
   /** Whether the user has already granted directory access */
   hasAccess: boolean
-  /** Prompt the user to pick the project root directory */
+  /**
+   * Silently try to restore a previously granted directory handle from
+   * IndexedDB and re-request permission. Resolves true if successful.
+   * Call this on app mount to avoid prompting on every reload.
+   */
+  tryRestore(): Promise<boolean>
+  /**
+   * Prompt the user to pick the project root directory via showDirectoryPicker().
+   * The handle is persisted in IndexedDB for future sessions.
+   */
   requestAccess(): Promise<boolean>
-  read(absolutePath: string): Promise<string>
-  write(absolutePath: string, content: string): Promise<void>
+  /**
+   * Subscribe to hasAccess changes (e.g. after requestAccess / tryRestore).
+   * Returns an unsubscribe function.
+   */
+  subscribe(listener: () => void): () => void
+  /**
+   * Read a file by its path (absolute filesystem path or Vite dev URL).
+   * If no access has been granted yet, triggers requestAccess() first.
+   */
+  read(path: string): Promise<string>
+  /**
+   * Write content to a file. Triggers requestAccess() if needed.
+   * Written files trigger HMR automatically in the dev server.
+   */
+  write(path: string, content: string): Promise<void>
 }
 
 export interface RVEServices {
@@ -52,6 +74,13 @@ export interface RVEPlugin {
   toolbarItems?: ToolbarItem[]
   /** Return contextual actions for the currently selected component */
   actions?: (ctx: ComponentContext, services: RVEServices) => Action[]
+  /**
+   * An optional React component rendered inside the entry submenu popup,
+   * above the action buttons. Receives the per-entry ctx (ctx.source is the
+   * specific entry's source, not the top-level one). Must be a component type
+   * (not a function returning ReactNode) so it can use hooks.
+   */
+  subpanel?: ComponentType<{ ctx: ComponentContext; services: RVEServices }>
 }
 
 export interface XRayProps {

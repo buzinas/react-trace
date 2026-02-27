@@ -32,6 +32,9 @@ importers:
       '@react-xray/plugin-open-editor':
         specifier: workspace:*
         version: link:../../packages/plugin-open-editor
+      '@react-xray/plugin-preview':
+        specifier: workspace:*
+        version: link:../../packages/plugin-preview
       react:
         specifier: ^19
         version: 19.2.4
@@ -93,6 +96,27 @@ importers:
         version: 4.0.18(@types/node@25.3.3)(lightningcss@1.31.1)
 
   packages/plugin-open-editor:
+    devDependencies:
+      '@react-xray/core':
+        specifier: workspace:*
+        version: link:../core
+      '@types/react':
+        specifier: ^19
+        version: 19.2.14
+      oxlint:
+        specifier: latest
+        version: 1.51.0
+      react:
+        specifier: ^19
+        version: 19.2.4
+      tsdown:
+        specifier: latest
+        version: 0.20.3(typescript@5.9.3)
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  packages/plugin-preview:
     devDependencies:
       '@react-xray/core':
         specifier: workspace:*

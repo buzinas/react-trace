@@ -230,7 +230,6 @@ export function ActionPanel({
                   {groups.map((group, gi) => {
                     // Third-party group — greyed out, no actions
                     if (group.kind === 'third-party') {
-                      console.log(group.names.length)
                       return (
                         <div
                           key={`tp-${gi}`}
@@ -307,14 +306,28 @@ export function ActionPanel({
                             side="right"
                             sideOffset={4}
                             collisionPadding={8}
+                            style={{ zIndex: 999999, pointerEvents: 'auto' }}
                           >
                             <MenuPrimitive.Popup
                               style={{
                                 ...popupStyle,
-                                minWidth: 160,
-                                paddingBlock: 4,
+                                minWidth: 200,
+                                paddingBlock: actions.length > 0 ? 4 : 0,
                               }}
                             >
+                              {/* Plugin subpanels (e.g. source preview) */}
+                              {plugins.map((p, pi) => {
+                                if (!p.subpanel) return null
+                                const Subpanel = p.subpanel
+                                return <Subpanel key={pi} ctx={entryCtx} services={services} />
+                              })}
+
+                              {/* Divider between subpanels and actions */}
+                              {plugins.some((p) => p.subpanel) && actions.length > 0 && (
+                                <div style={{ borderTop: '1px solid #27272a', margin: '2px 0' }} />
+                              )}
+
+                              {/* Action buttons */}
                               {actions.map((action) => (
                                 <MenuPrimitive.Item
                                   key={action.id}
