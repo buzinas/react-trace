@@ -1,4 +1,5 @@
 import type { Monaco } from '@monaco-editor/react'
+import { toRelativePath } from '@react-xray/core'
 import type { Uri } from 'monaco-types'
 
 export function cleanPath(fileName: string): string {
@@ -20,12 +21,7 @@ export function detectLanguage(fileName: string): string {
 
 /** Last two path segments — used in the toolbar label. */
 export function shortName(fileName: string): string {
-  const path = cleanPath(fileName)
-  try {
-    return new URL(path).pathname.split('/').slice(-2).join('/')
-  } catch {
-    return path.replace(/\\/g, '/').split('/').slice(-2).join('/')
-  }
+  return toRelativePath(fileName).split('/').slice(-2).join('/')
 }
 
 /** Convert a file path (URL or absolute) to a monaco file:// URI. */

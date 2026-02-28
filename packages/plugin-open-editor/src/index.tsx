@@ -1,4 +1,4 @@
-import { resolveSource } from '@react-xray/core'
+import { resolveSource, toAbsolutePath } from '@react-xray/core'
 import type { ComponentContext, RVEPlugin, RVEServices } from '@react-xray/core'
 export type EditorPreset =
   | 'vscode'
@@ -27,30 +27,7 @@ const EDITOR_LABELS: Record<EditorPreset, string> = {
   webstorm: 'WebStorm',
   intellij: 'IntelliJ',
 }
-/**
- * Resolves a source fileName (which may be a Vite dev URL or an absolute path)
- * to an absolute filesystem path suitable for editor URL schemes.
- *
- * Handles:
- *   - Absolute paths (React 18 / _debugSource)       → used as-is
- *   - Vite /@fs/ URLs                                → strip /@fs prefix
- *   - Vite relative URLs (/src/App.tsx)              → prepend root if provided
- */
-function toAbsolutePath(fileName: string, root?: string): string | null {
-  // Strip Vite HMR timestamp (?t=...)
-  const clean = (fileName.split('?')[0] ?? fileName).trim()
-  if (!clean) return null
-  try {
-    const { pathname } = new URL(clean)
-    // Vite embeds the absolute path after /@fs/
-    if (pathname.startsWith('/@fs/')) return pathname.slice('/@fs'.length)
-    // Standard Vite URL — resolve against root if provided
-    return root ? root.replace(/\/$/, '') + pathname : pathname
-  } catch {
-    // Not a URL — already an absolute filesystem path (React 18)
-    return clean
-  }
-}
+
 /**
  * Builds the editor-specific URL to open a file at a given line/column.
  *
@@ -113,17 +90,19 @@ export function OpenEditorPlugin(options: OpenEditorOptions = {}): RVEPlugin {
           icon: <OpenInEditorIcon />,
           onClick(ctx: ComponentContext) {
             // resolveSource is a cache hit at click time (already ran during hover)
-            resolveSource(ctx.source!).then((resolved) => {
-              const path = toAbsolutePath(resolved.fileName, root)
-              if (!path) return
-              const url = buildEditorUrl(
-                editor,
-                path,
-                resolved.lineNumber,
-                resolved.columnNumber,
-              )
-              window.open(url)
-            })
+            resolveSource(ctx.source!)
+              .then((resolved) => {
+                const path = toAbsolutePath(resolved.fileName, root)
+                if (!path) return
+                const url = buildEditorUrl(
+                  editor,
+                  path,
+                  resolved.lineNumber,
+                  resolved.columnNumber,
+                )
+                window.open(url)
+              })
+              .catch(() => {})
           },
         },
       ]

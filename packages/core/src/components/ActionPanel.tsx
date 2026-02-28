@@ -2,6 +2,7 @@ import { Menu as MenuPrimitive } from '@base-ui/react/menu'
 import { Popover as PopoverPrimitive } from '@base-ui/react/popover'
 import type { RefObject } from 'react'
 
+import { toRelativePath } from '../path'
 import type {
   Action,
   ComponentContext,
@@ -61,14 +62,8 @@ function groupChain(all: ComponentContext['all']): ChainGroup[] {
 // ---------------------------------------------------------------------------
 
 function SourceLabel({ source }: { source: ComponentSource }) {
-  let file = source.fileName
-  try {
-    file = new URL(file).pathname
-  } catch {
-    // already a path
-  }
-  file = file.split('?')[0] ?? file
-  const short = file.split('/').slice(-2).join('/')
+  const rel = toRelativePath(source.fileName)
+  const short = rel.split('/').slice(-2).join('/')
 
   return (
     <span
@@ -77,7 +72,7 @@ function SourceLabel({ source }: { source: ComponentSource }) {
         fontFamily: 'ui-monospace, monospace',
         color: '#97979b',
       }}
-      title={`${file}:${source.lineNumber}`}
+      title={`${rel}:${source.lineNumber}`}
     >
       {short}:{source.lineNumber}
     </span>

@@ -1,4 +1,4 @@
-import { resolveSource } from '@react-xray/core'
+import { resolveSource, toRelativePath } from '@react-xray/core'
 import type { ComponentContext, RVEPlugin, RVEServices } from '@react-xray/core'
 
 export interface CopyToClipboardPluginOptions {
@@ -8,45 +8,6 @@ export interface CopyToClipboardPluginOptions {
    * Not needed for Vite dev URLs — the relative path is extracted from the URL.
    */
   root?: string
-}
-
-/**
- * Converts a resolved source fileName to a path relative to the project root.
- *
- *   Vite URL  http://localhost:5173/src/App.tsx  →  src/App.tsx
- *   /@fs/ URL http://localhost:5173/@fs/abs/path →  abs/path  (or relative if root given)
- *   Abs path  /Users/you/project/src/App.tsx     →  src/App.tsx  (root required)
- */
-function toRelativePath(fileName: string, root?: string): string {
-  const clean = fileName.split('?')[0]!
-
-  try {
-    const { pathname } = new URL(clean)
-
-    if (pathname.startsWith('/@fs/')) {
-      const absPath = pathname.slice('/@fs'.length)
-      if (root) {
-        const normalizedRoot = root.replace(/\\/g, '/').replace(/\/$/, '')
-        if (absPath.startsWith(normalizedRoot + '/')) {
-          return absPath.slice(normalizedRoot.length + 1)
-        }
-      }
-      return absPath
-    }
-
-    // Regular Vite dev URL — pathname is already relative to the project root
-    return pathname.replace(/^\//, '')
-  } catch {
-    // Absolute filesystem path from _debugSource (React 18)
-    const normalized = clean.replace(/\\/g, '/')
-    if (root) {
-      const normalizedRoot = root.replace(/\\/g, '/').replace(/\/$/, '')
-      if (normalized.startsWith(normalizedRoot + '/')) {
-        return normalized.slice(normalizedRoot.length + 1)
-      }
-    }
-    return normalized
-  }
 }
 
 function ClipboardIcon() {
@@ -94,10 +55,12 @@ export function CopyToClipboardPlugin(
           label: 'Copy path',
           icon: <ClipboardIcon />,
           onClick(ctx: ComponentContext) {
-            resolveSource(ctx.source!).then((resolved) => {
-              const path = toRelativePath(resolved.fileName, root)
-              navigator.clipboard.writeText(`${path}:${resolved.lineNumber}`)
-            })
+            resolveSource(ctx.source!)
+              .then((resolved) => {
+                const path = toRelativePath(resolved.fileName, root)
+                navigator.clipboard.writeText(`${path}:${resolved.lineNumber}`)
+              })
+              .catch(() => {})
           },
         },
       ]
