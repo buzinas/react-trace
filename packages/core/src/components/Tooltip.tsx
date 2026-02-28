@@ -1,13 +1,15 @@
 import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip'
-import {
-  type ButtonHTMLAttributes,
-  type ReactElement,
-  type ReactNode,
-  type RefObject,
+import type {
+  ButtonHTMLAttributes,
+  ReactElement,
+  ReactNode,
+  RefObject,
 } from 'react'
 
+import { Kbd } from './Kbd'
+
 interface TooltipProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  label: string
+  label: ReactNode
   shortcut?: string
   container: RefObject<HTMLDivElement | null>
   /** Forwarded to Tooltip.Trigger's render prop — use to compose with e.g. Toolbar.Button */
@@ -32,17 +34,6 @@ const popupStyle: React.CSSProperties = {
   zIndex: 9999999,
 }
 
-const kbdStyle: React.CSSProperties = {
-  background: '#27272a',
-  border: '1px solid #52525b',
-  borderRadius: 4,
-  padding: '1px 5px',
-  fontFamily: 'ui-monospace, monospace',
-  fontSize: 11,
-  color: '#a1a1aa',
-  lineHeight: 1.6,
-}
-
 export function Tooltip({
   label,
   shortcut,
@@ -60,7 +51,7 @@ export function Tooltip({
         <TooltipPrimitive.Positioner sideOffset={10}>
           <TooltipPrimitive.Popup style={popupStyle}>
             {label}
-            {shortcut && <kbd style={kbdStyle}>{shortcut}</kbd>}
+            {shortcut && <Kbd>{shortcut}</Kbd>}
           </TooltipPrimitive.Popup>
         </TooltipPrimitive.Positioner>
       </TooltipPrimitive.Portal>

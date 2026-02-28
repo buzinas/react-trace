@@ -58,8 +58,12 @@ export interface RVEServices {
 
 export interface ToolbarItem {
   id: string
-  icon: ReactNode
-  label: string
+  /** ReactNode, or a render function that receives services for reactive icons */
+  icon: ReactNode | ((services: RVEServices) => ReactNode)
+  /** ReactNode, or a render function that receives services for reactive labels */
+  label: ReactNode | ((services: RVEServices) => ReactNode)
+  /** Plain-text label used for aria-label. Falls back to id. */
+  ariaLabel?: string
   isActive?: (ctx: ComponentContext | null) => boolean
   onClick(ctx: ComponentContext | null, services: RVEServices): void
 }
