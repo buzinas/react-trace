@@ -1,6 +1,7 @@
 export { XRay } from './components/XRay'
 export { resolveSource } from './fiber'
 export { toAbsolutePath, toRelativePath } from './path'
+export { IS_MAC, MOD_KEY } from './platform'
 
 export type {
   Action,

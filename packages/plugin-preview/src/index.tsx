@@ -25,6 +25,7 @@ export function PreviewPlugin(options: PreviewPluginOptions = {}): RVEPlugin {
         services={services}
         editable={editable}
         theme={theme}
+        root={services.root}
       />
     )
   }
