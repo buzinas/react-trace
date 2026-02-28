@@ -26,27 +26,15 @@ importers:
 
   apps/example:
     dependencies:
-      '@react-xray/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@react-xray/plugin-comments':
-        specifier: workspace:*
-        version: link:../../packages/plugin-comments
-      '@react-xray/plugin-copy-to-clipboard':
-        specifier: workspace:*
-        version: link:../../packages/plugin-copy-to-clipboard
-      '@react-xray/plugin-open-editor':
-        specifier: workspace:*
-        version: link:../../packages/plugin-open-editor
-      '@react-xray/plugin-preview':
-        specifier: workspace:*
-        version: link:../../packages/plugin-preview
       react:
         specifier: ^19
         version: 19.2.4
       react-dom:
         specifier: ^19
         version: 19.2.4(react@19.2.4)
+      react-xray:
+        specifier: workspace:*
+        version: link:../../packages/react-xray
     devDependencies:
       '@types/react':
         specifier: ^19
@@ -212,6 +200,46 @@ importers:
         version: 19.2.4
       react-dom:
         specifier: ^19.2.4
+        version: 19.2.4(react@19.2.4)
+      tsdown:
+        specifier: ^0.21.0-beta.2
+        version: 0.21.0-beta.2(typescript@5.9.3)
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  packages/react-xray:
+    dependencies:
+      '@react-xray/core':
+        specifier: workspace:*
+        version: link:../core
+      '@react-xray/plugin-comments':
+        specifier: workspace:*
+        version: link:../plugin-comments
+      '@react-xray/plugin-copy-to-clipboard':
+        specifier: workspace:*
+        version: link:../plugin-copy-to-clipboard
+      '@react-xray/plugin-open-editor':
+        specifier: workspace:*
+        version: link:../plugin-open-editor
+      '@react-xray/plugin-preview':
+        specifier: workspace:*
+        version: link:../plugin-preview
+    devDependencies:
+      '@types/react':
+        specifier: ^19
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.14)
+      oxlint:
+        specifier: latest
+        version: 1.51.0
+      react:
+        specifier: ^19
+        version: 19.2.4
+      react-dom:
+        specifier: ^19
         version: 19.2.4(react@19.2.4)
       tsdown:
         specifier: ^0.21.0-beta.2

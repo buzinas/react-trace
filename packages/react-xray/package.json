@@ -1,6 +1,7 @@
 {
-  "name": "@react-xray/plugin-comments",
+  "name": "react-xray",
   "version": "0.0.1",
+  "description": "Batteries-included React visual inspector — all official plugins pre-wired.",
   "files": [
     "dist"
   ],
@@ -49,10 +50,13 @@
     "lint": "oxlint src"
   },
   "dependencies": {
-    "@opencode-ai/sdk": "^1.2.16"
+    "@react-xray/core": "workspace:*",
+    "@react-xray/plugin-comments": "workspace:*",
+    "@react-xray/plugin-copy-to-clipboard": "workspace:*",
+    "@react-xray/plugin-open-editor": "workspace:*",
+    "@react-xray/plugin-preview": "workspace:*"
   },
   "devDependencies": {
-    "@react-xray/core": "workspace:*",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "oxlint": "latest",
@@ -62,7 +66,6 @@
     "typescript": "^5"
   },
   "peerDependencies": {
-    "@react-xray/core": "workspace:*",
     "react": ">=18",
     "react-dom": ">=18"
   }
