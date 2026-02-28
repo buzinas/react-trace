@@ -65,6 +65,28 @@ export function ClipboardIcon() {
   )
 }
 
+export function OpencodeIcon({ size = 13 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 512 512"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path fill="#131010" d="M0 0h512v512H0z" />
+      <path d="M320 224v128H192V224h128z" fill="#5A5858" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M384 416H128V96h256v320zm-64-256H192v192h128V160z"
+        fill="#fff"
+      />
+    </svg>
+  )
+}
+
 export function XIcon() {
   return (
     <svg

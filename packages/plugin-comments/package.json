@@ -25,6 +25,9 @@
     "dev": "tsdown --watch --no-clean",
     "lint": "oxlint src"
   },
+  "dependencies": {
+    "@opencode-ai/sdk": "^1.2.16"
+  },
   "devDependencies": {
     "@react-xray/core": "workspace:*",
     "@types/react": "^19",

@@ -1,12 +1,14 @@
 import type { CSSProperties } from 'react'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
-import { ClipboardIcon, TrashIcon, XIcon } from './icons'
+import { ClipboardIcon, OpencodeIcon, TrashIcon, XIcon } from './icons'
+import { SendToOpencodeForm } from './SendToOpencode'
 import {
   clearAllComments,
   type CommentEntry,
   getMenuSnapshot,
   getStoreSnapshot,
+  pluginRoot,
   removeComment,
   setMenuOpen,
   subscribeMenu,
@@ -267,6 +269,7 @@ export function CommentsMenuOverlay() {
   const comments = useSyncExternalStore(subscribeStore, getStoreSnapshot)
   const menuRef = useRef<HTMLDivElement>(null)
   const [copyFeedback, setCopyFeedback] = useState(false)
+  const [showSendForm, setShowSendForm] = useState(false)
 
   // Close on outside click or Escape
   useEffect(() => {
@@ -423,20 +426,37 @@ export function CommentsMenuOverlay() {
       {comments.length > 0 && (
         <>
           <div style={{ borderTop: '1px solid #27272a', margin: '4px 0 0' }} />
-          <div style={{ padding: '4px 6px' }}>
-            <HoverButton style={menuItemStyle} onClick={handleCopy}>
-              <ClipboardIcon />
-              {copyFeedback ? 'Copied!' : 'Copy to clipboard'}
-            </HoverButton>
-            <HoverButton
-              style={menuItemStyle}
-              onClick={handleClear}
-              color="#ef4444"
-            >
-              <TrashIcon />
-              Clear all
-            </HoverButton>
-          </div>
+          {showSendForm ? (
+            <SendToOpencodeForm
+              root={pluginRoot}
+              onDone={() => {
+                setShowSendForm(false)
+                setMenuOpen(false)
+              }}
+            />
+          ) : (
+            <div style={{ padding: '4px 6px' }}>
+              <HoverButton
+                style={menuItemStyle}
+                onClick={() => setShowSendForm(true)}
+              >
+                <OpencodeIcon size={13} />
+                Send to OpenCode
+              </HoverButton>
+              <HoverButton style={menuItemStyle} onClick={handleCopy}>
+                <ClipboardIcon />
+                {copyFeedback ? 'Copied!' : 'Copy to clipboard'}
+              </HoverButton>
+              <HoverButton
+                style={menuItemStyle}
+                onClick={handleClear}
+                color="#ef4444"
+              >
+                <TrashIcon />
+                Clear all
+              </HoverButton>
+            </div>
+          )}
         </>
       )}
     </div>

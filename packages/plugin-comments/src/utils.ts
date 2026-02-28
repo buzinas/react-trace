@@ -36,13 +36,13 @@ export function toRelativePath(fileName: string, root?: string): string {
 }
 
 /**
- * Formats a comment in the same format OpenCode uses internally
- * (mirrors formatCommentNote from opencode/packages/app/src/utils/comment-note.ts).
+ * Formats a comment as a compact `file:line: comment` string.
+ * Used for both copy-to-clipboard and the synthetic text part sent to OpenCode.
  */
 export function formatCommentNote(
   filePath: string,
   lineNumber: number,
   comment: string,
 ): string {
-  return `Comment regarding line ${lineNumber} of ${filePath}: ${comment}`
+  return `${filePath}:${lineNumber}: ${comment}`
 }

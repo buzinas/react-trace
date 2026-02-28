@@ -125,3 +125,13 @@ export let toolbarButtonEl: HTMLButtonElement | null = null
 export function setToolbarButtonEl(el: HTMLButtonElement | null) {
   toolbarButtonEl = el
 }
+
+// ---------------------------------------------------------------------------
+// Plugin root path — set at plugin init, read by SendToOpencodeForm
+// ---------------------------------------------------------------------------
+
+export let pluginRoot: string | undefined
+
+export function setPluginRoot(root: string | undefined) {
+  pluginRoot = root
+}

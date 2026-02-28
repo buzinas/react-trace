@@ -7,6 +7,7 @@ import { ChatBubbleIcon } from './icons'
 import {
   getStoreSnapshot,
   setPending,
+  setPluginRoot,
   setToolbarButtonEl,
   subscribeStore,
   toggleMenu,
@@ -108,6 +109,7 @@ export function CommentsPlugin(options: CommentsPluginOptions = {}): RVEPlugin {
 
   // Mount overlays eagerly (idempotent — safe to call on every factory call)
   ensureOverlayMounted()
+  setPluginRoot(root)
 
   return {
     name: 'comments',

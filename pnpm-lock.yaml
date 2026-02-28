@@ -102,6 +102,10 @@ importers:
         version: 4.0.18(@types/node@25.3.3)(lightningcss@1.31.1)
 
   packages/plugin-comments:
+    dependencies:
+      '@opencode-ai/sdk':
+        specifier: ^1.2.16
+        version: 1.2.16
     devDependencies:
       '@react-xray/core':
         specifier: workspace:*
@@ -552,6 +556,9 @@ packages:
 
   '@napi-rs/wasm-runtime@1.1.1':
     resolution: {integrity: sha512-p64ah1M1ld8xjWv3qbvFwHiFVWrq1yFvV4f7w+mzaqiR4IlSgkqhcRdHwsGgomwzBH51sRY4NEowLxnaBjcW/A==}
+
+  '@opencode-ai/sdk@1.2.16':
+    resolution: {integrity: sha512-y9ae9VnCcuog0GaI4DveX1HB6DBoZgGN3EuJVlRFbBCPwhzkls6fCfHSb5+VnTS6Fy0OWFUL28VBCmixL/D+/Q==}
 
   '@oxc-project/runtime@0.115.0':
     resolution: {integrity: sha512-Rg8Wlt5dCbXhQnsXPrkOjL1DTSvXLgb2R/KYfnf1/K+R0k6UMLEmbQXPM+kwrWqSmWA2t0B1EtHy2/3zikQpvQ==}
@@ -2261,6 +2268,8 @@ snapshots:
       '@emnapi/runtime': 1.8.1
       '@tybys/wasm-util': 0.10.1
     optional: true
+
+  '@opencode-ai/sdk@1.2.16': {}
 
   '@oxc-project/runtime@0.115.0': {}
 
