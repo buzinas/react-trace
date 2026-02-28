@@ -4,3 +4,4 @@ dist
 *.tsbuildinfo
 .react
 .DS_Store
+.opencode

@@ -52,7 +52,10 @@ export function XRay({ plugins = [], position = 'bottom-right' }: XRayProps) {
 
   const deselect = useCallback(() => setSelectedContext(null), [])
 
-  const toggle = useCallback(() => setEnabled((prev) => !prev), [])
+  const toggle = useCallback(
+    (value?: boolean) => setEnabled((prev) => value ?? !prev),
+    [],
+  )
 
   // Long-press Cmd+X (Mac) / Ctrl+X (other): hold for LONGPRESS_MS to latch inspector on.
   // Releasing before the timer fires cancels — no accidental activation.
@@ -209,6 +212,7 @@ export function XRay({ plugins = [], position = 'bottom-right' }: XRayProps) {
           services={services}
           portalRef={portalRef}
           onClose={deselect}
+          onToggle={toggle}
         />
       )}
     </>,

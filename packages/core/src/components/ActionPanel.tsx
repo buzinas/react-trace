@@ -16,6 +16,7 @@ interface ActionPanelProps {
   services: RVEServices
   portalRef: RefObject<HTMLDivElement | null>
   onClose(): void
+  onToggle(value?: boolean): void
 }
 
 // ---------------------------------------------------------------------------
@@ -161,6 +162,7 @@ export function ActionPanel({
   services,
   portalRef,
   onClose,
+  onToggle,
 }: ActionPanelProps) {
   const groups = context ? groupChain(context.all) : []
 
@@ -301,6 +303,7 @@ export function ActionPanel({
                         entryCtx={entryCtx}
                         services={services}
                         onClose={onClose}
+                        onToggle={onToggle}
                       />
                     )
                   })}
@@ -322,6 +325,7 @@ function Submenu({
   entryCtx,
   services,
   onClose,
+  onToggle,
 }: {
   entryContent: React.ReactNode
   portalRef: RefObject<HTMLDivElement | null>
@@ -330,6 +334,7 @@ function Submenu({
   entryCtx: ComponentContext
   services: RVEServices
   onClose(): void
+  onToggle(value?: boolean): void
 }) {
   // Has plugin actions — Menu with hover submenu to the right
   return (
@@ -380,9 +385,13 @@ function Submenu({
               <MenuPrimitive.Item
                 key={action.id}
                 closeOnClick
-                onClick={() => {
-                  action.onClick(entryCtx, services)
+                onClick={async () => {
+                  const result = await action.onClick(entryCtx, services)
+
                   onClose()
+                  if (result) {
+                    onToggle(false)
+                  }
                 }}
                 style={(state) => actionStyle(state.highlighted)}
               >

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@react-xray/core": "workspace:*",
+    "@react-xray/plugin-comments": "workspace:*",
     "@react-xray/plugin-copy-to-clipboard": "workspace:*",
     "@react-xray/plugin-open-editor": "workspace:*",
     "@react-xray/plugin-preview": "workspace:*",

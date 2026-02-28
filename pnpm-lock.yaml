@@ -29,6 +29,9 @@ importers:
       '@react-xray/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@react-xray/plugin-comments':
+        specifier: workspace:*
+        version: link:../../packages/plugin-comments
       '@react-xray/plugin-copy-to-clipboard':
         specifier: workspace:*
         version: link:../../packages/plugin-copy-to-clipboard
@@ -97,6 +100,33 @@ importers:
       vitest:
         specifier: latest
         version: 4.0.18(@types/node@25.3.3)(lightningcss@1.31.1)
+
+  packages/plugin-comments:
+    devDependencies:
+      '@react-xray/core':
+        specifier: workspace:*
+        version: link:../core
+      '@types/react':
+        specifier: ^19
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.14)
+      oxlint:
+        specifier: latest
+        version: 1.51.0
+      react:
+        specifier: ^19
+        version: 19.2.4
+      react-dom:
+        specifier: ^19
+        version: 19.2.4(react@19.2.4)
+      tsdown:
+        specifier: ^0.21.0-beta.2
+        version: 0.21.0-beta.2(typescript@5.9.3)
+      typescript:
+        specifier: ^5
+        version: 5.9.3
 
   packages/plugin-copy-to-clipboard:
     devDependencies:

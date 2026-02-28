@@ -1,4 +1,5 @@
 import { XRay } from '@react-xray/core'
+import { CommentsPlugin } from '@react-xray/plugin-comments'
 import { CopyToClipboardPlugin } from '@react-xray/plugin-copy-to-clipboard'
 import { OpenEditorPlugin } from '@react-xray/plugin-open-editor'
 import { PreviewPlugin } from '@react-xray/plugin-preview'
@@ -15,6 +16,7 @@ createRoot(document.getElementById('root')!).render(
         PreviewPlugin({ editable: true }),
         CopyToClipboardPlugin({ root: import.meta.env.VITE_ROOT }),
         OpenEditorPlugin({ root: import.meta.env.VITE_ROOT }),
+        CommentsPlugin({ root: import.meta.env.VITE_ROOT }),
       ]}
     />
   </StrictMode>,

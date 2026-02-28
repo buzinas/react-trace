@@ -66,7 +66,10 @@ export interface Action {
   id: string
   label: string
   icon?: ReactNode
-  onClick(ctx: ComponentContext, services: RVEServices): void
+  onClick(
+    ctx: ComponentContext,
+    services: RVEServices,
+  ): boolean | void | Promise<boolean | void>
 }
 
 export interface RVEPlugin {
