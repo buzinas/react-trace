@@ -184,6 +184,15 @@ export function SourcePreview({
 
   return (
     <div
+      ref={(el) => {
+        const parentElement = el?.parentElement?.parentElement
+        if (!parentElement) return
+        const transform = parentElement.style.transform
+        parentElement.style.transform = ''
+        return () => {
+          parentElement.style.transform = transform
+        }
+      }}
       style={{
         position: 'absolute',
         inset: 0,
@@ -197,13 +206,12 @@ export function SourcePreview({
       <div
         style={{
           position: 'fixed',
-          top: 0,
-          left: 0,
+          top: '10vw',
+          left: '10vw',
           border: '1px solid #27272a',
           borderRadius: 10,
           boxShadow: '0 24px 64px rgba(0,0,0,0.8)',
           overflow: 'hidden',
-          transform: 'translate(-50%, -25%)',
           width: '80vw',
           height: '80vh',
         }}
