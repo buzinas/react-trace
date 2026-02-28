@@ -12,11 +12,12 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
     <XRay
+      root={import.meta.env.VITE_ROOT}
       plugins={[
         PreviewPlugin({ editable: true }),
-        CopyToClipboardPlugin({ root: import.meta.env.VITE_ROOT }),
-        OpenEditorPlugin({ root: import.meta.env.VITE_ROOT }),
-        CommentsPlugin({ root: import.meta.env.VITE_ROOT }),
+        CopyToClipboardPlugin(),
+        OpenEditorPlugin(),
+        CommentsPlugin(),
       ]}
     />
   </StrictMode>,

@@ -1,15 +1,6 @@
 import { resolveSource, toRelativePath } from '@react-xray/core'
 import type { ComponentContext, RVEPlugin, RVEServices } from '@react-xray/core'
 
-export interface CopyToClipboardPluginOptions {
-  /**
-   * Absolute path to the project root, used to convert absolute filesystem
-   * paths (React 18 / _debugSource) to relative paths.
-   * Not needed for Vite dev URLs — the relative path is extracted from the URL.
-   */
-  root?: string
-}
-
 function ClipboardIcon() {
   return (
     <svg
@@ -38,16 +29,13 @@ function ClipboardIcon() {
   )
 }
 
-export function CopyToClipboardPlugin(
-  options: CopyToClipboardPluginOptions = {},
-): RVEPlugin {
-  const { root } = options
-
+export function CopyToClipboardPlugin(): RVEPlugin {
   return {
     name: 'copy-to-clipboard',
-    actions(_ctx: ComponentContext, _services: RVEServices) {
+    actions(_ctx: ComponentContext, services: RVEServices) {
       const ctx = _ctx
       if (!ctx.source) return []
+      const root = services.root
 
       return [
         {

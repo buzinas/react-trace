@@ -12,13 +12,6 @@ export interface OpenEditorOptions {
    * @default 'vscode'
    */
   editor?: EditorPreset
-  /**
-   * Absolute path to the project root.
-   * Only needed for React 19 + Vite when source map paths are relative
-   * (e.g. /src/App.tsx). Not required for React 18 (absolute paths from
-   * _debugSource) or Vite's /@fs/ convention.
-   */
-  root?: string
 }
 const EDITOR_LABELS: Record<EditorPreset, string> = {
   vscode: 'VS Code',
@@ -76,13 +69,15 @@ function OpenInEditorIcon() {
     </svg>
   )
 }
-export function OpenEditorPlugin(options: OpenEditorOptions = {}): RVEPlugin {
-  const { editor = 'vscode', root } = options
+export function OpenEditorPlugin({
+  editor = 'vscode',
+}: OpenEditorOptions = {}): RVEPlugin {
   const editorLabel = EDITOR_LABELS[editor]
   return {
     name: 'open-editor',
-    actions(ctx: ComponentContext, _services: RVEServices) {
+    actions(ctx: ComponentContext, services: RVEServices) {
       if (!ctx.source) return []
+      const root = services.root
       return [
         {
           id: 'open-in-editor',

@@ -88,28 +88,12 @@ function ToolbarIconWrapper() {
 }
 
 // ---------------------------------------------------------------------------
-// Public plugin options
-// ---------------------------------------------------------------------------
-
-export interface CommentsPluginOptions {
-  /**
-   * Absolute path to the project root, used to convert absolute filesystem
-   * paths (React 18 / _debugSource) to relative paths.
-   * Not needed for Vite dev URLs — the relative path is extracted from the URL.
-   */
-  root?: string
-}
-
-// ---------------------------------------------------------------------------
 // CommentsPlugin
 // ---------------------------------------------------------------------------
 
-export function CommentsPlugin(options: CommentsPluginOptions = {}): RVEPlugin {
-  const { root } = options
-
+export function CommentsPlugin(): RVEPlugin {
   // Mount overlays eagerly (idempotent — safe to call on every factory call)
   ensureOverlayMounted()
-  setPluginRoot(root)
 
   return {
     name: 'comments',
@@ -125,8 +109,11 @@ export function CommentsPlugin(options: CommentsPluginOptions = {}): RVEPlugin {
       },
     ],
 
-    actions(ctx: ComponentContext, _services: RVEServices) {
+    actions(ctx: ComponentContext, services: RVEServices) {
       if (!ctx.source) return []
+      const root = services.root
+      // Keep store in sync — called on every action render, idempotent
+      setPluginRoot(root)
 
       return [
         {

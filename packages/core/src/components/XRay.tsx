@@ -9,12 +9,15 @@ import { ActionPanel } from './ActionPanel'
 import { Overlay } from './Overlay'
 import { Toolbar } from './Toolbar'
 
-const services: RVEServices = { fs: fileSystemService }
-
 /** How long Cmd/Ctrl+X must be held before the inspector latches on */
 const LONGPRESS_MS = 600
 
-export function XRay({ plugins = [], position = 'bottom-right' }: XRayProps) {
+export function XRay({
+  plugins = [],
+  position = 'bottom-right',
+  root,
+}: XRayProps) {
+  const services: RVEServices = { fs: fileSystemService, root }
   const [enabled, setEnabled] = useState(false)
 
   const [hoveredContext, setHoveredContext] = useState<ComponentContext | null>(

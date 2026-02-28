@@ -52,6 +52,8 @@ export interface FileSystemService {
 
 export interface RVEServices {
   fs: FileSystemService
+  /** Absolute path to the project root — passed via <XRay root="..." /> */
+  root?: string
 }
 
 export interface ToolbarItem {
@@ -89,4 +91,6 @@ export interface RVEPlugin {
 export interface XRayProps {
   plugins?: RVEPlugin[]
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
+  /** Absolute path to the project root, forwarded to all plugins via services.root */
+  root?: string
 }
