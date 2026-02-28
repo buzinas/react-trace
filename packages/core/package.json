@@ -24,6 +24,7 @@
     "build": "tsdown",
     "dev": "tsdown --watch --no-clean",
     "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit",
     "lint": "oxlint src"
   },
   "dependencies": {

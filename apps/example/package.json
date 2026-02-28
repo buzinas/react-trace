@@ -5,6 +5,7 @@
     "build": "tsc -b && vite build",
     "dev": "VITE_ROOT=$(pwd) vite",
     "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
     "lint": "oxlint src"
   },
   "dependencies": {
