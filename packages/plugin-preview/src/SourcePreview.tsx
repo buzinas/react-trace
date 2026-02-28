@@ -147,6 +147,7 @@ export function SourcePreview({
             )
             editor.addCommand(monaco.KeyCode.Escape, () => setExpanded(false))
           }
+          editor.updateOptions({ theme })
 
           const key = cleanPath(source.fileName)
           const uri = pathToUri(monaco, key)

@@ -1,7 +1,7 @@
 import { loader } from '@monaco-editor/react'
 import type { Monaco } from '@monaco-editor/react'
 import { shikiToMonaco } from '@shikijs/monaco'
-import { createHighlighter } from 'shiki'
+import { bundledThemes, createHighlighter } from 'shiki'
 
 // Kick off the Monaco CDN download as soon as the plugin module is imported
 loader.init()
@@ -9,7 +9,7 @@ loader.init()
 export const langs = ['typescript', 'javascript', 'graphql', 'css']
 
 export const highlighterPromise = createHighlighter({
-  themes: ['one-dark-pro'],
+  themes: Object.values(bundledThemes),
   langs,
 })
 
