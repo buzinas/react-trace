@@ -95,12 +95,55 @@ export async function resolveSource(
   }
 }
 
+const FiberTags = {
+  FunctionComponent: 0,
+  ClassComponent: 1,
+  IndeterminateComponent: 2,
+  HostRoot: 3,
+  HostPortal: 4,
+  HostComponent: 5,
+  HostText: 6,
+  Fragment: 7,
+  Mode: 8,
+  ContextConsumer: 9,
+  ContextProvider: 10,
+  ForwardRef: 11,
+  Profiler: 12,
+  SuspenseComponent: 13,
+  MemoComponent: 14,
+  SimpleMemoComponent: 15,
+  LazyComponent: 16,
+  IncompleteClassComponent: 17,
+  DehydratedFragment: 18,
+  SuspenseListComponent: 19,
+  ScopeComponent: 21,
+  OffscreenComponent: 22,
+  LegacyHiddenComponent: 23,
+  CacheComponent: 24,
+  TracingMarkerComponent: 25,
+} as const
+
+type FiberTag = (typeof FiberTags)[keyof typeof FiberTags]
+
+// Uncomment for debugging purposes
+// const FiberTagNames = Object.fromEntries(
+//   Object.entries(FiberTags).map(([k, v]) => [v, k]),
+// ) as Record<FiberTag, keyof typeof FiberTags>
+
 // Fiber tags for React component types (React 19)
-// 0=FunctionComponent, 1=ClassComponent, 11=ForwardRef, 14=MemoComponent, 15=SimpleMemoComponent
-const COMPONENT_TAGS = new Set([0, 1, 11, 14, 15])
+const COMPONENT_TAGS = [
+  FiberTags.FunctionComponent,
+  FiberTags.ClassComponent,
+  FiberTags.IndeterminateComponent,
+  FiberTags.SuspenseComponent,
+  FiberTags.ForwardRef,
+  FiberTags.MemoComponent,
+  FiberTags.SimpleMemoComponent,
+  FiberTags.LazyComponent,
+]
 
 interface ReactFiber {
-  tag: number
+  tag: FiberTag
   type: ComponentType
   memoizedProps: Record<string, unknown>
   /** React 19: Error object captured at JSX creation time, stack contains the callsite */
@@ -109,6 +152,9 @@ interface ReactFiber {
   _debugSource: ComponentSource | null
   _debugOwner: ReactFiber | null
   return: ReactFiber | null
+  stateNode?: HTMLElement | null
+  child: ReactFiber | null
+  sibling: ReactFiber | null
 }
 
 type ComponentType =
@@ -241,32 +287,6 @@ function isContentFromProps(
 }
 
 /**
- * Returns the DOM text node under the given viewport coordinates, or null if
- * the cursor is over an element rather than a text node.
- *
- * Uses the standard `caretPositionFromPoint` API (Chrome 128+, Firefox, Safari 17.4+),
- * with `caretRangeFromPoint` as a fallback for older browsers.
- */
-function getTextNodeAtPoint(x: number, y: number): Text | null {
-  // Standard (replaces the deprecated caretRangeFromPoint)
-  if (typeof document.caretPositionFromPoint === 'function') {
-    const pos = document.caretPositionFromPoint(x, y)
-    if (pos?.offsetNode.nodeType === Node.TEXT_NODE) {
-      return pos.offsetNode as Text
-    }
-    return null
-  }
-  // Fallback for browsers without caretPositionFromPoint
-  if (typeof document.caretRangeFromPoint === 'function') {
-    const range = document.caretRangeFromPoint(x, y)
-    if (range?.startContainer.nodeType === Node.TEXT_NODE) {
-      return range.startContainer as Text
-    }
-  }
-  return null
-}
-
-/**
  * Given a DOM element, returns the ComponentContext describing the nearest
  * React component that rendered it — including display name, breadcrumb path,
  * source location (definition file), and current props.
@@ -299,24 +319,24 @@ export function getComponentContext(
   // e.g. hovering <code> inside <p> inside <Card>:
   //   raw  → ['code', 'p', 'Card']
   //   display → ['Card', 'p', 'code']
-  const parts: Array<{ source: ComponentSource | null; names: string[] }> = []
   let fiber: ReactFiber | null = domFiber
+  const parts: Array<{ source: ComponentSource | null; names: string[] }> = [
+    { source: getSource(fiber), names: [] },
+  ]
   let i = 0
 
   while (fiber) {
-    if (!parts[i]) {
-      parts[i] = { source: getSource(fiber), names: [] }
-    }
-
     if (fiber.tag === 5 && typeof fiber.type === 'string') {
       // Host element (div, p, code, …)
       parts[i]!.names.push(fiber.type)
-    } else if (COMPONENT_TAGS.has(fiber.tag)) {
+    } else if (
+      COMPONENT_TAGS.includes(fiber.tag as (typeof COMPONENT_TAGS)[number])
+    ) {
       const name = getDisplayName(fiber.type)
       if (name !== 'Unknown' && name !== 'Anonymous') {
         parts[i]!.names.push(name)
       }
-      i++
+      parts[++i] = { source: getSource(fiber), names: [name] }
     }
     fiber = fiber.return
   }
@@ -335,6 +355,14 @@ export function getComponentContext(
     names: part.names.reverse(),
   }))
 
+  // deduplicate same files
+  const files = all.reduce<typeof all>((acc, part) => {
+    if (!part.source) return acc
+    const file = part.source.fileName
+    if (!acc.some((p) => p.source?.fileName === file)) acc.push(part)
+    return acc
+  }, [])
+
   // If there are too many intermediate nodes, keep the component name (first)
   // and the MAX_BREADCRUMB-1 items closest to the hovered element (last).
   const breadcrumb = parts[0]!.names
@@ -346,7 +374,7 @@ export function getComponentContext(
     displayName,
     breadcrumb,
     source,
-    all,
+    all: files,
     props: domFiber.memoizedProps ?? {},
   }
 }
