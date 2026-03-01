@@ -49,7 +49,8 @@
     "lint": "oxlint src"
   },
   "dependencies": {
-    "@opencode-ai/sdk": "^1.2.16"
+    "@opencode-ai/sdk": "^1.2.16",
+    "jotai": "^2.18.0"
   },
   "devDependencies": {
     "@react-xray/core": "workspace:*",

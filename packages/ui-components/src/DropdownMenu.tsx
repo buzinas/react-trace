@@ -1,3 +1,4 @@
+import type { MenuItemState } from '@base-ui/react/menu'
 import { Menu } from '@base-ui/react/menu'
 import type { ComponentProps, CSSProperties } from 'react'
 
@@ -11,7 +12,7 @@ interface StyledItemProps extends Omit<
   ComponentProps<typeof Menu.Item>,
   'style'
 > {
-  style?: CSSProperties
+  style?: CSSProperties | ((state: MenuItemState) => CSSProperties)
 }
 
 function StyledItem({ style: callerStyle, ...props }: StyledItemProps) {
@@ -30,7 +31,9 @@ function StyledItem({ style: callerStyle, ...props }: StyledItemProps) {
         fontFamily: 'system-ui, sans-serif',
         background: state.highlighted ? 'rgba(59,130,246,0.2)' : 'transparent',
         transition: 'background 0.1s',
-        ...callerStyle,
+        ...(typeof callerStyle === 'function'
+          ? callerStyle(state)
+          : callerStyle),
       })}
       {...props}
     />
@@ -54,3 +57,9 @@ export const DropdownMenu = {
   Item: StyledItem,
   Separator: StyledSeparator,
 }
+
+export type {
+  MenuRootProps as DropdownMenuRootProps,
+  MenuItemState as DropdownMenuItemState,
+} from '@base-ui/react/menu'
+export { StyledItemProps as DropdownMenuItemProps }

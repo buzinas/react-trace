@@ -15,6 +15,7 @@ export const Tooltip = () => null
 
 export const Button = () => null
 export const IconButton = () => null
+export const ToolbarButton = () => null
 export const PanelHeader = () => null
 export const Textarea = () => null
 export const Separator = () => null

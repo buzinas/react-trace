@@ -1,6 +1,4 @@
-// ---------------------------------------------------------------------------
-// Comment store
-// ---------------------------------------------------------------------------
+import { atom, createStore, useAtomValue, useSetAtom } from 'jotai'
 
 export interface CommentEntry {
   id: string
@@ -10,138 +8,115 @@ export interface CommentEntry {
   createdAt: number
 }
 
-const commentStore = new Map<string, CommentEntry>()
-const storeListeners = new Set<() => void>()
-let storeSnapshot: CommentEntry[] = []
-
-function notifyStore() {
-  storeListeners.forEach((fn) => fn())
-}
-
-export function subscribeStore(fn: () => void) {
-  storeListeners.add(fn)
-  return () => storeListeners.delete(fn)
-}
-
-export function getStoreSnapshot(): CommentEntry[] {
-  return storeSnapshot
-}
-
-export function addComment(entry: Omit<CommentEntry, 'id' | 'createdAt'>) {
-  const id = crypto.randomUUID()
-  const full: CommentEntry = { ...entry, id, createdAt: Date.now() }
-  commentStore.set(id, full)
-  storeSnapshot = [...commentStore.values()]
-  notifyStore()
-  return id
-}
-
-export function updateComment(id: string, text: string) {
-  const existing = commentStore.get(id)
-  if (!existing) return
-  commentStore.set(id, { ...existing, comment: text })
-  storeSnapshot = [...commentStore.values()]
-  notifyStore()
-}
-
-export function removeComment(id: string) {
-  commentStore.delete(id)
-  storeSnapshot = [...commentStore.values()]
-  notifyStore()
-}
-
-export function clearAllComments() {
-  commentStore.clear()
-  storeSnapshot = []
-  notifyStore()
-}
-
-// ---------------------------------------------------------------------------
-// Pending-comment state (tracks the in-progress "Add comment" flow)
-// ---------------------------------------------------------------------------
-
 export interface PendingComment {
   filePath: string
   lineNumber: number
   anchorEl: HTMLElement
 }
 
-let pendingComment: PendingComment | null = null
-const pendingListeners = new Set<() => void>()
-
-function notifyPending() {
-  pendingListeners.forEach((fn) => fn())
+interface CommentsSnapshot {
+  comments: CommentEntry[]
+  pending: PendingComment | null
 }
 
-export function subscribePending(fn: () => void) {
-  pendingListeners.add(fn)
-  return () => pendingListeners.delete(fn)
+type NewCommentEntry = Omit<CommentEntry, 'id' | 'createdAt'>
+
+interface CommentsStore {
+  getSnapshot(): CommentsSnapshot
+  addComment(entry: NewCommentEntry): string
+  updateComment(id: string, text: string): void
+  removeComment(id: string): void
+  clearAllComments(): void
+  setPending(value: PendingComment | null): void
 }
 
-export function getPendingSnapshot(): PendingComment | null {
-  return pendingComment
+const commentEntriesAtom = atom<CommentEntry[]>([])
+const pendingCommentAtom = atom<PendingComment | null>(null)
+
+const commentsSnapshotAtom = atom<CommentsSnapshot>((get) => ({
+  comments: get(commentEntriesAtom),
+  pending: get(pendingCommentAtom),
+}))
+
+const addCommentAtom = atom(null, (get, set, entry: NewCommentEntry) => {
+  const id = crypto.randomUUID()
+  const comment: CommentEntry = { ...entry, id, createdAt: Date.now() }
+
+  set(commentEntriesAtom, [...get(commentEntriesAtom), comment])
+
+  return id
+})
+
+const updateCommentAtom = atom(
+  null,
+  (get, set, payload: { id: string; text: string }) => {
+    set(
+      commentEntriesAtom,
+      get(commentEntriesAtom).map((comment) =>
+        comment.id === payload.id
+          ? { ...comment, comment: payload.text }
+          : comment,
+      ),
+    )
+  },
+)
+
+const removeCommentAtom = atom(null, (get, set, id: string) => {
+  set(
+    commentEntriesAtom,
+    get(commentEntriesAtom).filter((comment) => comment.id !== id),
+  )
+})
+
+const clearAllCommentsAtom = atom(null, (_get, set) => {
+  set(commentEntriesAtom, [])
+})
+
+export function createCommentsStore(
+  jotaiStore: ReturnType<typeof createStore> = createStore(),
+): CommentsStore {
+  return {
+    getSnapshot: () => jotaiStore.get(commentsSnapshotAtom),
+    addComment: (entry) => jotaiStore.set(addCommentAtom, entry),
+    updateComment: (id, text) => {
+      jotaiStore.set(updateCommentAtom, { id, text })
+    },
+    removeComment: (id) => {
+      jotaiStore.set(removeCommentAtom, id)
+    },
+    clearAllComments: () => {
+      jotaiStore.set(clearAllCommentsAtom)
+    },
+    setPending: (value) => {
+      jotaiStore.set(pendingCommentAtom, value)
+    },
+  }
 }
 
-export function setPending(value: PendingComment | null) {
-  pendingComment = value
-  notifyPending()
+function useCommentsSnapshot() {
+  return useAtomValue(commentsSnapshotAtom)
 }
 
-// ---------------------------------------------------------------------------
-// Toolbar menu open/close state
-// ---------------------------------------------------------------------------
-
-let menuOpen = false
-const menuListeners = new Set<() => void>()
-
-function notifyMenu() {
-  menuListeners.forEach((fn) => fn())
+export function useCommentEntries() {
+  return useCommentsSnapshot().comments
 }
 
-export function subscribeMenu(fn: () => void) {
-  menuListeners.add(fn)
-  return () => menuListeners.delete(fn)
+export function usePendingComment() {
+  return useCommentsSnapshot().pending
 }
 
-export function getMenuSnapshot(): boolean {
-  return menuOpen
-}
+export function useCommentsActions() {
+  const addComment = useSetAtom(addCommentAtom)
+  const updateComment = useSetAtom(updateCommentAtom)
+  const removeComment = useSetAtom(removeCommentAtom)
+  const clearAllComments = useSetAtom(clearAllCommentsAtom)
+  const setPending = useSetAtom(pendingCommentAtom)
 
-export function setMenuOpen(value: boolean) {
-  menuOpen = value
-  notifyMenu()
-}
-
-export function toggleMenu() {
-  setMenuOpen(!menuOpen)
-}
-
-// ---------------------------------------------------------------------------
-// XRay portal element ref — used by CommentsMenuOverlay as Popover.Portal container
-// ---------------------------------------------------------------------------
-
-export let xrayPortalEl: HTMLElement | null = null
-
-export function setXRayPortalEl(el: HTMLElement | null) {
-  xrayPortalEl = el
-}
-
-// ---------------------------------------------------------------------------
-// Toolbar button DOM ref — used by CommentsMenuOverlay to anchor itself
-// ---------------------------------------------------------------------------
-
-export let toolbarButtonEl: HTMLButtonElement | null = null
-
-export function setToolbarButtonEl(el: HTMLButtonElement | null) {
-  toolbarButtonEl = el
-}
-
-// ---------------------------------------------------------------------------
-// Plugin root path — set at plugin init, read by SendToOpencodeForm
-// ---------------------------------------------------------------------------
-
-export let pluginRoot: string | undefined
-
-export function setPluginRoot(root: string | undefined) {
-  pluginRoot = root
+  return {
+    addComment,
+    updateComment,
+    removeComment,
+    clearAllComments,
+    setPending,
+  }
 }

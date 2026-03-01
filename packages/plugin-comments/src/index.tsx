@@ -1,29 +1,29 @@
-import { resolveSource } from '@react-xray/core'
-import type { ComponentContext, RVEPlugin, RVEServices } from '@react-xray/core'
-import { ChatBubbleIcon } from '@react-xray/ui-components'
-import { useEffect, useRef, useSyncExternalStore } from 'react'
-
-import { ensureOverlayMounted } from './CommentsRoot'
 import {
-  getStoreSnapshot,
-  setPending,
-  setPluginRoot,
-  setToolbarButtonEl,
-  subscribeStore,
-  toggleMenu,
-} from './store'
-import { toRelativePath } from './utils'
+  resolveSource,
+  toRelativePath,
+  useClearSelectedContext,
+  useDeactivateInspector,
+  useProjectRoot,
+  useSelectedContext,
+  useSelectedSource,
+  useWidgetPortalContainer,
+  type RVEPlugin,
+} from '@react-xray/core'
+import {
+  ChatBubbleIcon,
+  DropdownMenu,
+  ToolbarButton,
+  Tooltip,
+} from '@react-xray/ui-components'
+import { useRef, useState } from 'react'
+
+import { CommentEditorOverlay } from './CommentEditor'
+import { CommentsMenu } from './CommentsMenu'
+import { useCommentEntries, useCommentsActions } from './store'
 
 export type { CommentEntry } from './store'
 
-// ---------------------------------------------------------------------------
-// CommentsToolbarIcon — chat bubble with live badge count
-// ---------------------------------------------------------------------------
-
-function CommentsToolbarIcon() {
-  const comments = useSyncExternalStore(subscribeStore, getStoreSnapshot)
-  const count = comments.length
-
+function CommentsToolbarIcon({ count }: { count: number }) {
   return (
     <span
       style={{
@@ -64,68 +64,92 @@ function CommentsToolbarIcon() {
   )
 }
 
-// ---------------------------------------------------------------------------
-// ToolbarIconWrapper — captures the parent <button> ref for menu positioning
-// ---------------------------------------------------------------------------
-
-function ToolbarIconWrapper() {
-  const wrapperRef = useRef<HTMLSpanElement>(null)
-
-  useEffect(() => {
-    if (!wrapperRef.current) return
-    let el: HTMLElement | null = wrapperRef.current
-    while (el && el.tagName !== 'BUTTON') el = el.parentElement
-    if (el instanceof HTMLButtonElement) setToolbarButtonEl(el)
-  })
+function CommentsToolbar() {
+  const comments = useCommentEntries()
+  const portalContainer = useWidgetPortalContainer()
+  const deactivateInspector = useDeactivateInspector()
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const [isOpen, setIsOpen] = useState(false)
+  const count = comments.length
 
   return (
-    <span ref={wrapperRef}>
-      <CommentsToolbarIcon />
-    </span>
+    <>
+      <Tooltip
+        label="Comments"
+        container={portalContainer}
+        render={<ToolbarButton ref={buttonRef} />}
+        aria-label="Comments"
+        onClick={() => {
+          deactivateInspector()
+          setIsOpen((open) => !open)
+        }}
+      >
+        <CommentsToolbarIcon count={count} />
+      </Tooltip>
+
+      <DropdownMenu.Root open={isOpen} onOpenChange={setIsOpen}>
+        <DropdownMenu.Portal container={portalContainer}>
+          <DropdownMenu.Positioner
+            anchor={buttonRef.current}
+            side="top"
+            align="end"
+            sideOffset={8}
+            collisionPadding={8}
+            positionMethod="fixed"
+            style={{ zIndex: 9999999, pointerEvents: 'auto' }}
+          >
+            <DropdownMenu.Popup>
+              <CommentsMenu onClose={() => setIsOpen(false)} />
+            </DropdownMenu.Popup>
+          </DropdownMenu.Positioner>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
+
+      <CommentEditorOverlay />
+    </>
   )
 }
 
-// ---------------------------------------------------------------------------
-// CommentsPlugin
-// ---------------------------------------------------------------------------
+function CommentsActionPanel() {
+  const selectedContext = useSelectedContext()
+  const selectedSource = useSelectedSource()
+  const root = useProjectRoot()
+  const { setPending } = useCommentsActions()
+  const clearSelectedContext = useClearSelectedContext()
+  const deactivateInspector = useDeactivateInspector()
+
+  if (!selectedContext || !selectedSource) return null
+
+  const handleAddComment = async () => {
+    const { fileName, lineNumber } = await resolveSource(selectedSource)
+    const filePath = toRelativePath(fileName, root)
+
+    setPending({
+      filePath,
+      lineNumber,
+      anchorEl: selectedContext.element,
+    })
+    clearSelectedContext()
+    deactivateInspector()
+  }
+
+  return (
+    <DropdownMenu.Item
+      closeOnClick
+      onClick={() => handleAddComment().catch(() => {})}
+    >
+      <span style={{ display: 'flex', alignItems: 'center' }}>
+        <ChatBubbleIcon />
+      </span>
+      Add comment
+    </DropdownMenu.Item>
+  )
+}
 
 export function CommentsPlugin(): RVEPlugin {
-  // Mount overlays eagerly (idempotent — safe to call on every factory call)
-  ensureOverlayMounted()
-
   return {
     name: 'comments',
-
-    toolbarItems: [
-      {
-        id: 'comments',
-        icon: <ToolbarIconWrapper />,
-        label: 'Comments',
-        onClick() {
-          toggleMenu()
-        },
-      },
-    ],
-
-    actions(ctx: ComponentContext, services: RVEServices) {
-      if (!ctx.source) return []
-      const root = services.root
-      // Keep store in sync — called on every action render, idempotent
-      setPluginRoot(root)
-
-      return [
-        {
-          id: 'add-comment',
-          label: 'Add comment',
-          icon: <ChatBubbleIcon />,
-          async onClick(ctx: ComponentContext) {
-            const { fileName, lineNumber } = await resolveSource(ctx.source!)
-            const filePath = toRelativePath(fileName, root)
-            setPending({ filePath, lineNumber, anchorEl: ctx.element })
-            return true
-          },
-        },
-      ]
-    },
+    toolbar: CommentsToolbar,
+    actionPanel: CommentsActionPanel,
   }
 }

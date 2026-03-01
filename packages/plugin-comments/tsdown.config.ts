@@ -13,6 +13,7 @@ export default defineConfig({
       'react-dom/client',
       '@react-xray/core',
       '@react-xray/ui-components',
+      'jotai',
     ],
   },
   sourcemap: true,

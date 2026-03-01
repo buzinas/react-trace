@@ -3,7 +3,7 @@ import type { Session } from '@opencode-ai/sdk'
 import { Button, Select, Textarea } from '@react-xray/ui-components'
 import { useEffect, useRef, useState } from 'react'
 
-import { clearAllComments, getStoreSnapshot } from './store'
+import type { CommentEntry } from './store'
 import { formatCommentNote } from './utils'
 
 // ---------------------------------------------------------------------------
@@ -20,9 +20,13 @@ type Status =
 
 export function SendToOpencodeForm({
   root,
+  comments,
+  onClearComments,
   onDone,
 }: {
   root: string | undefined
+  comments: CommentEntry[]
+  onClearComments(): void
   onDone(): void
 }) {
   const [sessions, setSessions] = useState<Session[]>([])
@@ -58,10 +62,9 @@ export function SendToOpencodeForm({
         setStatus('error')
         setErrorMsg('Could not connect to OpenCode. Is it running?')
       })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [client])
 
   const handleSend = async () => {
-    const comments = getStoreSnapshot()
     if (!comments.length) return
 
     setStatus('sending')
@@ -142,7 +145,7 @@ export function SendToOpencodeForm({
         body: { parts },
       })
 
-      clearAllComments()
+      onClearComments()
       setStatus('sent')
       setTimeout(onDone, 1200)
     } catch (e) {
@@ -189,6 +192,7 @@ export function SendToOpencodeForm({
         flexDirection: 'column',
         gap: 8,
       }}
+      onKeyDown={(e) => e.stopPropagation()}
     >
       {/* Session selector */}
       <div>

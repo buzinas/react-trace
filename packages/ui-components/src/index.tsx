@@ -9,6 +9,9 @@ export type { ButtonProps } from './Button'
 export { IconButton } from './IconButton'
 export type { IconButtonProps } from './IconButton'
 
+export { ToolbarButton } from './ToolbarButton'
+export type { ToolbarButtonProps } from './ToolbarButton'
+
 export { PanelHeader } from './PanelHeader'
 export type { PanelHeaderProps } from './PanelHeader'
 
@@ -35,5 +38,10 @@ export {
 export { Popover, panelPopupStyle } from './Popover'
 
 export { DropdownMenu } from './DropdownMenu'
+export type {
+  DropdownMenuRootProps,
+  DropdownMenuItemProps,
+  DropdownMenuItemState,
+} from './DropdownMenu'
 
 export { Select } from './Select'

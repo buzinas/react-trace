@@ -1,6 +1,8 @@
+import { useProjectRoot } from '@react-xray/core'
 import {
   Button,
   ClipboardIcon,
+  DropdownMenu,
   IconButton,
   OpencodeIcon,
   PanelHeader,
@@ -8,64 +10,24 @@ import {
   TrashIcon,
   XIcon,
 } from '@react-xray/ui-components'
-import type { CSSProperties } from 'react'
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { SendToOpencodeForm } from './SendToOpencode'
 import {
-  clearAllComments,
   type CommentEntry,
-  getMenuSnapshot,
-  getStoreSnapshot,
-  pluginRoot,
-  removeComment,
-  setMenuOpen,
-  subscribeMenu,
-  subscribeStore,
-  toolbarButtonEl,
-  updateComment,
+  useCommentEntries,
+  useCommentsActions,
 } from './store'
 import { formatCommentNote } from './utils'
-
-// ---------------------------------------------------------------------------
-// HoverButton — stateful button with hover-dependent style
-// ---------------------------------------------------------------------------
-
-function HoverButton({
-  children,
-  style,
-  onClick,
-  color,
-}: {
-  children: React.ReactNode
-  style: (hover: boolean) => React.CSSProperties
-  onClick(): void
-  color?: string
-}) {
-  const [hovered, setHovered] = useState(false)
-  return (
-    <button
-      type="button"
-      style={{ ...style(hovered), color: color ?? '#d4d4d8' }}
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {children}
-    </button>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// CommentRow
-// ---------------------------------------------------------------------------
 
 function CommentRow({
   comment,
   onDelete,
+  onUpdate,
 }: {
   comment: CommentEntry
   onDelete(): void
+  onUpdate(text: string): void
 }) {
   const [hovered, setHovered] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -89,8 +51,7 @@ function CommentRow({
 
   const handleSave = () => {
     const trimmed = draft.trim()
-    if (trimmed && trimmed !== comment.comment)
-      updateComment(comment.id, trimmed)
+    if (trimmed && trimmed !== comment.comment) onUpdate(trimmed)
     setEditing(false)
   }
 
@@ -143,7 +104,7 @@ function CommentRow({
             title="Remove comment"
             style={{ padding: 0, flexShrink: 0 }}
           >
-            <XIcon />
+            <XIcon size={12} />
           </IconButton>
         )}
       </div>
@@ -204,105 +165,45 @@ function CommentRow({
   )
 }
 
-const menuItemStyle = (hover: boolean): CSSProperties => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: 8,
-  padding: '7px 12px',
-  cursor: 'pointer',
-  fontSize: 12,
-  color: '#d4d4d8',
-  fontFamily: 'system-ui, sans-serif',
-  background: hover ? 'rgba(59,130,246,0.15)' : 'transparent',
-  borderRadius: 4,
-  userSelect: 'none',
-  border: 'none',
-  width: '100%',
-  textAlign: 'left',
-  boxSizing: 'border-box',
-  transition: 'background 0.1s',
-})
-
-export function CommentsMenuOverlay() {
-  const isOpen = useSyncExternalStore(subscribeMenu, getMenuSnapshot)
-  const comments = useSyncExternalStore(subscribeStore, getStoreSnapshot)
-  const menuRef = useRef<HTMLDivElement>(null)
+export function CommentsMenu({ onClose }: { onClose(): void }) {
+  const root = useProjectRoot()
+  const comments = useCommentEntries()
+  const { clearAllComments, removeComment, updateComment } =
+    useCommentsActions()
   const [copyFeedback, setCopyFeedback] = useState(false)
   const [showSendForm, setShowSendForm] = useState(false)
 
-  // Close on outside click or Escape
   useEffect(() => {
-    if (!isOpen) return
-
-    function onPointerDown(e: PointerEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false)
-      }
-    }
-
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') setMenuOpen(false)
-    }
-
-    document.addEventListener('pointerdown', onPointerDown)
-    document.addEventListener('keydown', onKeyDown)
-    return () => {
-      document.removeEventListener('pointerdown', onPointerDown)
-      document.removeEventListener('keydown', onKeyDown)
-    }
-  }, [isOpen])
-
-  if (!isOpen) return null
-
-  // Anchor to the toolbar button; fall back to a sensible fixed position
-  let menuStyle: React.CSSProperties = {
-    position: 'fixed',
-    bottom: 72,
-    right: 32,
-    zIndex: 9999999,
-  }
-
-  if (toolbarButtonEl) {
-    const rect = toolbarButtonEl.getBoundingClientRect()
-    menuStyle = {
-      position: 'fixed',
-      bottom: window.innerHeight - rect.top + 8,
-      right: window.innerWidth - rect.right,
-      zIndex: 9999999,
-    }
-  }
+    if (!comments.length) setShowSendForm(false)
+  }, [comments.length])
 
   const handleCopy = () => {
     if (!comments.length) return
     const text = comments
       .map((c) => formatCommentNote(c.filePath, c.lineNumber, c.comment))
       .join('\n\n')
-    navigator.clipboard.writeText(text).then(() => {
-      setCopyFeedback(true)
-      setTimeout(() => setCopyFeedback(false), 1500)
-    })
+
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setCopyFeedback(true)
+        setTimeout(() => setCopyFeedback(false), 1500)
+      })
+      .catch(() => {})
   }
 
   const handleClear = () => {
     clearAllComments()
-    setMenuOpen(false)
+    onClose()
   }
 
   return (
     <div
-      ref={menuRef}
       style={{
-        ...menuStyle,
         width: 320,
-        background: '#18181b',
-        border: '1px solid #27272a',
-        borderRadius: 8,
-        boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
-        pointerEvents: 'auto',
         overflow: 'hidden',
       }}
       onClick={(e) => e.stopPropagation()}
-      onKeyDown={(e) => e.stopPropagation()}
     >
       <PanelHeader
         title={
@@ -323,13 +224,12 @@ export function CommentsMenuOverlay() {
           </>
         }
         actionsRender={
-          <IconButton onClick={() => setMenuOpen(false)} title="Close">
+          <IconButton onClick={onClose} title="Close">
             <XIcon />
           </IconButton>
         }
       />
 
-      {/* Comment list */}
       {comments.length === 0 ? (
         <div
           style={{
@@ -345,50 +245,54 @@ export function CommentsMenuOverlay() {
           No comments yet. Inspect an element and click &quot;Add comment&quot;.
         </div>
       ) : (
-        <div style={{ maxHeight: 280, overflowY: 'auto', paddingBlock: 6 }}>
+        <div
+          style={{ maxHeight: 280, overflowY: 'auto', paddingBlock: 6 }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
           {comments.map((c) => (
             <CommentRow
               key={c.id}
               comment={c}
               onDelete={() => removeComment(c.id)}
+              onUpdate={(text) => updateComment({ id: c.id, text })}
             />
           ))}
         </div>
       )}
 
-      {/* Actions */}
       {comments.length > 0 && (
         <>
           <div style={{ borderTop: '1px solid #27272a', margin: '4px 0 0' }} />
           {showSendForm ? (
             <SendToOpencodeForm
-              root={pluginRoot}
+              root={root}
+              comments={comments}
+              onClearComments={clearAllComments}
               onDone={() => {
                 setShowSendForm(false)
-                setMenuOpen(false)
+                onClose()
               }}
             />
           ) : (
             <div style={{ padding: '4px 6px' }}>
-              <HoverButton
-                style={menuItemStyle}
+              <DropdownMenu.Item
+                closeOnClick={false}
                 onClick={() => setShowSendForm(true)}
               >
                 <OpencodeIcon size={13} />
                 Send to OpenCode
-              </HoverButton>
-              <HoverButton style={menuItemStyle} onClick={handleCopy}>
+              </DropdownMenu.Item>
+              <DropdownMenu.Item closeOnClick={false} onClick={handleCopy}>
                 <ClipboardIcon />
                 {copyFeedback ? 'Copied!' : 'Copy to clipboard'}
-              </HoverButton>
-              <HoverButton
-                style={menuItemStyle}
+              </DropdownMenu.Item>
+              <DropdownMenu.Item
+                style={{ color: '#ef4444' }}
                 onClick={handleClear}
-                color="#ef4444"
               >
                 <TrashIcon />
                 Clear all
-              </HoverButton>
+              </DropdownMenu.Item>
             </div>
           )}
         </>

@@ -1,5 +1,9 @@
 import Editor from '@monaco-editor/react'
-import type { ComponentContext, RVEServices } from '@react-xray/core'
+import {
+  useProjectRoot,
+  useSelectedSource,
+  useWidgetServices,
+} from '@react-xray/core'
 import {
   Button,
   CollapseIcon,
@@ -22,26 +26,18 @@ import {
 } from './styles'
 import { cleanPath, detectLanguage, pathToUri, shortName } from './utils'
 
-// ---------------------------------------------------------------------------
-// SourcePreview
-// ---------------------------------------------------------------------------
-
 type LoadState = 'needs-access' | 'loading' | 'ready'
 
 export function SourcePreview({
-  ctx,
-  services,
   editable,
   theme,
-  root,
 }: {
-  ctx: ComponentContext
-  services: RVEServices
   editable: boolean
   theme: string
-  root?: string
 }) {
-  const source = ctx.source
+  const root = useProjectRoot()
+  const services = useWidgetServices()
+  const source = useSelectedSource()
   const [expanded, setExpanded] = useState(false)
   const [dirty, setDirty] = useState(false)
   const [loadState, setLoadState] = useState<LoadState>(
@@ -63,8 +59,10 @@ export function SourcePreview({
   const handleSave = () => {
     const val = editorRef.current?.getValue()
     if (val != null) {
-      services.fs.write(currentPath, val)
-      setDirty(false)
+      services.fs
+        .write(currentPath, val)
+        .then(() => setDirty(false))
+        .catch(() => {})
     }
   }
 
@@ -151,29 +149,32 @@ export function SourcePreview({
 
           const key = cleanPath(source.fileName)
           const uri = pathToUri(monaco, key)
-          services.fs.read(key).then((fileContent) => {
-            if (!monaco.editor.getModel(uri)) {
-              monaco.editor.createModel(fileContent, detectLanguage(key), uri)
-            }
-            const model = monaco.editor.getModel(uri)
-            if (model) {
-              const { lineNumber } = source
-              editor.setModel(model)
-              editor.revealLineInCenter(lineNumber)
+          services.fs
+            .read(key)
+            .then((fileContent) => {
+              if (!monaco.editor.getModel(uri)) {
+                monaco.editor.createModel(fileContent, detectLanguage(key), uri)
+              }
+              const model = monaco.editor.getModel(uri)
+              if (model) {
+                const { lineNumber } = source
+                editor.setModel(model)
+                editor.revealLineInCenter(lineNumber)
 
-              ensureHighlightStyle()
-              const highlight = editor.createDecorationsCollection()
-              highlight.set([
-                {
-                  range: new monaco.Range(lineNumber, 1, lineNumber, 1),
-                  options: {
-                    isWholeLine: true,
-                    className: 'xray-highlighted-line',
+                ensureHighlightStyle()
+                const highlight = editor.createDecorationsCollection()
+                highlight.set([
+                  {
+                    range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+                    options: {
+                      isWholeLine: true,
+                      className: 'xray-highlighted-line',
+                    },
                   },
-                },
-              ])
-            }
-          })
+                ])
+              }
+            })
+            .catch(() => {})
         }}
         onChange={() => setDirty(true)}
         loading={

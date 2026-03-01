@@ -1,6 +1,6 @@
 import { Toolbar as ToolbarPrimitive } from '@base-ui/react/toolbar'
 import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip'
-import { Tooltip } from '@react-xray/ui-components'
+import { ToolbarButton, Tooltip } from '@react-xray/ui-components'
 import { useAtom, useAtomValue } from 'jotai'
 import { Fragment } from 'react'
 
@@ -35,18 +35,6 @@ const POSITION_STYLES: Record<
 }
 
 const TOGGLE_SHORTCUT = IS_MAC ? 'Long-press ⌘X' : 'Long-press Ctrl+X'
-
-const toolbarButtonBase: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: 32,
-  height: 32,
-  borderRadius: 7,
-  cursor: 'pointer',
-  padding: 0,
-  transition: 'background 0.15s, border-color 0.15s',
-}
 
 export function Toolbar({
   selectedContext,
@@ -83,18 +71,9 @@ export function Toolbar({
           label="Inspector"
           shortcut={isInspectorActive ? 'Esc to exit' : TOGGLE_SHORTCUT}
           container={portalContainer}
-          render={
-            <ToolbarPrimitive.Button
-              onClick={() => setInspectorActive((prev) => !prev)}
-            />
-          }
+          render={<ToolbarButton render={<ToolbarPrimitive.Button />} />}
           aria-label="Inspector"
-          style={{
-            ...toolbarButtonBase,
-            background: 'transparent',
-            border: 0,
-            outline: 'none',
-          }}
+          onClick={() => setInspectorActive((prev) => !prev)}
         >
           <img
             src={logo}
@@ -129,16 +108,10 @@ export function Toolbar({
                     label={resolvedLabel}
                     container={portalContainer}
                     render={
-                      <ToolbarPrimitive.Button
-                        onClick={() => {
-                          setInspectorActive(false)
-                          item.onClick(selectedContext, services)
-                        }}
-                      />
+                      <ToolbarButton render={<ToolbarPrimitive.Button />} />
                     }
                     aria-label={item.ariaLabel ?? item.id}
                     style={{
-                      ...toolbarButtonBase,
                       background: active
                         ? 'rgba(59,130,246,0.2)'
                         : 'transparent',
@@ -146,7 +119,10 @@ export function Toolbar({
                         ? '1px solid rgba(59,130,246,0.5)'
                         : '1px solid transparent',
                       color: '#fafafa',
-                      fontSize: 14,
+                    }}
+                    onClick={() => {
+                      setInspectorActive(false)
+                      item.onClick(selectedContext, services)
                     }}
                   >
                     {resolvedIcon}
