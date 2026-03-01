@@ -56,6 +56,9 @@ export interface RVEServices {
   root?: string
 }
 
+/**
+ * Legacy compatibility toolbar button. Prefer `RVEPlugin.toolbar`.
+ */
 export interface ToolbarItem {
   id: string
   /** ReactNode, or a render function that receives services for reactive icons */
@@ -68,6 +71,9 @@ export interface ToolbarItem {
   onClick(ctx: ComponentContext | null, services: RVEServices): void
 }
 
+/**
+ * Legacy compatibility action row. Prefer `RVEPlugin.actionPanel`.
+ */
 export interface Action {
   id: string
   label: string
@@ -80,10 +86,27 @@ export interface Action {
 
 export interface RVEPlugin {
   name: string
+  /**
+   * Wave 2 primary path: plugin-owned toolbar UI rendered directly inside the
+   * core toolbar. Components should read shared state through the public hooks.
+   */
+  toolbar?: ComponentType
+  /**
+   * Wave 2 primary path: plugin-owned UI rendered directly inside each action
+   * panel entry submenu. Direct renderers receive no per-entry props; read
+   * shared state through the public hooks instead. Use `useSelectedSource()`
+   * for the current row's source, plus shared hooks such as
+   * `useSelectedContext()` and `useWidgetServices()` for widget-wide state.
+   */
+  actionPanel?: ComponentType
+  /** @deprecated Narrow compatibility bridge for pre-Wave 2 toolbar plugins. */
   toolbarItems?: ToolbarItem[]
-  /** Return contextual actions for the currently selected component */
+  /** @deprecated Narrow compatibility bridge for pre-Wave 2 action rows. */
   actions?: (ctx: ComponentContext, services: RVEServices) => Action[]
   /**
+   * @deprecated Narrow compatibility bridge for pre-Wave 2 inline action-panel UI.
+   * Prefer `actionPanel`, which is prop-less and reads shared state via hooks.
+   *
    * An optional React component rendered inside the entry submenu popup,
    * above the action buttons. Receives the per-entry ctx (ctx.source is the
    * specific entry's source, not the top-level one). Must be a component type

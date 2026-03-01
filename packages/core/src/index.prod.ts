@@ -33,7 +33,11 @@ const NOOP_WIDGET_SERVICES: RVEServices = {
 export const XRay = () => null
 
 export const useProjectRoot = () => null
+export const useInspectorActive = () => false
+export const useDeactivateInspector = () => NOOP
 export const useSelectedContext = () => null
+export const useClearSelectedContext = () => NOOP
+export const useSelectedSource = () => null
 export const useWidgetPortalContainer = () => null
 export const useWidgetServices = () => NOOP_WIDGET_SERVICES
 

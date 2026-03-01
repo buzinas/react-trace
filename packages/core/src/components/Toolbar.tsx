@@ -1,11 +1,13 @@
 import { Toolbar as ToolbarPrimitive } from '@base-ui/react/toolbar'
 import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip'
 import { Tooltip } from '@react-xray/ui-components'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
+import { Fragment } from 'react'
 
 import logo from '../logo.png'
 import { IS_MAC } from '../platform'
-import { portalContainerAtom } from '../store'
+import { getToolbarPluginEntries } from '../pluginRendering'
+import { inspectorActiveAtom, portalContainerAtom } from '../store'
 import type {
   ComponentContext,
   RVEPlugin,
@@ -14,12 +16,10 @@ import type {
 } from '../types'
 
 interface ToolbarProps {
-  isActive: boolean
   selectedContext: ComponentContext | null
   plugins: RVEPlugin[]
   services: RVEServices
   position: NonNullable<XRayProps['position']>
-  onToggle(value?: boolean): void
 }
 
 const DEFAULT_SPACING = 32
@@ -49,15 +49,14 @@ const toolbarButtonBase: React.CSSProperties = {
 }
 
 export function Toolbar({
-  isActive,
   selectedContext,
   plugins,
   services,
   position,
-  onToggle,
 }: ToolbarProps) {
+  const [isInspectorActive, setInspectorActive] = useAtom(inspectorActiveAtom)
   const portalContainer = useAtomValue(portalContainerAtom)
-  const toolbarItems = plugins.flatMap((p) => p.toolbarItems ?? [])
+  const pluginEntries = getToolbarPluginEntries(plugins)
 
   return (
     <TooltipPrimitive.Provider delay={300}>
@@ -70,7 +69,9 @@ export function Toolbar({
           background: '#18181b',
           borderRadius: 10,
           boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
-          outline: isActive ? '2px solid #3b82f6' : '2px solid transparent',
+          outline: isInspectorActive
+            ? '2px solid #3b82f6'
+            : '2px solid transparent',
           userSelect: 'none',
           height: 32,
           boxSizing: 'border-box',
@@ -80,9 +81,13 @@ export function Toolbar({
         {/* Toggle button */}
         <Tooltip
           label="Inspector"
-          shortcut={isActive ? 'Esc to exit' : TOGGLE_SHORTCUT}
+          shortcut={isInspectorActive ? 'Esc to exit' : TOGGLE_SHORTCUT}
           container={portalContainer}
-          render={<ToolbarPrimitive.Button onClick={() => onToggle()} />}
+          render={
+            <ToolbarPrimitive.Button
+              onClick={() => setInspectorActive((prev) => !prev)}
+            />
+          }
           aria-label="Inspector"
           style={{
             ...toolbarButtonBase,
@@ -99,40 +104,56 @@ export function Toolbar({
             height={24}
           />
         </Tooltip>
+        {/* Plugin toolbar content */}
+        {pluginEntries.map((entry) => {
+          const ToolbarContent = entry.toolbar
 
-        {/* Plugin toolbar items */}
-        {toolbarItems.map((item) => {
-          const active = item.isActive?.(selectedContext) ?? false
-          const resolvedIcon =
-            typeof item.icon === 'function' ? item.icon(services) : item.icon
-          const resolvedLabel =
-            typeof item.label === 'function' ? item.label(services) : item.label
           return (
-            <Tooltip
-              key={item.id}
-              label={resolvedLabel}
-              container={portalContainer}
-              render={
-                <ToolbarPrimitive.Button
-                  onClick={() => {
-                    onToggle(false)
-                    item.onClick(selectedContext, services)
-                  }}
-                />
-              }
-              aria-label={item.ariaLabel ?? item.id}
-              style={{
-                ...toolbarButtonBase,
-                background: active ? 'rgba(59,130,246,0.2)' : 'transparent',
-                border: active
-                  ? '1px solid rgba(59,130,246,0.5)'
-                  : '1px solid transparent',
-                color: '#fafafa',
-                fontSize: 14,
-              }}
-            >
-              {resolvedIcon}
-            </Tooltip>
+            <Fragment key={entry.name}>
+              {ToolbarContent && <ToolbarContent />}
+
+              {entry.legacyToolbarItems.map((item) => {
+                const active = item.isActive?.(selectedContext) ?? false
+                const resolvedIcon =
+                  typeof item.icon === 'function'
+                    ? item.icon(services)
+                    : item.icon
+                const resolvedLabel =
+                  typeof item.label === 'function'
+                    ? item.label(services)
+                    : item.label
+
+                return (
+                  <Tooltip
+                    key={`${entry.name}:${item.id}`}
+                    label={resolvedLabel}
+                    container={portalContainer}
+                    render={
+                      <ToolbarPrimitive.Button
+                        onClick={() => {
+                          setInspectorActive(false)
+                          item.onClick(selectedContext, services)
+                        }}
+                      />
+                    }
+                    aria-label={item.ariaLabel ?? item.id}
+                    style={{
+                      ...toolbarButtonBase,
+                      background: active
+                        ? 'rgba(59,130,246,0.2)'
+                        : 'transparent',
+                      border: active
+                        ? '1px solid rgba(59,130,246,0.5)'
+                        : '1px solid transparent',
+                      color: '#fafafa',
+                      fontSize: 14,
+                    }}
+                  >
+                    {resolvedIcon}
+                  </Tooltip>
+                )
+              })}
+            </Fragment>
           )
         })}
       </ToolbarPrimitive.Root>

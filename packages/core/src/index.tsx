@@ -1,7 +1,11 @@
 export { XRay } from './components/XRay'
 export {
   useProjectRoot,
+  useInspectorActive,
+  useDeactivateInspector,
   useSelectedContext,
+  useClearSelectedContext,
+  useSelectedSource,
   useWidgetPortalContainer,
   useWidgetServices,
 } from './hooks'

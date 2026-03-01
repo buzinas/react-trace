@@ -37,9 +37,20 @@ export const portalContainerAtom = atom(() => {
 export const servicesAtom = atom<RVEServices>({ fs: fileSystemService })
 
 /**
+ * Inspector active state.
+ */
+export const inspectorActiveAtom = atom(false)
+
+/**
  * The component context that is currently selected in the inspector.
  */
 export const selectedContextAtom = atom<ComponentContext | null>(null)
+
+/**
+ * The source of the currently selected file.
+ */
+export const selectedSourceAtom =
+  atom<ComponentContext['all'][number]['source']>(null)
 
 /**
  * Creates a new Jotai store instance for XRay widget.

@@ -5,12 +5,22 @@ import {
   Popover,
   XIcon,
 } from '@react-xray/ui-components'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useCallback } from 'react'
 
 import { toRelativePath } from '../path'
-import { portalContainerAtom } from '../store'
+import {
+  getActionPanelPluginEntries,
+  hasActionPanelContent,
+} from '../pluginRendering'
+import {
+  inspectorActiveAtom,
+  portalContainerAtom,
+  selectedContextAtom,
+  selectedSourceAtom,
+  servicesAtom,
+} from '../store'
 import type {
-  Action,
   ComponentContext,
   ComponentSource,
   RVEPlugin,
@@ -18,11 +28,7 @@ import type {
 } from '../types'
 
 interface ActionPanelProps {
-  context: ComponentContext | null
   plugins: RVEPlugin[]
-  services: RVEServices
-  onClose(): void
-  onToggle(value?: boolean): void
 }
 
 // ---------------------------------------------------------------------------
@@ -110,26 +116,27 @@ function entryStyle(active: boolean): React.CSSProperties {
 // Component
 // ---------------------------------------------------------------------------
 
-export function ActionPanel({
-  context,
-  plugins,
-  services,
-  onClose,
-  onToggle,
-}: ActionPanelProps) {
+export function ActionPanel({ plugins }: ActionPanelProps) {
+  const services = useAtomValue(servicesAtom)
+  const [selectedContext, setSelectedContext] = useAtom(selectedContextAtom)
   const portalContainer = useAtomValue(portalContainerAtom)
-  const groups = context ? groupChain(context.all) : []
+  const groups = selectedContext ? groupChain(selectedContext.all) : []
+
+  const onClose = useCallback(
+    () => setSelectedContext(null),
+    [setSelectedContext],
+  )
 
   return (
     <Popover.Root
-      open={context !== null}
+      open={selectedContext !== null}
       onOpenChange={(open: boolean) => {
         if (!open) onClose()
       }}
     >
       <Popover.Portal container={portalContainer}>
         <Popover.Positioner
-          anchor={context?.element}
+          anchor={selectedContext?.element}
           side="bottom"
           align="start"
           sideOffset={8}
@@ -145,11 +152,11 @@ export function ActionPanel({
               fontFamily: 'system-ui, sans-serif',
             }}
           >
-            {context && (
+            {selectedContext && (
               <>
                 {/* Header */}
                 <PanelHeader
-                  title={context.displayName}
+                  title={selectedContext.displayName}
                   titleStyle={{ fontFamily: 'ui-monospace, monospace' }}
                   style={{
                     position: 'sticky',
@@ -200,9 +207,14 @@ export function ActionPanel({
                       )
                     }
 
-                    const entryCtx = { ...context, source: group.source }
-                    const actions = plugins.flatMap(
-                      (p) => p.actions?.(entryCtx, services) ?? [],
+                    const entryCtx = {
+                      ...selectedContext,
+                      source: group.source,
+                    }
+                    const pluginEntries = getActionPanelPluginEntries(
+                      plugins,
+                      entryCtx,
+                      services,
                     )
 
                     const entryContent = (
@@ -232,7 +244,7 @@ export function ActionPanel({
                     )
 
                     // No plugin actions — plain row
-                    if (!actions.length) {
+                    if (!hasActionPanelContent(pluginEntries)) {
                       return (
                         <div key={`entry-${gi}`} style={entryStyle(false)}>
                           {entryContent}
@@ -244,12 +256,10 @@ export function ActionPanel({
                       <Submenu
                         key={`entry-${gi}`}
                         entryContent={entryContent}
-                        actions={actions}
-                        plugins={plugins}
+                        pluginEntries={pluginEntries}
                         entryCtx={entryCtx}
                         services={services}
                         onClose={onClose}
-                        onToggle={onToggle}
                       />
                     )
                   })}
@@ -265,25 +275,30 @@ export function ActionPanel({
 
 function Submenu({
   entryContent,
-  actions,
-  plugins,
+  pluginEntries,
   entryCtx,
   services,
   onClose,
-  onToggle,
 }: {
   entryContent: React.ReactNode
-  actions: Action[]
-  plugins: RVEPlugin[]
+  pluginEntries: ReturnType<typeof getActionPanelPluginEntries>
   entryCtx: ComponentContext
   services: RVEServices
   onClose(): void
-  onToggle(value?: boolean): void
 }) {
   const portalContainer = useAtomValue(portalContainerAtom)
+  const setSelectedSource = useSetAtom(selectedSourceAtom)
+  const setInspectorActive = useSetAtom(inspectorActiveAtom)
+  const hasPluginActionPanels = pluginEntries.some((entry) => entry.actionPanel)
+  const hasLegacySubpanels = pluginEntries.some((entry) => entry.legacySubpanel)
+  const hasLegacyActions = pluginEntries.some(
+    (entry) => entry.legacyActions.length > 0,
+  )
 
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root
+      onOpenChange={(open) => open && setSelectedSource(entryCtx.source)}
+    >
       <DropdownMenu.Trigger
         openOnHover
         delay={0}
@@ -314,43 +329,64 @@ function Submenu({
           <DropdownMenu.Popup
             style={{
               minWidth: 200,
-              paddingBlock: actions.length > 0 ? 4 : 0,
+              paddingBlock: hasActionPanelContent(pluginEntries) ? 4 : 0,
             }}
           >
-            {/* Plugin subpanels (e.g. source preview) */}
-            {plugins.map((p, pi) => {
-              if (!p.subpanel) return null
-              const Subpanel = p.subpanel
-              return <Subpanel key={pi} ctx={entryCtx} services={services} />
+            {/* Wave 2 plugin-owned action-panel content */}
+            {pluginEntries.map((entry) => {
+              if (!entry.actionPanel) return null
+              const ActionPanelContent = entry.actionPanel
+              return <ActionPanelContent key={`action-panel:${entry.name}`} />
             })}
 
-            {/* Divider between subpanels and actions */}
-            {plugins.some((p) => p.subpanel) && actions.length > 0 && (
+            {/* Divider between direct renderers and legacy compatibility content */}
+            {hasPluginActionPanels &&
+              (hasLegacySubpanels || hasLegacyActions) && (
+                <DropdownMenu.Separator />
+              )}
+
+            {/* Legacy plugin subpanels (compatibility bridge) */}
+            {pluginEntries.map((entry) => {
+              if (!entry.legacySubpanel) return null
+              const Subpanel = entry.legacySubpanel
+              return (
+                <Subpanel
+                  key={`legacy-subpanel:${entry.name}`}
+                  ctx={entryCtx}
+                  services={services}
+                />
+              )
+            })}
+
+            {/* Divider between legacy subpanels and legacy actions */}
+            {hasLegacySubpanels && hasLegacyActions && (
               <DropdownMenu.Separator />
             )}
 
-            {/* Action buttons */}
-            {actions.map((action) => (
-              <DropdownMenu.Item
-                key={action.id}
-                closeOnClick
-                onClick={async () => {
-                  const result = await action.onClick(entryCtx, services)
+            {/* Legacy action rows (compatibility bridge) */}
+            {pluginEntries.map((entry) =>
+              entry.legacyActions.map((action) => (
+                <DropdownMenu.Item
+                  key={`${entry.name}:${action.id}`}
+                  closeOnClick
+                  onClick={async () => {
+                    const result = await action.onClick(entryCtx, services)
 
-                  onClose()
-                  if (result) {
-                    onToggle(false)
-                  }
-                }}
-              >
-                {action.icon && (
-                  <span style={{ display: 'flex', alignItems: 'center' }}>
-                    {action.icon}
-                  </span>
-                )}
-                {action.label}
-              </DropdownMenu.Item>
-            ))}
+                    onClose()
+                    if (result) {
+                      setInspectorActive(false)
+                    }
+                  }}
+                >
+                  {action.icon && (
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                      {action.icon}
+                    </span>
+                  )}
+                  {action.label}
+                </DropdownMenu.Item>
+              )),
+            )}
           </DropdownMenu.Popup>
         </DropdownMenu.Positioner>
       </DropdownMenu.Portal>

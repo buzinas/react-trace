@@ -7,6 +7,7 @@ import { fileSystemService } from '../fs'
 import { IS_MAC } from '../platform'
 import {
   createWidgetStore,
+  inspectorActiveAtom,
   portalContainerAtom,
   projectRootAtom,
   selectedContextAtom,
@@ -52,7 +53,7 @@ function XRayRoot({
   const services = useAtomValue(servicesAtom)
   const portalContainer = useAtomValue(portalContainerAtom)
 
-  const [inspectorActive, setInspectorActive] = useState(false)
+  const [inspectorActive, setInspectorActive] = useAtom(inspectorActiveAtom)
   const [hoveredContext, setHoveredContext] = useState<ComponentContext | null>(
     null,
   )
@@ -65,8 +66,6 @@ function XRayRoot({
   useEffect(() => {
     fileSystemService.tryRestore().catch(() => {})
   }, [])
-
-  const deselect = useEffectEvent(() => setSelectedContext(null))
 
   const toggleInspector = useEffectEvent((value?: boolean) =>
     setInspectorActive((prev) => value ?? !prev),
@@ -82,7 +81,7 @@ function XRayRoot({
     }
 
     // Second Escape: turn inspector off
-    toggleInspector(false)
+    setInspectorActive(false)
     setHoveredContext(null)
   })
 
@@ -182,7 +181,7 @@ function XRayRoot({
       document.removeEventListener('click', onClick, true)
       document.removeEventListener('keydown', onEscapeKeyDown)
     }
-  }, [inspectorActive, applySelectedContext])
+  }, [inspectorActive])
 
   // Clear hover/select when inspector is turned off
   useEffect(() => {
@@ -197,12 +196,10 @@ function XRayRoot({
       {/* Toolbar — pointer-events:auto so buttons are clickable */}
       <div style={{ pointerEvents: 'auto' }}>
         <Toolbar
-          isActive={inspectorActive}
           selectedContext={selectedContext}
           plugins={plugins}
           services={services}
           position={position}
-          onToggle={toggleInspector}
         />
       </div>
 
@@ -218,15 +215,7 @@ function XRayRoot({
         ActionPanel — always rendered when inspector is active so the Popover can
         animate open/closed. The Popover.Positioner handles pointer-events itself.
       */}
-      {inspectorActive && (
-        <ActionPanel
-          context={selectedContext}
-          plugins={plugins}
-          services={services}
-          onClose={deselect}
-          onToggle={toggleInspector}
-        />
-      )}
+      {inspectorActive && <ActionPanel plugins={plugins} />}
     </>,
     portalContainer,
   )
