@@ -5,9 +5,10 @@ import {
   Popover,
   XIcon,
 } from '@react-xray/ui-components'
-import type { RefObject } from 'react'
+import { useAtomValue } from 'jotai'
 
 import { toRelativePath } from '../path'
+import { portalContainerAtom } from '../store'
 import type {
   Action,
   ComponentContext,
@@ -20,7 +21,6 @@ interface ActionPanelProps {
   context: ComponentContext | null
   plugins: RVEPlugin[]
   services: RVEServices
-  portalRef: RefObject<HTMLDivElement | null>
   onClose(): void
   onToggle(value?: boolean): void
 }
@@ -114,10 +114,10 @@ export function ActionPanel({
   context,
   plugins,
   services,
-  portalRef,
   onClose,
   onToggle,
 }: ActionPanelProps) {
+  const portalContainer = useAtomValue(portalContainerAtom)
   const groups = context ? groupChain(context.all) : []
 
   return (
@@ -127,7 +127,7 @@ export function ActionPanel({
         if (!open) onClose()
       }}
     >
-      <Popover.Portal container={portalRef}>
+      <Popover.Portal container={portalContainer}>
         <Popover.Positioner
           anchor={context?.element}
           side="bottom"
@@ -244,7 +244,6 @@ export function ActionPanel({
                       <Submenu
                         key={`entry-${gi}`}
                         entryContent={entryContent}
-                        portalRef={portalRef}
                         actions={actions}
                         plugins={plugins}
                         entryCtx={entryCtx}
@@ -266,7 +265,6 @@ export function ActionPanel({
 
 function Submenu({
   entryContent,
-  portalRef,
   actions,
   plugins,
   entryCtx,
@@ -275,7 +273,6 @@ function Submenu({
   onToggle,
 }: {
   entryContent: React.ReactNode
-  portalRef: RefObject<HTMLDivElement | null>
   actions: Action[]
   plugins: RVEPlugin[]
   entryCtx: ComponentContext
@@ -283,6 +280,8 @@ function Submenu({
   onClose(): void
   onToggle(value?: boolean): void
 }) {
+  const portalContainer = useAtomValue(portalContainerAtom)
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger
@@ -305,7 +304,7 @@ function Submenu({
         </span>
       </DropdownMenu.Trigger>
 
-      <DropdownMenu.Portal container={portalRef}>
+      <DropdownMenu.Portal container={portalContainer}>
         <DropdownMenu.Positioner
           side="right"
           sideOffset={4}

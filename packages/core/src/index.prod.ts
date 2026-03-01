@@ -3,11 +3,39 @@
  * XRay renders null so the inspector has zero runtime cost in production.
  */
 
-import type { ComponentSource } from './types'
+import type { ComponentSource, FileSystemService, RVEServices } from './types'
 
 export { IS_MAC, MOD_KEY } from './platform'
 
+const NOOP = () => {}
+const NOOP_FILE_SYSTEM_SERVICE: FileSystemService = {
+  isSupported: false,
+  hasAccess: false,
+  async tryRestore() {
+    return false
+  },
+  async requestAccess() {
+    return false
+  },
+  subscribe() {
+    return NOOP
+  },
+  async read() {
+    return ''
+  },
+  async write() {},
+}
+const NOOP_WIDGET_SERVICES: RVEServices = {
+  fs: NOOP_FILE_SYSTEM_SERVICE,
+  root: undefined,
+}
+
 export const XRay = () => null
+
+export const useProjectRoot = () => null
+export const useSelectedContext = () => null
+export const useWidgetPortalContainer = () => null
+export const useWidgetServices = () => NOOP_WIDGET_SERVICES
 
 export const resolveSource = async (source: ComponentSource) => source
 export const toAbsolutePath = (path: string) => path

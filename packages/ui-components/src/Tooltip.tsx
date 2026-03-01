@@ -4,7 +4,6 @@ import type {
   CSSProperties,
   ReactElement,
   ReactNode,
-  RefObject,
 } from 'react'
 
 import { Kbd } from './Kbd'
@@ -12,7 +11,7 @@ import { Kbd } from './Kbd'
 export interface TooltipProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: ReactNode
   shortcut?: string
-  container: RefObject<HTMLDivElement | null>
+  container: TooltipPrimitive.Portal.Props['container']
   render?: ReactElement
   children: ReactNode
 }

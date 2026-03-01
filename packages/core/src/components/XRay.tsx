@@ -1,64 +1,90 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Provider, useAtom, useAtomValue } from 'jotai'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { getComponentContext, resolveSource } from '../fiber'
 import { fileSystemService } from '../fs'
 import { IS_MAC } from '../platform'
-import type { ComponentContext, RVEServices, XRayProps } from '../types'
+import {
+  createWidgetStore,
+  portalContainerAtom,
+  projectRootAtom,
+  selectedContextAtom,
+  servicesAtom,
+} from '../store'
+import type { ComponentContext, XRayProps } from '../types'
 import { ActionPanel } from './ActionPanel'
 import { Overlay } from './Overlay'
 import { Toolbar } from './Toolbar'
 
-/** How long Cmd/Ctrl+X must be held before the inspector latches on */
+/**
+ * How long Cmd/Ctrl+X must be held before the inspector latches on
+ */
 const LONGPRESS_MS = 600
 
 export function XRay({
+  root,
   plugins = [],
   position = 'bottom-right',
-  root,
 }: XRayProps) {
-  const services: RVEServices = { fs: fileSystemService, root }
-  const [enabled, setEnabled] = useState(false)
+  const [jotaiStore] = useState(() => {
+    const store = createWidgetStore()
+    store.set(projectRootAtom, root)
+    // TODO: remove root from services and use useProjectRoot in plugins
+    store.set(servicesAtom, { root, fs: fileSystemService })
+    return store
+  })
 
+  return (
+    <Provider store={jotaiStore}>
+      <XRayRoot plugins={plugins} position={position} />
+    </Provider>
+  )
+}
+
+function XRayRoot({
+  plugins,
+  position,
+}: {
+  plugins: NonNullable<XRayProps['plugins']>
+  position: NonNullable<XRayProps['position']>
+}) {
+  const services = useAtomValue(servicesAtom)
+  const portalContainer = useAtomValue(portalContainerAtom)
+
+  const [inspectorActive, setInspectorActive] = useState(false)
   const [hoveredContext, setHoveredContext] = useState<ComponentContext | null>(
     null,
   )
-  const [selectedContext, setSelectedContext] =
-    useState<ComponentContext | null>(null)
-  // Ref so event handlers always see the latest hovered context without being in their dep array
-  const hoveredContextRef = useRef<ComponentContext | null>(null)
-  hoveredContextRef.current = hoveredContext
-
-  // Portal container — a div appended to document.body so the overlay sits at the root
-  const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
-    null,
+  const [selectedContext, setSelectedContext] = useAtom(selectedContextAtom)
+  const applySelectedContext = useEffectEvent(() =>
+    setSelectedContext(hoveredContext),
   )
-  const portalRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    const container = document.createElement('div')
-    container.setAttribute('data-react-xray', '')
-    container.style.cssText =
-      'position:fixed;inset:0;pointer-events:none;z-index:999997;'
-    document.body.appendChild(container)
-    portalRef.current = container
-    setPortalContainer(container)
-    return () => {
-      document.body.removeChild(container)
-    }
-  }, [])
 
   // Silently try to restore a previously granted FS handle on mount
   useEffect(() => {
-    fileSystemService.tryRestore()
+    fileSystemService.tryRestore().catch(() => {})
   }, [])
 
-  const deselect = useCallback(() => setSelectedContext(null), [])
+  const deselect = useEffectEvent(() => setSelectedContext(null))
 
-  const toggle = useCallback(
-    (value?: boolean) => setEnabled((prev) => value ?? !prev),
-    [],
+  const toggleInspector = useEffectEvent((value?: boolean) =>
+    setInspectorActive((prev) => value ?? !prev),
   )
+
+  const onEscapeKeyDown = useEffectEvent((e: KeyboardEvent) => {
+    if (e.key !== 'Escape') return
+
+    // First Escape: clear selected context (if any)
+    if (selectedContext) {
+      setSelectedContext(null)
+      return
+    }
+
+    // Second Escape: turn inspector off
+    toggleInspector(false)
+    setHoveredContext(null)
+  })
 
   // Long-press Cmd+X (Mac) / Ctrl+X (other): hold for LONGPRESS_MS to latch inspector on.
   // Releasing before the timer fires cancels — no accidental activation.
@@ -71,7 +97,7 @@ export function XRay({
         e.preventDefault() // prevent browser Cut
         timer = setTimeout(() => {
           timer = null
-          setEnabled(true)
+          toggleInspector(true)
         }, LONGPRESS_MS)
       }
     }
@@ -97,14 +123,14 @@ export function XRay({
 
   // Inspector mouse + keyboard listeners — active whenever enabled
   useEffect(() => {
-    if (!enabled) return
+    if (!inspectorActive) return
 
     let lastHoveredElement: HTMLElement | null = null
 
     function onMouseMove(e: MouseEvent) {
       const target = e.target as HTMLElement | null
       if (!target || target === lastHoveredElement) return
-      if (portalRef.current?.contains(target)) return
+      if (portalContainer.contains(target)) return
 
       lastHoveredElement = target
       const ctx = getComponentContext(target)
@@ -119,85 +145,69 @@ export function XRay({
           ...ctx.all.map((e) =>
             e.source ? resolveSource(e.source) : Promise.resolve(null),
           ),
-        ]).then(([resolvedSource, ...resolvedAll]) => {
-          if (lastHoveredElement !== target) return
-          setHoveredContext((prev) => {
-            if (prev?.element !== target) return prev
-            return {
-              ...prev,
-              ...(resolvedSource && { source: resolvedSource }),
-              all: prev.all.map((e, i) => ({
-                ...e,
-                source: resolvedAll[i] ?? e.source,
-              })),
-            }
+        ])
+          .then(([resolvedSource, ...resolvedAll]) => {
+            if (lastHoveredElement !== target) return
+            setHoveredContext((prev) => {
+              if (prev?.element !== target) return prev
+              return {
+                ...prev,
+                ...(resolvedSource && { source: resolvedSource }),
+                all: prev.all.map((e, i) => ({
+                  ...e,
+                  source: resolvedAll[i] ?? e.source,
+                })),
+              }
+            })
           })
-        })
+          .catch(() => {})
       }
     }
 
     function onClick(e: MouseEvent) {
       const target = e.target as HTMLElement | null
-      if (portalRef.current?.contains(target)) return
+      if (portalContainer.contains(target)) return
 
       e.stopPropagation()
       e.preventDefault()
-
-      setSelectedContext(hoveredContextRef.current)
-    }
-
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key !== 'Escape') return
-      setSelectedContext((sel) => {
-        if (sel) {
-          // First Escape: deselect only
-          return null
-        }
-        // Second Escape: turn inspector off
-        setEnabled(false)
-        setHoveredContext(null)
-        return null
-      })
+      applySelectedContext()
     }
 
     document.addEventListener('mousemove', onMouseMove, { passive: true })
     document.addEventListener('click', onClick, true) // capture phase
-    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('keydown', onEscapeKeyDown)
 
     return () => {
       document.removeEventListener('mousemove', onMouseMove)
       document.removeEventListener('click', onClick, true)
-      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('keydown', onEscapeKeyDown)
     }
-  }, [enabled])
+  }, [inspectorActive, applySelectedContext])
 
   // Clear hover/select when inspector is turned off
   useEffect(() => {
-    if (!enabled) {
+    if (!inspectorActive) {
       setHoveredContext(null)
       setSelectedContext(null)
     }
-  }, [enabled])
-
-  if (!portalContainer) return null
+  }, [inspectorActive, setSelectedContext])
 
   return createPortal(
     <>
       {/* Toolbar — pointer-events:auto so buttons are clickable */}
       <div style={{ pointerEvents: 'auto' }}>
         <Toolbar
-          isActive={enabled}
+          isActive={inspectorActive}
           selectedContext={selectedContext}
           plugins={plugins}
           services={services}
           position={position}
-          portalRef={portalRef}
-          onToggle={toggle}
+          onToggle={toggleInspector}
         />
       </div>
 
       {/* Overlay — pointer-events:none, managed by the container */}
-      {enabled && (
+      {inspectorActive && (
         <Overlay
           hoveredContext={hoveredContext}
           selectedContext={selectedContext}
@@ -208,14 +218,13 @@ export function XRay({
         ActionPanel — always rendered when inspector is active so the Popover can
         animate open/closed. The Popover.Positioner handles pointer-events itself.
       */}
-      {enabled && (
+      {inspectorActive && (
         <ActionPanel
           context={selectedContext}
           plugins={plugins}
           services={services}
-          portalRef={portalRef}
           onClose={deselect}
-          onToggle={toggle}
+          onToggle={toggleInspector}
         />
       )}
     </>,

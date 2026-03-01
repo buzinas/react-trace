@@ -25,6 +25,7 @@ export default defineConfig({
       '@jridgewell/trace-mapping',
       '@jridgewell/sourcemap-codec',
       '@jridgewell/resolve-uri',
+      'jotai',
     ],
     neverBundle: [
       'react',

@@ -93,8 +93,10 @@ export interface RVEPlugin {
 }
 
 export interface XRayProps {
+  /**
+   * Absolute path to the project root, forwarded to all plugins
+   */
+  root: string
   plugins?: RVEPlugin[]
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
-  /** Absolute path to the project root, forwarded to all plugins via services.root */
-  root?: string
 }

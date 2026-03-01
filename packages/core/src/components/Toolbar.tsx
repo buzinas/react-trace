@@ -1,10 +1,11 @@
 import { Toolbar as ToolbarPrimitive } from '@base-ui/react/toolbar'
 import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip'
 import { Tooltip } from '@react-xray/ui-components'
-import type { RefObject } from 'react'
+import { useAtomValue } from 'jotai'
 
 import logo from '../logo.png'
 import { IS_MAC } from '../platform'
+import { portalContainerAtom } from '../store'
 import type {
   ComponentContext,
   RVEPlugin,
@@ -18,7 +19,6 @@ interface ToolbarProps {
   plugins: RVEPlugin[]
   services: RVEServices
   position: NonNullable<XRayProps['position']>
-  portalRef: RefObject<HTMLDivElement | null>
   onToggle(value?: boolean): void
 }
 
@@ -54,9 +54,9 @@ export function Toolbar({
   plugins,
   services,
   position,
-  portalRef,
   onToggle,
 }: ToolbarProps) {
+  const portalContainer = useAtomValue(portalContainerAtom)
   const toolbarItems = plugins.flatMap((p) => p.toolbarItems ?? [])
 
   return (
@@ -81,7 +81,7 @@ export function Toolbar({
         <Tooltip
           label="Inspector"
           shortcut={isActive ? 'Esc to exit' : TOGGLE_SHORTCUT}
-          container={portalRef}
+          container={portalContainer}
           render={<ToolbarPrimitive.Button onClick={() => onToggle()} />}
           aria-label="Inspector"
           style={{
@@ -111,7 +111,7 @@ export function Toolbar({
             <Tooltip
               key={item.id}
               label={resolvedLabel}
-              container={portalRef}
+              container={portalContainer}
               render={
                 <ToolbarPrimitive.Button
                   onClick={() => {
