@@ -1,9 +1,9 @@
 import { resolveSource } from '@react-xray/core'
 import type { ComponentContext, RVEPlugin, RVEServices } from '@react-xray/core'
+import { ChatBubbleIcon } from '@react-xray/ui-components'
 import { useEffect, useRef, useSyncExternalStore } from 'react'
 
 import { ensureOverlayMounted } from './CommentsRoot'
-import { ChatBubbleIcon } from './icons'
 import {
   getStoreSnapshot,
   setPending,
@@ -31,17 +31,15 @@ function CommentsToolbarIcon() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: 20,
-        height: 20,
       }}
     >
-      <ChatBubbleIcon size={16} />
+      <ChatBubbleIcon />
       {count > 0 && (
         <span
           style={{
             position: 'absolute',
-            top: -5,
-            right: -5,
+            top: -6,
+            right: -6,
             background: '#ef4444',
             color: '#fff',
             fontSize: 9,

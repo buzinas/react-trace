@@ -1,5 +1,6 @@
 import { Toolbar as ToolbarPrimitive } from '@base-ui/react/toolbar'
 import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip'
+import { Tooltip } from '@react-xray/ui-components'
 import type { RefObject } from 'react'
 
 import logo from '../logo.png'
@@ -10,7 +11,6 @@ import type {
   RVEServices,
   XRayProps,
 } from '../types'
-import { Tooltip } from './Tooltip'
 
 interface ToolbarProps {
   isActive: boolean

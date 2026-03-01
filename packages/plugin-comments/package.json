@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@react-xray/core": "workspace:*",
+    "@react-xray/ui-components": "workspace:*",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "oxlint": "latest",
@@ -63,6 +64,7 @@
   },
   "peerDependencies": {
     "@react-xray/core": "workspace:*",
+    "@react-xray/ui-components": "workspace:*",
     "react": ">=18",
     "react-dom": ">=18"
   }

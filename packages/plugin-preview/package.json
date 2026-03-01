@@ -56,6 +56,7 @@
   "devDependencies": {
     "@monaco-editor/react": "^4.7.0",
     "@react-xray/core": "workspace:*",
+    "@react-xray/ui-components": "workspace:*",
     "@types/node": "^24.11.0",
     "@types/react": "^19",
     "@types/react-dom": "^19.2.3",
@@ -68,6 +69,7 @@
   },
   "peerDependencies": {
     "@react-xray/core": "workspace:*",
+    "@react-xray/ui-components": "workspace:*",
     "react": ">=18"
   }
 }

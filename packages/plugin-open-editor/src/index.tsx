@@ -1,11 +1,14 @@
 import { resolveSource, toAbsolutePath } from '@react-xray/core'
 import type { ComponentContext, RVEPlugin, RVEServices } from '@react-xray/core'
+import { OpenInEditorIcon } from '@react-xray/ui-components'
+
 export type EditorPreset =
   | 'vscode'
   | 'cursor'
   | 'windsurf'
   | 'webstorm'
   | 'intellij'
+
 export interface OpenEditorOptions {
   /**
    * The editor to open files in.
@@ -13,6 +16,7 @@ export interface OpenEditorOptions {
    */
   editor?: EditorPreset
 }
+
 const EDITOR_LABELS: Record<EditorPreset, string> = {
   vscode: 'VS Code',
   cursor: 'Cursor',
@@ -42,33 +46,7 @@ function buildEditorUrl(
   // VS Code family: vscode, cursor, windsurf — identical format, different protocol
   return `${editor}://file/${path}:${line}:${col}`
 }
-function OpenInEditorIcon() {
-  return (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 13 13"
-      fill="none"
-      aria-hidden="true"
-    >
-      {/* Box (file/window) */}
-      <path
-        d="M5 1.5H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V8"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-      />
-      {/* Arrow pointing out */}
-      <path
-        d="M8 1h4m0 0v4M12 1 6.5 6.5"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
+
 export function OpenEditorPlugin({
   editor = 'vscode',
 }: OpenEditorOptions = {}): RVEPlugin {
@@ -84,7 +62,6 @@ export function OpenEditorPlugin({
           label: `Open in ${editorLabel}`,
           icon: <OpenInEditorIcon />,
           onClick(ctx: ComponentContext) {
-            // resolveSource is a cache hit at click time (already ran during hover)
             resolveSource(ctx.source!)
               .then((resolved) => {
                 const path = toAbsolutePath(resolved.fileName, root)

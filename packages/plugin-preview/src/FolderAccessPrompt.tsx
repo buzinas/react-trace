@@ -1,23 +1,5 @@
-import { IS_MAC, Kbd, KbdGroup, toAbsolutePath } from '@react-xray/core'
-
-function FolderIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 14 14"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M1 3.5a1 1 0 0 1 1-1h3l1.5 1.5H12a1 1 0 0 1 1 1V10.5a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3.5z"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
+import { IS_MAC, toAbsolutePath } from '@react-xray/core'
+import { Button, FolderIcon, Kbd, KbdGroup } from '@react-xray/ui-components'
 
 export function FolderAccessPrompt({
   root,
@@ -86,40 +68,12 @@ export function FolderAccessPrompt({
         )}
       </div>
       <div style={{ display: 'flex', gap: 8 }}>
-        <button
-          type="button"
-          onClick={onCancel}
-          style={{
-            height: 28,
-            padding: '0 12px',
-            borderRadius: 6,
-            fontSize: 12,
-            fontWeight: 500,
-            cursor: 'pointer',
-            background: 'transparent',
-            border: '1px solid #3f3f46',
-            color: '#d4d4d8',
-          }}
-        >
+        <Button variant="secondary" onClick={onCancel}>
           Cancel
-        </button>
-        <button
-          type="button"
-          onClick={onGrant}
-          style={{
-            height: 28,
-            padding: '0 12px',
-            borderRadius: 6,
-            fontSize: 12,
-            fontWeight: 500,
-            cursor: 'pointer',
-            background: '#fafafa',
-            border: 'none',
-            color: '#18181b',
-          }}
-        >
+        </Button>
+        <Button variant="primary" onClick={onGrant}>
           Grant access
-        </button>
+        </Button>
       </div>
     </div>
   )

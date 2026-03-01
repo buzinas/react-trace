@@ -1,3 +1,4 @@
+import { Button } from '@react-xray/ui-components'
 import {
   useCallback,
   useEffect,
@@ -12,22 +13,6 @@ import {
   setPending,
   subscribePending,
 } from './store'
-
-const editorButtonBase: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: 28,
-  padding: '0 12px',
-  borderRadius: 6,
-  fontSize: 12,
-  fontFamily: 'system-ui, sans-serif',
-  fontWeight: 500,
-  cursor: 'pointer',
-  border: 'none',
-  outline: 'none',
-  transition: 'opacity 0.15s',
-}
 
 /**
  * Floating textarea overlay shown after the user clicks "Add comment" on a
@@ -144,31 +129,16 @@ export function CommentEditorOverlay() {
           Commenting on line {pending.lineNumber}
         </span>
         <div style={{ display: 'flex', gap: 6 }}>
-          <button
-            type="button"
-            onClick={handleCancel}
-            style={{
-              ...editorButtonBase,
-              background: 'transparent',
-              border: '1px solid #3f3f46',
-              color: '#d4d4d8',
-            }}
-          >
+          <Button variant="secondary" onClick={handleCancel}>
             Cancel
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="primary"
             onClick={handleSubmit}
             disabled={!text.trim()}
-            style={{
-              ...editorButtonBase,
-              background: text.trim() ? '#fafafa' : '#3f3f46',
-              color: text.trim() ? '#18181b' : '#71717a',
-              cursor: text.trim() ? 'pointer' : 'not-allowed',
-            }}
           >
             Comment
-          </button>
+          </Button>
         </div>
       </div>
     </div>

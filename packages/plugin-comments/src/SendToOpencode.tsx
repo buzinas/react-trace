@@ -1,28 +1,10 @@
 import { createOpencodeClient } from '@opencode-ai/sdk'
 import type { Session } from '@opencode-ai/sdk'
+import { Button } from '@react-xray/ui-components'
 import { useEffect, useRef, useState } from 'react'
 
 import { clearAllComments, getStoreSnapshot } from './store'
 import { formatCommentNote } from './utils'
-
-// ---------------------------------------------------------------------------
-// Shared button base style (mirrors editorButtonBase in CommentsMenu)
-// ---------------------------------------------------------------------------
-
-const btnBase: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: 28,
-  padding: '0 12px',
-  borderRadius: 6,
-  fontSize: 12,
-  fontFamily: 'system-ui, sans-serif',
-  fontWeight: 500,
-  cursor: 'pointer',
-  border: 'none',
-  outline: 'none',
-}
 
 // ---------------------------------------------------------------------------
 // SendToOpencodeForm
@@ -309,33 +291,12 @@ export function SendToOpencodeForm({
 
       {/* Actions */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6 }}>
-        <button
-          type="button"
-          onClick={onDone}
-          disabled={sending}
-          style={{
-            ...btnBase,
-            background: 'transparent',
-            border: '1px solid #3f3f46',
-            color: '#d4d4d8',
-            cursor: sending ? 'not-allowed' : 'pointer',
-          }}
-        >
+        <Button variant="secondary" onClick={onDone} disabled={sending}>
           Cancel
-        </button>
-        <button
-          type="button"
-          onClick={handleSend}
-          disabled={disabled}
-          style={{
-            ...btnBase,
-            background: disabled ? '#3f3f46' : '#fafafa',
-            color: disabled ? '#71717a' : '#18181b',
-            cursor: disabled ? 'not-allowed' : 'pointer',
-          }}
-        >
+        </Button>
+        <Button variant="primary" onClick={handleSend} disabled={disabled}>
           {sending ? 'Sending…' : 'Send'}
-        </button>
+        </Button>
       </div>
     </div>
   )

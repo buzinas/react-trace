@@ -8,6 +8,9 @@ Guidelines for AI coding agents working in this repository.
 
 ```
 packages/
+  ui-components/            @react-xray/ui-components — Kbd, Tooltip, Button, IconButton,
+                                                        PanelHeader, Popover, DropdownMenu,
+                                                        icons (via @hugeicons/core-free-icons)
   core/                     @react-xray/core          — XRay component, plugin API, utilities
   plugin-preview/           @react-xray/plugin-preview — Monaco editor subpanel, FS access
   plugin-comments/          @react-xray/plugin-comments — inline comments + Send to OpenCode
@@ -25,6 +28,7 @@ apps/
 ## Commands
 
 ### Root (all packages via Turborepo)
+
 ```bash
 pnpm build          # build all packages in dependency order
 pnpm dev            # watch mode (builds deps first, then watches)
@@ -36,6 +40,7 @@ pnpm test           # vitest run across all packages
 ```
 
 ### Single package
+
 ```bash
 pnpm --filter @react-xray/core build
 pnpm --filter @react-xray/plugin-comments typecheck
@@ -43,11 +48,13 @@ pnpm --filter @react-xray/core test
 ```
 
 ### Single test file
+
 ```bash
 pnpm --filter @react-xray/core exec vitest run src/path.test.ts
 ```
 
 ### Example app
+
 ```bash
 pnpm --filter example dev    # start dev server
 pnpm --filter example build  # production build (uses prod stubs — see below)
@@ -79,6 +86,7 @@ The `package.json` `exports` field uses `"development"` / `"production"` / `"def
 ## Imports
 
 Order (enforced by oxlint):
+
 1. External packages (`react`, `@monaco-editor/react`, etc.)
 2. Blank line
 3. Internal workspace packages (`@react-xray/core`)
@@ -100,7 +108,7 @@ Always use named exports. Default exports only in `react-xray/src/index.tsx` (th
   - Text primary: `#fafafa`, secondary: `#d4d4d8`, muted: `#71717a`
   - Accent (blue): `#3b82f6`, success (green): `#22c55e`, danger (red): `#ef4444`
 - **No emojis** in source code or comments.
-- Section separators in longer files:
+- Avoid section separators in longer files like below (if you feel you need, better to refactor into multiple files instead):
   ```ts
   // ---------------------------------------------------------------------------
   // Section name
@@ -124,6 +132,7 @@ Always use named exports. Default exports only in `react-xray/src/index.tsx` (th
 ## Plugin architecture
 
 Plugins implement `RVEPlugin`:
+
 ```ts
 {
   name: string
@@ -138,6 +147,7 @@ Plugins implement `RVEPlugin`:
 - `root` is **never** in plugin options — always read from `services.root`
 
 **Overlay pattern** (for portal-mounted UI like CommentsMenu or FolderAccessOverlay):
+
 1. Module-level store with `subscribe` / `getSnapshot` / `set` functions
 2. Mount via `createRoot` into the `[data-react-xray]` portal element
 3. `ensureXxxMounted()` — idempotent singleton, called from the plugin factory
@@ -160,8 +170,9 @@ Plugins implement `RVEPlugin`:
 1. Create `packages/plugin-xxx/` mirroring an existing plugin (e.g. `plugin-copy-to-clipboard`)
 2. Add `src/index.tsx` (plugin factory) and `src/index.prod.ts` (no-op stub)
 3. Add `"@react-xray/plugin-xxx"` to the alias map in `apps/example/vite.config.ts`
-4. Add `"react-xray/plugin-xxx"` to the `neverBundle` list in the new package's `tsdown.config.ts`
-5. Optionally wire into `packages/react-xray/src/index.tsx` for the convenience bundle
+4. Add `"@react-xray/ui-components"` and `"react-xray/plugin-xxx"` to the `neverBundle` list in the new package's `tsdown.config.ts`
+5. Add `@react-xray/ui-components` to both `peerDependencies` and `devDependencies` in `package.json`
+6. Optionally wire into `packages/react-xray/src/index.tsx` for the convenience bundle
 
 ---
 

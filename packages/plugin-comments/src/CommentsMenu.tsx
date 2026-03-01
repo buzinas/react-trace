@@ -1,7 +1,14 @@
+import {
+  Button,
+  ClipboardIcon,
+  OpencodeIcon,
+  PanelHeader,
+  TrashIcon,
+  XIcon,
+} from '@react-xray/ui-components'
 import type { CSSProperties } from 'react'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
-import { ClipboardIcon, OpencodeIcon, TrashIcon, XIcon } from './icons'
 import { SendToOpencodeForm } from './SendToOpencode'
 import {
   clearAllComments,
@@ -18,21 +25,9 @@ import {
 } from './store'
 import { formatCommentNote } from './utils'
 
-const editorButtonBase: CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: 28,
-  padding: '0 12px',
-  borderRadius: 6,
-  fontSize: 12,
-  fontFamily: 'system-ui, sans-serif',
-  fontWeight: 500,
-  cursor: 'pointer',
-  border: 'none',
-  outline: 'none',
-  transition: 'opacity 0.15s',
-}
+// ---------------------------------------------------------------------------
+// HoverButton — stateful button with hover-dependent style
+// ---------------------------------------------------------------------------
 
 function HoverButton({
   children,
@@ -58,6 +53,10 @@ function HoverButton({
     </button>
   )
 }
+
+// ---------------------------------------------------------------------------
+// CommentRow
+// ---------------------------------------------------------------------------
 
 function CommentRow({
   comment,
@@ -192,35 +191,21 @@ function CommentRow({
               marginTop: 4,
             }}
           >
-            <button
-              type="button"
+            <Button
+              variant="secondary"
               onClick={handleCancel}
-              style={{
-                ...editorButtonBase,
-                height: 24,
-                fontSize: 11,
-                background: 'transparent',
-                border: '1px solid #3f3f46',
-                color: '#d4d4d8',
-              }}
+              style={{ height: 24, fontSize: 11 }}
             >
               Cancel
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="primary"
               onClick={handleSave}
               disabled={!draft.trim()}
-              style={{
-                ...editorButtonBase,
-                height: 24,
-                fontSize: 11,
-                background: draft.trim() ? '#fafafa' : '#3f3f46',
-                color: draft.trim() ? '#18181b' : '#71717a',
-                cursor: draft.trim() ? 'pointer' : 'not-allowed',
-              }}
+              style={{ height: 24, fontSize: 11 }}
             >
               Save
-            </button>
+            </Button>
           </div>
         </div>
       ) : (
@@ -245,7 +230,7 @@ function CommentRow({
   )
 }
 
-const menuItemStyle = (hover: boolean): React.CSSProperties => ({
+const menuItemStyle = (hover: boolean): CSSProperties => ({
   display: 'flex',
   alignItems: 'center',
   gap: 8,
@@ -345,55 +330,27 @@ export function CommentsMenuOverlay() {
       onClick={(e) => e.stopPropagation()}
       onKeyDown={(e) => e.stopPropagation()}
     >
-      {/* Header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '10px 12px 8px',
-          borderBottom: '1px solid #27272a',
-        }}
-      >
-        <span
-          style={{
-            color: '#fafafa',
-            fontSize: 13,
-            fontWeight: 600,
-            fontFamily: 'system-ui, sans-serif',
-          }}
-        >
-          Comments
-          {comments.length > 0 && (
-            <span
-              style={{
-                marginLeft: 6,
-                fontSize: 11,
-                color: '#71717a',
-                fontWeight: 400,
-              }}
-            >
-              ({comments.length})
-            </span>
-          )}
-        </span>
-        <button
-          type="button"
-          onClick={() => setMenuOpen(false)}
-          title="Close"
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: '#52525b',
-            cursor: 'pointer',
-            padding: '0 2px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <XIcon />
-        </button>
-      </div>
+      <PanelHeader
+        title={
+          <>
+            Comments
+            {comments.length > 0 && (
+              <span
+                style={{
+                  marginLeft: 6,
+                  fontSize: 11,
+                  color: '#71717a',
+                  fontWeight: 400,
+                }}
+              >
+                ({comments.length})
+              </span>
+            )}
+          </>
+        }
+        onClose={() => setMenuOpen(false)}
+        closeTitle="Close"
+      />
 
       {/* Comment list */}
       {comments.length === 0 ? (

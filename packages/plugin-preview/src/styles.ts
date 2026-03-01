@@ -6,6 +6,8 @@ export const INLINE_HEIGHT = INLINE_LINES * LINE_HEIGHT
 export const EDITOR_WIDTH = 480
 export const TOOLBAR_HEIGHT = 33
 
+// Blue-tinted action button used for the Save button in SourcePreview toolbar.
+// Distinct from the standard Button variants in @react-xray/ui-components.
 export const actionButtonStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
@@ -18,17 +20,4 @@ export const actionButtonStyle: CSSProperties = {
   fontSize: 11,
   padding: '3px 8px',
   fontFamily: 'system-ui, sans-serif',
-}
-
-export const iconButtonStyle: CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: 'transparent',
-  border: 'none',
-  color: '#52525b',
-  cursor: 'pointer',
-  padding: 4,
-  borderRadius: 4,
-  lineHeight: 1,
 }

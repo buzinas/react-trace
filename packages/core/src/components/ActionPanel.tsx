@@ -1,5 +1,9 @@
-import { Menu as MenuPrimitive } from '@base-ui/react/menu'
-import { Popover as PopoverPrimitive } from '@base-ui/react/popover'
+import {
+  ChevronRightIcon,
+  DropdownMenu,
+  Popover,
+  XIcon,
+} from '@react-xray/ui-components'
 import type { RefObject } from 'react'
 
 import { toRelativePath } from '../path'
@@ -79,39 +83,9 @@ function SourceLabel({ source }: { source: ComponentSource }) {
   )
 }
 
-function ChevronRight() {
-  return (
-    <svg
-      width="10"
-      height="10"
-      viewBox="0 0 10 10"
-      fill="none"
-      style={{ flexShrink: 0, marginLeft: 'auto', color: '#52525b' }}
-    >
-      <path
-        d="M3.5 1.5L7 5L3.5 8.5"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
 // ---------------------------------------------------------------------------
 // Styles
 // ---------------------------------------------------------------------------
-
-const popupStyle: React.CSSProperties = {
-  minWidth: 280,
-  background: '#18181b',
-  border: '1px solid #27272a',
-  borderRadius: 8,
-  boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
-  fontFamily: 'system-ui, sans-serif',
-  overflow: 'hidden',
-}
 
 function entryStyle(active: boolean): React.CSSProperties {
   return {
@@ -131,22 +105,6 @@ function entryStyle(active: boolean): React.CSSProperties {
   }
 }
 
-function actionStyle(highlighted: boolean): React.CSSProperties {
-  return {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 6,
-    padding: '7px 12px',
-    cursor: 'pointer',
-    userSelect: 'none',
-    outline: 'none',
-    fontSize: 12,
-    color: '#d4d4d8',
-    background: highlighted ? 'rgba(59,130,246,0.2)' : 'transparent',
-    transition: 'background 0.1s',
-  }
-}
-
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -162,14 +120,14 @@ export function ActionPanel({
   const groups = context ? groupChain(context.all) : []
 
   return (
-    <PopoverPrimitive.Root
+    <Popover.Root
       open={context !== null}
-      onOpenChange={(open) => {
+      onOpenChange={(open: boolean) => {
         if (!open) onClose()
       }}
     >
-      <PopoverPrimitive.Portal container={portalRef}>
-        <PopoverPrimitive.Positioner
+      <Popover.Portal container={portalRef}>
+        <Popover.Positioner
           anchor={context?.element}
           side="bottom"
           align="start"
@@ -178,7 +136,14 @@ export function ActionPanel({
           positionMethod="fixed"
           style={{ pointerEvents: 'auto', zIndex: 999999 }}
         >
-          <PopoverPrimitive.Popup initialFocus={false} style={popupStyle}>
+          <Popover.Popup
+            initialFocus={false}
+            style={{
+              minWidth: 280,
+              overflow: 'hidden',
+              fontFamily: 'system-ui, sans-serif',
+            }}
+          >
             {context && (
               <>
                 {/* Header */}
@@ -205,7 +170,7 @@ export function ActionPanel({
                   >
                     {context.displayName}
                   </span>
-                  <PopoverPrimitive.Close
+                  <Popover.Close
                     title="Close (Esc)"
                     style={{
                       background: 'transparent',
@@ -213,14 +178,12 @@ export function ActionPanel({
                       color: '#52525b',
                       cursor: 'pointer',
                       padding: '0 2px',
-                      fontSize: 18,
-                      lineHeight: 1,
-                      display: 'flex',
+                      display: 'inline-flex',
                       alignItems: 'center',
                     }}
                   >
-                    ×
-                  </PopoverPrimitive.Close>
+                    <XIcon />
+                  </Popover.Close>
                 </div>
 
                 {/* Owner chain */}
@@ -279,7 +242,7 @@ export function ActionPanel({
                       </div>
                     )
 
-                    // No plugin actions — plain highlighted row
+                    // No plugin actions — plain row
                     if (!actions.length) {
                       return (
                         <div key={`entry-${gi}`} style={entryStyle(false)}>
@@ -305,10 +268,10 @@ export function ActionPanel({
                 </div>
               </>
             )}
-          </PopoverPrimitive.Popup>
-        </PopoverPrimitive.Positioner>
-      </PopoverPrimitive.Portal>
-    </PopoverPrimitive.Root>
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
   )
 }
 
@@ -331,29 +294,37 @@ function Submenu({
   onClose(): void
   onToggle(value?: boolean): void
 }) {
-  // Has plugin actions — Menu with hover submenu to the right
   return (
-    <MenuPrimitive.Root>
-      <MenuPrimitive.Trigger
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger
         openOnHover
         delay={0}
         closeDelay={0}
         style={(state) => entryStyle(state.open)}
       >
         {entryContent}
-        <ChevronRight />
-      </MenuPrimitive.Trigger>
+        <span
+          style={{
+            flexShrink: 0,
+            marginLeft: 'auto',
+            color: '#52525b',
+            display: 'inline-flex',
+            alignItems: 'center',
+          }}
+        >
+          <ChevronRightIcon />
+        </span>
+      </DropdownMenu.Trigger>
 
-      <MenuPrimitive.Portal container={portalRef}>
-        <MenuPrimitive.Positioner
+      <DropdownMenu.Portal container={portalRef}>
+        <DropdownMenu.Positioner
           side="right"
           sideOffset={4}
           collisionPadding={8}
           style={{ zIndex: 999999, pointerEvents: 'auto' }}
         >
-          <MenuPrimitive.Popup
+          <DropdownMenu.Popup
             style={{
-              ...popupStyle,
               minWidth: 200,
               paddingBlock: actions.length > 0 ? 4 : 0,
             }}
@@ -367,17 +338,12 @@ function Submenu({
 
             {/* Divider between subpanels and actions */}
             {plugins.some((p) => p.subpanel) && actions.length > 0 && (
-              <div
-                style={{
-                  borderTop: '1px solid #27272a',
-                  margin: '2px 0',
-                }}
-              />
+              <DropdownMenu.Separator />
             )}
 
             {/* Action buttons */}
             {actions.map((action) => (
-              <MenuPrimitive.Item
+              <DropdownMenu.Item
                 key={action.id}
                 closeOnClick
                 onClick={async () => {
@@ -388,24 +354,18 @@ function Submenu({
                     onToggle(false)
                   }
                 }}
-                style={(state) => actionStyle(state.highlighted)}
               >
                 {action.icon && (
-                  <span
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <span style={{ display: 'flex', alignItems: 'center' }}>
                     {action.icon}
                   </span>
                 )}
                 {action.label}
-              </MenuPrimitive.Item>
+              </DropdownMenu.Item>
             ))}
-          </MenuPrimitive.Popup>
-        </MenuPrimitive.Positioner>
-      </MenuPrimitive.Portal>
-    </MenuPrimitive.Root>
+          </DropdownMenu.Popup>
+        </DropdownMenu.Positioner>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
   )
 }

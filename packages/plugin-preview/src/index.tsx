@@ -1,4 +1,5 @@
 import type { ComponentContext, RVEPlugin, RVEServices } from '@react-xray/core'
+import { FolderIcon } from '@react-xray/ui-components'
 import { useEffect, useRef, useSyncExternalStore } from 'react'
 import type { BundledTheme } from 'shiki'
 
@@ -18,35 +19,29 @@ export interface PreviewPluginOptions {
 }
 
 // ---------------------------------------------------------------------------
-// FolderToolbarIcon — folder SVG with green dot when connected
+// FolderToolbarIcon — folder icon with green dot badge when connected
 // ---------------------------------------------------------------------------
 
 function FolderToolbarIcon({ hasAccess }: { hasAccess: boolean }) {
   return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 14 14"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M1 3.5a1 1 0 0 1 1-1h3l1.5 1.5H12a1 1 0 0 1 1 1V10.5a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3.5z"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinejoin="round"
-      />
+    <span style={{ position: 'relative', display: 'inline-flex' }}>
+      <FolderIcon />
       {hasAccess && (
-        <circle
-          cx="11"
-          cy="3"
-          r="2.5"
-          fill="#22c55e"
-          stroke="#18181b"
-          strokeWidth="1"
+        <span
+          style={{
+            position: 'absolute',
+            top: -4,
+            right: -4,
+            width: 6,
+            height: 6,
+            borderRadius: '50%',
+            background: '#22c55e',
+            border: '1.5px solid #18181b',
+            pointerEvents: 'none',
+          }}
         />
       )}
-    </svg>
+    </span>
   )
 }
 

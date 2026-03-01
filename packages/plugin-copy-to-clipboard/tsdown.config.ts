@@ -6,7 +6,12 @@ export default defineConfig({
   dts: true,
   platform: 'neutral',
   deps: {
-    neverBundle: ['react', 'react/jsx-runtime', '@react-xray/core'],
+    neverBundle: [
+      'react',
+      'react/jsx-runtime',
+      '@react-xray/core',
+      '@react-xray/ui-components',
+    ],
   },
   sourcemap: true,
 })

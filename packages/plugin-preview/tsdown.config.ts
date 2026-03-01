@@ -6,14 +6,13 @@ export default defineConfig({
   dts: true,
   platform: 'neutral',
   deps: {
-    // shiki + @shikijs/monaco are bundled (pure JS, no special runtime requirements)
     neverBundle: [
       'react',
       'react/jsx-runtime',
       'react-dom',
       'react-dom/client',
       '@react-xray/core',
-      '@monaco-editor/react',
+      '@react-xray/ui-components',
     ],
   },
   sourcemap: true,

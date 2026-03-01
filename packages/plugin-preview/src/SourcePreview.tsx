@@ -1,16 +1,20 @@
 import Editor from '@monaco-editor/react'
 import type { ComponentContext, RVEServices } from '@react-xray/core'
+import {
+  CollapseIcon,
+  ExpandIcon,
+  IconButton,
+  SaveIcon,
+} from '@react-xray/ui-components'
 import type { editor } from 'monaco-types'
 import { useRef, useState } from 'react'
 
 import { FolderAccessPrompt, handleGrantAccess } from './FolderAccessPrompt'
 import { ensureHighlightStyle } from './highlight'
-import { CollapseIcon, ExpandIcon, SaveIcon } from './icons'
 import { configureBefore } from './monaco'
 import {
   actionButtonStyle,
   EDITOR_WIDTH,
-  iconButtonStyle,
   INLINE_HEIGHT,
   LINE_HEIGHT,
   TOOLBAR_HEIGHT,
@@ -99,13 +103,12 @@ export function SourcePreview({
             <SaveIcon /> Save
           </button>
         )}
-        <button
+        <IconButton
           onClick={() => setExpanded((prev) => !prev)}
           title={expanded ? 'Collapse (Esc)' : 'Expand'}
-          style={iconButtonStyle}
         >
           {expanded ? <CollapseIcon /> : <ExpandIcon />}
-        </button>
+        </IconButton>
       </div>
     </div>
   ) : null

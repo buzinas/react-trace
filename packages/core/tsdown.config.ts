@@ -26,7 +26,12 @@ export default defineConfig({
       '@jridgewell/sourcemap-codec',
       '@jridgewell/resolve-uri',
     ],
-    neverBundle: ['react', 'react-dom', 'react/jsx-runtime'],
+    neverBundle: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+      '@react-xray/ui-components',
+    ],
   },
   sourcemap: true,
   plugins: [inlineAssets],

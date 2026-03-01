@@ -1,6 +1,7 @@
 import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip'
 import type {
   ButtonHTMLAttributes,
+  CSSProperties,
   ReactElement,
   ReactNode,
   RefObject,
@@ -8,16 +9,15 @@ import type {
 
 import { Kbd } from './Kbd'
 
-interface TooltipProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface TooltipProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: ReactNode
   shortcut?: string
   container: RefObject<HTMLDivElement | null>
-  /** Forwarded to Tooltip.Trigger's render prop — use to compose with e.g. Toolbar.Button */
   render?: ReactElement
   children: ReactNode
 }
 
-const popupStyle: React.CSSProperties = {
+const popupStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   gap: 6,

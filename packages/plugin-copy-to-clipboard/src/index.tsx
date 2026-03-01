@@ -1,33 +1,6 @@
 import { resolveSource, toRelativePath } from '@react-xray/core'
 import type { ComponentContext, RVEPlugin, RVEServices } from '@react-xray/core'
-
-function ClipboardIcon() {
-  return (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 13 13"
-      fill="none"
-      aria-hidden="true"
-    >
-      <rect
-        x="4"
-        y="1"
-        width="8"
-        height="10"
-        rx="1"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <path
-        d="M4 3H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
+import { ClipboardIcon } from '@react-xray/ui-components'
 
 export function CopyToClipboardPlugin(): RVEPlugin {
   return {
