@@ -12,7 +12,7 @@ packages/
                                                         PanelHeader, Popover, DropdownMenu,
                                                         icons (via @hugeicons/core-free-icons)
   core/                     @react-xray/core          — XRay component, plugin API, utilities
-  plugin-preview/           @react-xray/plugin-preview — Monaco editor subpanel, FS access
+  plugin-preview/           @react-xray/plugin-preview — Monaco editor action panel, FS access
   plugin-comments/          @react-xray/plugin-comments — inline comments + Send to OpenCode
   plugin-copy-to-clipboard/ @react-xray/plugin-copy-to-clipboard
   plugin-open-editor/       @react-xray/plugin-open-editor
@@ -136,24 +136,27 @@ Plugins implement `RVEPlugin`:
 ```ts
 {
   name: string
-  toolbarItems?: ToolbarItem[]       // icon/label accept ReactNode or (services) => ReactNode
-  actions?(ctx, services): Action[]  // per-component actions shown in the action panel
-  subpanel?: ComponentType<{ctx, services}>  // rendered below actions in the panel
+  toolbar?: ComponentType
+  actionPanel?: ComponentType
 }
 ```
 
-- `services.fs` — `FileSystemService` singleton (read/write files via File System Access API)
-- `services.root` — absolute project root from `<XRay root="..." />`
-- `root` is **never** in plugin options — always read from `services.root`
+- `toolbar` renders plugin-owned UI directly inside the core toolbar.
+- `actionPanel` renders plugin-owned UI directly inside the widget action panel. These components receive no props; read shared state through the public hooks.
+- The deprecated compatibility contract (`toolbarItems`, `actions`, `subpanel`, `ToolbarItem`, `Action`) has been removed and should not be documented or used as supported API.
 
-**Overlay pattern** (for portal-mounted UI like CommentsMenu or FolderAccessOverlay):
+Shared hook surface from `@react-xray/core`:
 
-1. Module-level store with `subscribe` / `getSnapshot` / `set` functions
-2. Mount via `createRoot` into the `[data-react-xray]` portal element
-3. `ensureXxxMounted()` — idempotent singleton, called from the plugin factory
-4. Overlay components use `useSyncExternalStore` to read store state
+- `useProjectRoot()` — absolute project root from `<XRay root="..." />`
+- `useInspectorActive()` — whether inspector mode is currently active
+- `useSelectedContext()` — currently selected component context
+- `useSelectedSource()` — currently selected source for action-panel flows
+- `useWidgetServices()` — shared widget services such as `fs`
+- `useWidgetPortalContainer()` — portal container inside the widget shell for tooltips, dropdowns, popovers, and other portal UI
+- `useDeactivateInspector()` — disable inspector mode before opening plugin-owned interactive UI
+- `useClearSelectedContext()` — clear the current selection when a plugin flow should dismiss it
 
-**Important:** Plugin overlays must be mounted inside `[data-react-xray]` — the inspector intercepts all clicks in capture phase and only skips the portal element. Overlays rendered to `document.body` will have their clicks swallowed.
+Plugin-owned UI should render directly from `toolbar` / `actionPanel`. For popovers, dropdowns, tooltips, and other portal-mounted UI, use the widget portal container instead of singleton overlay mount patterns like `ensureXxxMounted()` or rendering to `document.body`.
 
 ---
 
@@ -178,4 +181,4 @@ Plugins implement `RVEPlugin`:
 
 ## Reading files
 
-Always use `cachebro_read_files` to read multiple known files in parallel rather than delegating to a subagent. Use the Task tool with the `explore` subagent only for open-ended searches across unknown parts of the codebase.
+Read known files directly, and parallelize independent read-only inspection when possible. Use broader codebase search only when you do not yet know which files contain the information you need.
