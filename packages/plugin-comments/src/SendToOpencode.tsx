@@ -1,6 +1,6 @@
 import { createOpencodeClient } from '@opencode-ai/sdk'
 import type { Session } from '@opencode-ai/sdk'
-import { Button } from '@react-xray/ui-components'
+import { Button, Select, Textarea } from '@react-xray/ui-components'
 import { useEffect, useRef, useState } from 'react'
 
 import { clearAllComments, getStoreSnapshot } from './store'
@@ -203,35 +203,35 @@ export function SendToOpencodeForm({
         >
           Session
         </label>
-        <select
+        <Select.Root
           value={selectedId}
-          onChange={(e) => setSelectedId(e.target.value)}
+          onValueChange={(v) => v && setSelectedId(v)}
           disabled={disabled}
-          style={{
-            width: '100%',
-            background: '#0f0f11',
-            border: '1px solid #3f3f46',
-            borderRadius: 5,
-            color: '#fafafa',
-            fontSize: 12,
-            fontFamily: 'system-ui, sans-serif',
-            padding: '5px 8px',
-            outline: 'none',
-            cursor: disabled ? 'not-allowed' : 'pointer',
-            boxSizing: 'border-box',
-          }}
         >
-          <option value="__new__">+ New session</option>
-          {loading ? (
-            <option disabled>Loading sessions…</option>
-          ) : (
-            sessions.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.title || `Session ${s.id.slice(0, 8)}`}
-              </option>
-            ))
-          )}
-        </select>
+          <Select.Trigger style={{ borderRadius: 4 }}>
+            <Select.Value placeholder="Select a session…" />
+          </Select.Trigger>
+          <Select.Positioner style={{ zIndex: 9999999 }}>
+            <Select.Popup>
+              <Select.Item value="__new__">
+                <Select.ItemText>+ New session</Select.ItemText>
+              </Select.Item>
+              {loading ? (
+                <Select.Item value="__loading__" disabled>
+                  <Select.ItemText>Loading sessions…</Select.ItemText>
+                </Select.Item>
+              ) : (
+                sessions.map((s) => (
+                  <Select.Item key={s.id} value={s.id}>
+                    <Select.ItemText>
+                      {s.title || `Session ${s.id.slice(0, 8)}`}
+                    </Select.ItemText>
+                  </Select.Item>
+                ))
+              )}
+            </Select.Popup>
+          </Select.Positioner>
+        </Select.Root>
       </div>
 
       {/* General comment */}
@@ -247,7 +247,7 @@ export function SendToOpencodeForm({
         >
           Message <span style={{ color: '#52525b' }}>(optional)</span>
         </label>
-        <textarea
+        <Textarea
           ref={textareaRef}
           value={generalComment}
           onChange={(e) => setGeneralComment(e.target.value)}
@@ -255,23 +255,6 @@ export function SendToOpencodeForm({
           placeholder="e.g. Left the comments below, please address"
           rows={2}
           disabled={disabled}
-          style={{
-            width: '100%',
-            background: '#0f0f11',
-            border: '1px solid #3f3f46',
-            borderRadius: 5,
-            outline: 'none',
-            resize: 'vertical',
-            color: '#fafafa',
-            fontSize: 12,
-            fontFamily: 'system-ui, sans-serif',
-            lineHeight: 1.4,
-            padding: '5px 8px',
-            boxSizing: 'border-box',
-            caretColor: '#3b82f6',
-          }}
-          onFocus={(e) => (e.target.style.borderColor = '#3b82f6')}
-          onBlur={(e) => (e.target.style.borderColor = '#3f3f46')}
         />
       </div>
 

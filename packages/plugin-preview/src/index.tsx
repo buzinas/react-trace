@@ -97,7 +97,10 @@ function FolderLabel({ services }: { services: RVEServices }) {
 
 export function PreviewPlugin(options: PreviewPluginOptions = {}): RVEPlugin {
   const { editable = false, theme = 'one-dark-pro' } = options
-  ensurePreviewOverlayMounted()
+
+  useEffect(() => {
+    ensurePreviewOverlayMounted()
+  }, [])
 
   function BoundSourcePreview({
     ctx,

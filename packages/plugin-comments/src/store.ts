@@ -117,6 +117,16 @@ export function toggleMenu() {
 }
 
 // ---------------------------------------------------------------------------
+// XRay portal element ref — used by CommentsMenuOverlay as Popover.Portal container
+// ---------------------------------------------------------------------------
+
+export let xrayPortalEl: HTMLElement | null = null
+
+export function setXRayPortalEl(el: HTMLElement | null) {
+  xrayPortalEl = el
+}
+
+// ---------------------------------------------------------------------------
 // Toolbar button DOM ref — used by CommentsMenuOverlay to anchor itself
 // ---------------------------------------------------------------------------
 

@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client'
 
 import { CommentEditorOverlay } from './CommentEditor'
 import { CommentsMenuOverlay } from './CommentsMenu'
+import { setXRayPortalEl } from './store'
 
 /**
  * Root component that renders all plugin overlays. Mounted once into a
@@ -37,6 +38,7 @@ export function ensureOverlayMounted() {
     const xrayPortal = getXRayPortal()
     if (xrayPortal) {
       xrayPortal.appendChild(container)
+      setXRayPortalEl(xrayPortal)
     } else {
       // XRay portal is created in a useEffect, so it may not exist yet.
       // Append to body first, then move it once the portal appears.
@@ -45,14 +47,14 @@ export function ensureOverlayMounted() {
         const portal = getXRayPortal()
         if (portal && container.parentElement !== portal) {
           portal.appendChild(container)
+          setXRayPortalEl(portal)
           observer.disconnect()
         }
       })
       observer.observe(document.body, { childList: true })
     }
 
-    const root = createRoot(container)
-    root.render(<CommentsRoot />)
+    createRoot(container).render(<CommentsRoot />)
   }
 
   if (document.body) {

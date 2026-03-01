@@ -1,8 +1,10 @@
 import {
   Button,
   ClipboardIcon,
+  IconButton,
   OpencodeIcon,
   PanelHeader,
+  Textarea,
   TrashIcon,
   XIcon,
 } from '@react-xray/ui-components'
@@ -70,7 +72,6 @@ function CommentRow({
   const [draft, setDraft] = useState(comment.comment)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // Keep draft in sync if the comment text changes externally
   useEffect(() => {
     if (!editing) setDraft(comment.comment)
   }, [comment.comment, editing])
@@ -118,7 +119,6 @@ function CommentRow({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Header: file:line + delete button */}
       <div
         style={{
           display: 'flex',
@@ -138,50 +138,24 @@ function CommentRow({
           {comment.filePath}:{comment.lineNumber}
         </span>
         {hovered && !editing && (
-          <button
-            type="button"
+          <IconButton
             onClick={onDelete}
             title="Remove comment"
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#71717a',
-              cursor: 'pointer',
-              padding: 0,
-              display: 'flex',
-              alignItems: 'center',
-              flexShrink: 0,
-            }}
+            style={{ padding: 0, flexShrink: 0 }}
           >
             <XIcon />
-          </button>
+          </IconButton>
         )}
       </div>
 
-      {/* Body — click to edit, textarea when editing */}
       {editing ? (
         <div style={{ marginTop: 4 }}>
-          <textarea
+          <Textarea
             ref={textareaRef}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={handleKeyDown}
             rows={3}
-            style={{
-              width: '100%',
-              background: '#0f0f11',
-              border: '1px solid #3b82f6',
-              borderRadius: 4,
-              outline: 'none',
-              resize: 'vertical',
-              color: '#fafafa',
-              fontSize: 12,
-              fontFamily: 'system-ui, sans-serif',
-              lineHeight: 1.4,
-              padding: '4px 6px',
-              boxSizing: 'border-box',
-              caretColor: '#3b82f6',
-            }}
           />
           <div
             style={{
@@ -348,8 +322,11 @@ export function CommentsMenuOverlay() {
             )}
           </>
         }
-        onClose={() => setMenuOpen(false)}
-        closeTitle="Close"
+        actionsRender={
+          <IconButton onClick={() => setMenuOpen(false)} title="Close">
+            <XIcon />
+          </IconButton>
+        }
       />
 
       {/* Comment list */}

@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 
 import { FolderAccessOverlay } from './FolderAccessOverlay'
+import { setXRayPortalEl } from './folderPrompt'
 
 function PreviewRoot() {
   return <FolderAccessOverlay />
@@ -29,20 +30,21 @@ export function ensurePreviewOverlayMounted() {
     const xrayPortal = getXRayPortal()
     if (xrayPortal) {
       xrayPortal.appendChild(container)
+      setXRayPortalEl(xrayPortal)
     } else {
       document.body.appendChild(container)
       const observer = new MutationObserver(() => {
         const portal = getXRayPortal()
         if (portal && container.parentElement !== portal) {
           portal.appendChild(container)
+          setXRayPortalEl(portal)
           observer.disconnect()
         }
       })
       observer.observe(document.body, { childList: true })
     }
 
-    const root = createRoot(container)
-    root.render(<PreviewRoot />)
+    createRoot(container).render(<PreviewRoot />)
   }
 
   if (document.body) {

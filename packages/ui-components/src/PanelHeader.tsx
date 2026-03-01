@@ -1,12 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react'
 
-import { IconButton } from './IconButton'
-import { XIcon } from './icons'
-
 export interface PanelHeaderProps {
   title: ReactNode
-  onClose?: () => void
-  closeTitle?: string
+  actionsRender?: ReactNode
   style?: CSSProperties
   titleStyle?: CSSProperties
 }
@@ -28,23 +24,14 @@ const titleBaseStyle: CSSProperties = {
 
 export function PanelHeader({
   title,
-  onClose,
-  closeTitle = 'Close (Esc)',
+  actionsRender,
   style,
   titleStyle,
 }: PanelHeaderProps) {
   return (
     <div style={{ ...headerStyle, ...style }}>
       <span style={{ ...titleBaseStyle, ...titleStyle }}>{title}</span>
-      {onClose != null && (
-        <IconButton
-          onClick={onClose}
-          title={closeTitle}
-          style={{ padding: '0 2px' }}
-        >
-          <XIcon />
-        </IconButton>
-      )}
+      {actionsRender}
     </div>
   )
 }

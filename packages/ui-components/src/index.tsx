@@ -12,6 +12,12 @@ export type { IconButtonProps } from './IconButton'
 export { PanelHeader } from './PanelHeader'
 export type { PanelHeaderProps } from './PanelHeader'
 
+export { Textarea } from './Textarea'
+export type { TextareaProps } from './Textarea'
+
+export { Separator } from './Separator'
+export type { SeparatorProps } from './Separator'
+
 export {
   ChatBubbleIcon,
   ChevronRightIcon,
@@ -29,3 +35,5 @@ export {
 export { Popover, panelPopupStyle } from './Popover'
 
 export { DropdownMenu } from './DropdownMenu'
+
+export { Select } from './Select'

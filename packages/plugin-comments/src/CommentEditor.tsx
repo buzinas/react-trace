@@ -1,4 +1,9 @@
-import { Button } from '@react-xray/ui-components'
+import {
+  Button,
+  panelPopupStyle,
+  Separator,
+  Textarea,
+} from '@react-xray/ui-components'
 import {
   useCallback,
   useEffect,
@@ -69,16 +74,14 @@ export function CommentEditorOverlay() {
   return (
     <div
       style={{
+        ...panelPopupStyle,
         position: 'fixed',
         left,
         top,
         width: EDITOR_WIDTH,
-        background: '#18181b',
         border: '1px solid #3b82f6',
         pointerEvents: 'auto',
-        borderRadius: 8,
         padding: 8,
-        boxShadow: '0 8px 24px rgba(0,0,0,0.7)',
         zIndex: 9999999,
         fontFamily: 'system-ui, sans-serif',
         boxSizing: 'border-box',
@@ -86,37 +89,23 @@ export function CommentEditorOverlay() {
       onClick={(e) => e.stopPropagation()}
       onKeyDown={(e) => e.stopPropagation()}
     >
-      <textarea
+      <Textarea
         ref={textareaRef}
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Add comment"
         rows={3}
-        style={{
-          width: '100%',
-          background: 'transparent',
-          border: 'none',
-          outline: 'none',
-          resize: 'vertical',
-          color: '#fafafa',
-          fontSize: 13,
-          fontFamily: 'system-ui, sans-serif',
-          lineHeight: 1.5,
-          padding: '4px 2px',
-          boxSizing: 'border-box',
-          caretColor: '#3b82f6',
-        }}
       />
+
+      <Separator style={{ margin: '4px 0' }} />
 
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginTop: 4,
-          borderTop: '1px solid #27272a',
-          paddingTop: 8,
+          paddingTop: 4,
         }}
       >
         <span

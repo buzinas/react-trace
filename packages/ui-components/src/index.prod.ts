@@ -6,32 +6,19 @@
  */
 import type { CSSProperties, ReactNode } from 'react'
 
-// ---------------------------------------------------------------------------
-// Style constants
-// ---------------------------------------------------------------------------
 export const panelPopupStyle: CSSProperties = {}
 
-// ---------------------------------------------------------------------------
-// Kbd
-// ---------------------------------------------------------------------------
 export const Kbd = () => null
 export const KbdGroup = () => null
 
-// ---------------------------------------------------------------------------
-// Tooltip
-// ---------------------------------------------------------------------------
 export const Tooltip = () => null
 
-// ---------------------------------------------------------------------------
-// Button primitives
-// ---------------------------------------------------------------------------
 export const Button = () => null
 export const IconButton = () => null
 export const PanelHeader = () => null
+export const Textarea = () => null
+export const Separator = () => null
 
-// ---------------------------------------------------------------------------
-// Icons
-// ---------------------------------------------------------------------------
 export const ClipboardIcon = () => null
 export const XIcon = () => null
 export const ChevronRightIcon = () => null
@@ -42,10 +29,8 @@ export const SaveIcon = () => null
 export const ExpandIcon = () => null
 export const CollapseIcon = () => null
 export const FolderIcon = () => null
+export const OpencodeIcon = () => null
 
-// ---------------------------------------------------------------------------
-// Popover namespace
-// ---------------------------------------------------------------------------
 export const Popover = {
   Root: ({ children }: { children?: ReactNode }) => children,
   Trigger: () => null,
@@ -55,9 +40,6 @@ export const Popover = {
   Popup: () => null,
 }
 
-// ---------------------------------------------------------------------------
-// DropdownMenu namespace
-// ---------------------------------------------------------------------------
 export const DropdownMenu = {
   Root: ({ children }: { children?: ReactNode }) => children,
   Trigger: () => null,
@@ -65,5 +47,19 @@ export const DropdownMenu = {
   Positioner: () => null,
   Popup: () => null,
   Item: () => null,
+  Separator: () => null,
+}
+
+export const Select = {
+  Root: ({ children }: { children?: ReactNode }) => children,
+  Trigger: () => null,
+  Value: () => null,
+  Positioner: () => null,
+  Popup: () => null,
+  Item: () => null,
+  ItemText: () => null,
+  ItemIndicator: () => null,
+  Group: ({ children }: { children?: ReactNode }) => children,
+  GroupLabel: () => null,
   Separator: () => null,
 }

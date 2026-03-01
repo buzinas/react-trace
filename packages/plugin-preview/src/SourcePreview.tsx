@@ -1,9 +1,11 @@
 import Editor from '@monaco-editor/react'
 import type { ComponentContext, RVEServices } from '@react-xray/core'
 import {
+  Button,
   CollapseIcon,
   ExpandIcon,
   IconButton,
+  panelPopupStyle,
   SaveIcon,
 } from '@react-xray/ui-components'
 import type { editor } from 'monaco-types'
@@ -13,7 +15,6 @@ import { FolderAccessPrompt, handleGrantAccess } from './FolderAccessPrompt'
 import { ensureHighlightStyle } from './highlight'
 import { configureBefore } from './monaco'
 import {
-  actionButtonStyle,
   EDITOR_WIDTH,
   INLINE_HEIGHT,
   LINE_HEIGHT,
@@ -95,13 +96,9 @@ export function SourcePreview({
       </span>
       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
         {dirty && (
-          <button
-            onClick={handleSave}
-            title="Save (⌘S)"
-            style={actionButtonStyle}
-          >
+          <Button variant="accent" onClick={handleSave} title="Save (⌘S)">
             <SaveIcon /> Save
-          </button>
+          </Button>
         )}
         <IconButton
           onClick={() => setExpanded((prev) => !prev)}
@@ -237,12 +234,10 @@ export function SourcePreview({
     >
       <div
         style={{
+          ...panelPopupStyle,
           position: 'fixed',
           top: '10vw',
           left: '10vw',
-          border: '1px solid #27272a',
-          borderRadius: 10,
-          boxShadow: '0 24px 64px rgba(0,0,0,0.8)',
           overflow: 'hidden',
           width: '80vw',
           height: '80vh',

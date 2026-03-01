@@ -5,7 +5,7 @@ export interface ButtonProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   'style'
 > {
-  variant: 'primary' | 'secondary'
+  variant: 'primary' | 'secondary' | 'accent'
   style?: CSSProperties
   render?: React.ReactElement
 }
@@ -16,7 +16,7 @@ const baseStyle: CSSProperties = {
   justifyContent: 'center',
   gap: 4,
   height: 28,
-  padding: '0 12px',
+  padding: '0 8px',
   borderRadius: 6,
   fontSize: 12,
   fontFamily: 'system-ui, sans-serif',
@@ -27,18 +27,24 @@ const baseStyle: CSSProperties = {
   whiteSpace: 'nowrap',
 }
 
-const variantStyles: Record<'primary' | 'secondary', CSSProperties> = {
-  primary: {
-    background: '#fafafa',
-    border: 'none',
-    color: '#18181b',
-  },
-  secondary: {
-    background: 'transparent',
-    border: '1px solid #3f3f46',
-    color: '#d4d4d8',
-  },
-}
+const variantStyles: Record<'primary' | 'secondary' | 'accent', CSSProperties> =
+  {
+    primary: {
+      background: '#fafafa',
+      border: 'none',
+      color: '#18181b',
+    },
+    secondary: {
+      background: 'transparent',
+      border: '1px solid #3f3f46',
+      color: '#d4d4d8',
+    },
+    accent: {
+      background: 'rgba(59,130,246,0.15)',
+      border: '1px solid rgba(59,130,246,0.3)',
+      color: '#93c5fd',
+    },
+  }
 
 export function Button({ variant, style, render, ...props }: ButtonProps) {
   return (

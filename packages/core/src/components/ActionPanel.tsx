@@ -1,6 +1,7 @@
 import {
   ChevronRightIcon,
   DropdownMenu,
+  PanelHeader,
   Popover,
   XIcon,
 } from '@react-xray/ui-components'
@@ -147,44 +148,32 @@ export function ActionPanel({
             {context && (
               <>
                 {/* Header */}
-                <div
+                <PanelHeader
+                  title={context.displayName}
+                  titleStyle={{ fontFamily: 'ui-monospace, monospace' }}
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '10px 12px 8px',
-                    borderBottom: '1px solid #27272a',
                     position: 'sticky',
                     top: 0,
                     background: '#18181b',
                     zIndex: 1,
                   }}
-                >
-                  <span
-                    style={{
-                      color: '#fafafa',
-                      fontSize: 13,
-                      fontWeight: 600,
-                      fontFamily: 'ui-monospace, monospace',
-                    }}
-                  >
-                    {context.displayName}
-                  </span>
-                  <Popover.Close
-                    title="Close (Esc)"
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      color: '#52525b',
-                      cursor: 'pointer',
-                      padding: '0 2px',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <XIcon />
-                  </Popover.Close>
-                </div>
+                  actionsRender={
+                    <Popover.Close
+                      title="Close (Esc)"
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: '#52525b',
+                        cursor: 'pointer',
+                        padding: '0 2px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <XIcon />
+                    </Popover.Close>
+                  }
+                />
 
                 {/* Owner chain */}
                 <div

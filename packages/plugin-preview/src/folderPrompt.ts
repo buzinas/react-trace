@@ -1,6 +1,16 @@
 import type { RVEServices } from '@react-xray/core'
 
 // ---------------------------------------------------------------------------
+// XRay portal element ref — used by FolderAccessOverlay as Popover.Portal container
+// ---------------------------------------------------------------------------
+
+export let xrayPortalEl: HTMLElement | null = null
+
+export function setXRayPortalEl(el: HTMLElement | null) {
+  xrayPortalEl = el
+}
+
+// ---------------------------------------------------------------------------
 // Folder button DOM ref — used by FolderAccessOverlay to anchor itself
 // ---------------------------------------------------------------------------
 
