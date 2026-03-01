@@ -2,23 +2,14 @@ import { Toolbar as ToolbarPrimitive } from '@base-ui/react/toolbar'
 import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip'
 import { ToolbarButton, Tooltip } from '@react-xray/ui-components'
 import { useAtom, useAtomValue } from 'jotai'
-import { Fragment } from 'react'
 
 import logo from '../logo.png'
 import { IS_MAC } from '../platform'
-import { getToolbarPluginEntries } from '../pluginRendering'
 import { inspectorActiveAtom, portalContainerAtom } from '../store'
-import type {
-  ComponentContext,
-  RVEPlugin,
-  RVEServices,
-  XRayProps,
-} from '../types'
+import type { RVEPlugin, XRayProps } from '../types'
 
 interface ToolbarProps {
-  selectedContext: ComponentContext | null
   plugins: RVEPlugin[]
-  services: RVEServices
   position: NonNullable<XRayProps['position']>
 }
 
@@ -36,15 +27,9 @@ const POSITION_STYLES: Record<
 
 const TOGGLE_SHORTCUT = IS_MAC ? 'Long-press ⌘X' : 'Long-press Ctrl+X'
 
-export function Toolbar({
-  selectedContext,
-  plugins,
-  services,
-  position,
-}: ToolbarProps) {
+export function Toolbar({ plugins, position }: ToolbarProps) {
   const [isInspectorActive, setInspectorActive] = useAtom(inspectorActiveAtom)
   const portalContainer = useAtomValue(portalContainerAtom)
-  const pluginEntries = getToolbarPluginEntries(plugins)
 
   return (
     <TooltipPrimitive.Provider delay={300}>
@@ -84,54 +69,12 @@ export function Toolbar({
           />
         </Tooltip>
         {/* Plugin toolbar content */}
-        {pluginEntries.map((entry) => {
-          const ToolbarContent = entry.toolbar
-
-          return (
-            <Fragment key={entry.name}>
-              {ToolbarContent && <ToolbarContent />}
-
-              {entry.legacyToolbarItems.map((item) => {
-                const active = item.isActive?.(selectedContext) ?? false
-                const resolvedIcon =
-                  typeof item.icon === 'function'
-                    ? item.icon(services)
-                    : item.icon
-                const resolvedLabel =
-                  typeof item.label === 'function'
-                    ? item.label(services)
-                    : item.label
-
-                return (
-                  <Tooltip
-                    key={`${entry.name}:${item.id}`}
-                    label={resolvedLabel}
-                    container={portalContainer}
-                    render={
-                      <ToolbarButton render={<ToolbarPrimitive.Button />} />
-                    }
-                    aria-label={item.ariaLabel ?? item.id}
-                    style={{
-                      background: active
-                        ? 'rgba(59,130,246,0.2)'
-                        : 'transparent',
-                      border: active
-                        ? '1px solid rgba(59,130,246,0.5)'
-                        : '1px solid transparent',
-                      color: '#fafafa',
-                    }}
-                    onClick={() => {
-                      setInspectorActive(false)
-                      item.onClick(selectedContext, services)
-                    }}
-                  >
-                    {resolvedIcon}
-                  </Tooltip>
-                )
-              })}
-            </Fragment>
-          )
-        })}
+        {plugins
+          .filter((plugin) => plugin.toolbar)
+          .map((plugin) => {
+            const ToolbarContent = plugin.toolbar!
+            return <ToolbarContent key={plugin.name} />
+          })}
       </ToolbarPrimitive.Root>
     </TooltipPrimitive.Provider>
   )

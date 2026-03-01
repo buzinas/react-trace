@@ -81,7 +81,6 @@ export function FolderAccessPrompt({
 
 /**
  * Copies the root path to clipboard then calls requestAccess().
- * Used by both FolderAccessOverlay (toolbar) and SourcePreview (subpanel).
  */
 export async function handleGrantAccess(
   root: string | undefined,

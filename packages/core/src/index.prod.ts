@@ -27,7 +27,6 @@ const NOOP_FILE_SYSTEM_SERVICE: FileSystemService = {
 }
 const NOOP_WIDGET_SERVICES: RVEServices = {
   fs: NOOP_FILE_SYSTEM_SERVICE,
-  root: undefined,
 }
 
 export const XRay = () => null
@@ -46,12 +45,10 @@ export const toAbsolutePath = (path: string) => path
 export const toRelativePath = (path: string) => path
 
 export type {
-  Action,
   ComponentContext,
   ComponentSource,
   FileSystemService,
   RVEPlugin,
   RVEServices,
-  ToolbarItem,
   XRayProps,
 } from './types'

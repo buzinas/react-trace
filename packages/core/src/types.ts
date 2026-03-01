@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from 'react'
+import type { ComponentType } from 'react'
 
 export interface ComponentSource {
   fileName: string
@@ -52,67 +52,18 @@ export interface FileSystemService {
 
 export interface RVEServices {
   fs: FileSystemService
-  /** Absolute path to the project root — passed via <XRay root="..." /> */
-  root?: string
-}
-
-/**
- * Legacy compatibility toolbar button. Prefer `RVEPlugin.toolbar`.
- */
-export interface ToolbarItem {
-  id: string
-  /** ReactNode, or a render function that receives services for reactive icons */
-  icon: ReactNode | ((services: RVEServices) => ReactNode)
-  /** ReactNode, or a render function that receives services for reactive labels */
-  label: ReactNode | ((services: RVEServices) => ReactNode)
-  /** Plain-text label used for aria-label. Falls back to id. */
-  ariaLabel?: string
-  isActive?: (ctx: ComponentContext | null) => boolean
-  onClick(ctx: ComponentContext | null, services: RVEServices): void
-}
-
-/**
- * Legacy compatibility action row. Prefer `RVEPlugin.actionPanel`.
- */
-export interface Action {
-  id: string
-  label: string
-  icon?: ReactNode
-  onClick(
-    ctx: ComponentContext,
-    services: RVEServices,
-  ): boolean | void | Promise<boolean | void>
 }
 
 export interface RVEPlugin {
   name: string
   /**
-   * Wave 2 primary path: plugin-owned toolbar UI rendered directly inside the
-   * core toolbar. Components should read shared state through the public hooks.
+   * Component to render inside the widget's toolbar.
    */
   toolbar?: ComponentType
   /**
-   * Wave 2 primary path: plugin-owned UI rendered directly inside each action
-   * panel entry submenu. Direct renderers receive no per-entry props; read
-   * shared state through the public hooks instead. Use `useSelectedSource()`
-   * for the current row's source, plus shared hooks such as
-   * `useSelectedContext()` and `useWidgetServices()` for widget-wide state.
+   * Component to render inside the action panel when a context is selected in the inspector.
    */
   actionPanel?: ComponentType
-  /** @deprecated Narrow compatibility bridge for pre-Wave 2 toolbar plugins. */
-  toolbarItems?: ToolbarItem[]
-  /** @deprecated Narrow compatibility bridge for pre-Wave 2 action rows. */
-  actions?: (ctx: ComponentContext, services: RVEServices) => Action[]
-  /**
-   * @deprecated Narrow compatibility bridge for pre-Wave 2 inline action-panel UI.
-   * Prefer `actionPanel`, which is prop-less and reads shared state via hooks.
-   *
-   * An optional React component rendered inside the entry submenu popup,
-   * above the action buttons. Receives the per-entry ctx (ctx.source is the
-   * specific entry's source, not the top-level one). Must be a component type
-   * (not a function returning ReactNode) so it can use hooks.
-   */
-  subpanel?: ComponentType<{ ctx: ComponentContext; services: RVEServices }>
 }
 
 export interface XRayProps {

@@ -14,12 +14,10 @@ export { toAbsolutePath, toRelativePath } from './path'
 export { IS_MAC, MOD_KEY } from './platform'
 
 export type {
-  Action,
   ComponentContext,
   ComponentSource,
   FileSystemService,
   RVEPlugin,
   RVEServices,
-  ToolbarItem,
   XRayProps,
 } from './types'

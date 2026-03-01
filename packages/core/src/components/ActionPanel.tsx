@@ -6,26 +6,16 @@ import {
   XIcon,
 } from '@react-xray/ui-components'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import type { ReactNode } from 'react'
 import { useCallback } from 'react'
 
 import { toRelativePath } from '../path'
 import {
-  getActionPanelPluginEntries,
-  hasActionPanelContent,
-} from '../pluginRendering'
-import {
-  inspectorActiveAtom,
   portalContainerAtom,
   selectedContextAtom,
   selectedSourceAtom,
-  servicesAtom,
 } from '../store'
-import type {
-  ComponentContext,
-  ComponentSource,
-  RVEPlugin,
-  RVEServices,
-} from '../types'
+import type { ComponentContext, ComponentSource, RVEPlugin } from '../types'
 
 interface ActionPanelProps {
   plugins: RVEPlugin[]
@@ -117,7 +107,6 @@ function entryStyle(active: boolean): React.CSSProperties {
 // ---------------------------------------------------------------------------
 
 export function ActionPanel({ plugins }: ActionPanelProps) {
-  const services = useAtomValue(servicesAtom)
   const [selectedContext, setSelectedContext] = useAtom(selectedContextAtom)
   const portalContainer = useAtomValue(portalContainerAtom)
   const groups = selectedContext ? groupChain(selectedContext.all) : []
@@ -207,16 +196,6 @@ export function ActionPanel({ plugins }: ActionPanelProps) {
                       )
                     }
 
-                    const entryCtx = {
-                      ...selectedContext,
-                      source: group.source,
-                    }
-                    const pluginEntries = getActionPanelPluginEntries(
-                      plugins,
-                      entryCtx,
-                      services,
-                    )
-
                     const entryContent = (
                       <div
                         style={{
@@ -244,7 +223,7 @@ export function ActionPanel({ plugins }: ActionPanelProps) {
                     )
 
                     // No plugin actions — plain row
-                    if (!hasActionPanelContent(pluginEntries)) {
+                    if (!plugins.some((p) => p.actionPanel)) {
                       return (
                         <div key={`entry-${gi}`} style={entryStyle(false)}>
                           {entryContent}
@@ -256,10 +235,8 @@ export function ActionPanel({ plugins }: ActionPanelProps) {
                       <Submenu
                         key={`entry-${gi}`}
                         entryContent={entryContent}
-                        pluginEntries={pluginEntries}
-                        entryCtx={entryCtx}
-                        services={services}
-                        onClose={onClose}
+                        plugins={plugins.filter((p) => p.actionPanel)}
+                        source={group.source}
                       />
                     )
                   })}
@@ -275,29 +252,19 @@ export function ActionPanel({ plugins }: ActionPanelProps) {
 
 function Submenu({
   entryContent,
-  pluginEntries,
-  entryCtx,
-  services,
-  onClose,
+  plugins,
+  source,
 }: {
-  entryContent: React.ReactNode
-  pluginEntries: ReturnType<typeof getActionPanelPluginEntries>
-  entryCtx: ComponentContext
-  services: RVEServices
-  onClose(): void
+  entryContent: ReactNode
+  plugins: RVEPlugin[]
+  source: ComponentSource
 }) {
   const portalContainer = useAtomValue(portalContainerAtom)
   const setSelectedSource = useSetAtom(selectedSourceAtom)
-  const setInspectorActive = useSetAtom(inspectorActiveAtom)
-  const hasPluginActionPanels = pluginEntries.some((entry) => entry.actionPanel)
-  const hasLegacySubpanels = pluginEntries.some((entry) => entry.legacySubpanel)
-  const hasLegacyActions = pluginEntries.some(
-    (entry) => entry.legacyActions.length > 0,
-  )
 
   return (
     <DropdownMenu.Root
-      onOpenChange={(open) => open && setSelectedSource(entryCtx.source)}
+      onOpenChange={(open) => open && setSelectedSource(source)}
     >
       <DropdownMenu.Trigger
         openOnHover
@@ -329,64 +296,13 @@ function Submenu({
           <DropdownMenu.Popup
             style={{
               minWidth: 200,
-              paddingBlock: hasActionPanelContent(pluginEntries) ? 4 : 0,
+              paddingBlock: plugins.length > 0 ? 4 : 0,
             }}
           >
-            {/* Wave 2 plugin-owned action-panel content */}
-            {pluginEntries.map((entry) => {
-              if (!entry.actionPanel) return null
-              const ActionPanelContent = entry.actionPanel
-              return <ActionPanelContent key={`action-panel:${entry.name}`} />
+            {plugins.map((plugin) => {
+              const ActionPanelContent = plugin.actionPanel!
+              return <ActionPanelContent key={`action-panel:${plugin.name}`} />
             })}
-
-            {/* Divider between direct renderers and legacy compatibility content */}
-            {hasPluginActionPanels &&
-              (hasLegacySubpanels || hasLegacyActions) && (
-                <DropdownMenu.Separator />
-              )}
-
-            {/* Legacy plugin subpanels (compatibility bridge) */}
-            {pluginEntries.map((entry) => {
-              if (!entry.legacySubpanel) return null
-              const Subpanel = entry.legacySubpanel
-              return (
-                <Subpanel
-                  key={`legacy-subpanel:${entry.name}`}
-                  ctx={entryCtx}
-                  services={services}
-                />
-              )
-            })}
-
-            {/* Divider between legacy subpanels and legacy actions */}
-            {hasLegacySubpanels && hasLegacyActions && (
-              <DropdownMenu.Separator />
-            )}
-
-            {/* Legacy action rows (compatibility bridge) */}
-            {pluginEntries.map((entry) =>
-              entry.legacyActions.map((action) => (
-                <DropdownMenu.Item
-                  key={`${entry.name}:${action.id}`}
-                  closeOnClick
-                  onClick={async () => {
-                    const result = await action.onClick(entryCtx, services)
-
-                    onClose()
-                    if (result) {
-                      setInspectorActive(false)
-                    }
-                  }}
-                >
-                  {action.icon && (
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                      {action.icon}
-                    </span>
-                  )}
-                  {action.label}
-                </DropdownMenu.Item>
-              )),
-            )}
           </DropdownMenu.Popup>
         </DropdownMenu.Positioner>
       </DropdownMenu.Portal>

@@ -11,7 +11,6 @@ import {
   portalContainerAtom,
   projectRootAtom,
   selectedContextAtom,
-  servicesAtom,
 } from '../store'
 import type { ComponentContext, XRayProps } from '../types'
 import { ActionPanel } from './ActionPanel'
@@ -31,8 +30,6 @@ export function XRay({
   const [jotaiStore] = useState(() => {
     const store = createWidgetStore()
     store.set(projectRootAtom, root)
-    // TODO: remove root from services and use useProjectRoot in plugins
-    store.set(servicesAtom, { root, fs: fileSystemService })
     return store
   })
 
@@ -50,7 +47,6 @@ function XRayRoot({
   plugins: NonNullable<XRayProps['plugins']>
   position: NonNullable<XRayProps['position']>
 }) {
-  const services = useAtomValue(servicesAtom)
   const portalContainer = useAtomValue(portalContainerAtom)
 
   const [inspectorActive, setInspectorActive] = useAtom(inspectorActiveAtom)
@@ -195,12 +191,7 @@ function XRayRoot({
     <>
       {/* Toolbar — pointer-events:auto so buttons are clickable */}
       <div style={{ pointerEvents: 'auto' }}>
-        <Toolbar
-          selectedContext={selectedContext}
-          plugins={plugins}
-          services={services}
-          position={position}
-        />
+        <Toolbar plugins={plugins} position={position} />
       </div>
 
       {/* Overlay — pointer-events:none, managed by the container */}
