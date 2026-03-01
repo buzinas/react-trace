@@ -1,30 +1,44 @@
-import { resolveSource, toRelativePath } from '@react-xray/core'
-import type { ComponentContext, RVEPlugin, RVEServices } from '@react-xray/core'
-import { ClipboardIcon } from '@react-xray/ui-components'
+import {
+  resolveSource,
+  toRelativePath,
+  useClearSelectedContext,
+  useProjectRoot,
+  useSelectedSource,
+  type RVEPlugin,
+} from '@react-xray/core'
+import { ClipboardIcon, DropdownMenu } from '@react-xray/ui-components'
+
+function CopyToClipboardActionPanel() {
+  const selectedSource = useSelectedSource()
+  const projectRoot = useProjectRoot()
+  const clearSelectedContext = useClearSelectedContext()
+
+  if (!selectedSource) return null
+
+  const handleCopy = async () => {
+    clearSelectedContext()
+
+    try {
+      const resolved = await resolveSource(selectedSource)
+      const path = toRelativePath(resolved.fileName, projectRoot)
+
+      await navigator.clipboard.writeText(`${path}:${resolved.lineNumber}`)
+    } catch {}
+  }
+
+  return (
+    <DropdownMenu.Item onClick={handleCopy}>
+      <span style={{ display: 'flex', alignItems: 'center' }}>
+        <ClipboardIcon />
+      </span>
+      Copy path
+    </DropdownMenu.Item>
+  )
+}
 
 export function CopyToClipboardPlugin(): RVEPlugin {
   return {
     name: 'copy-to-clipboard',
-    actions(_ctx: ComponentContext, services: RVEServices) {
-      const ctx = _ctx
-      if (!ctx.source) return []
-      const root = services.root
-
-      return [
-        {
-          id: 'copy-to-clipboard',
-          label: 'Copy path',
-          icon: <ClipboardIcon />,
-          onClick(ctx: ComponentContext) {
-            resolveSource(ctx.source!)
-              .then((resolved) => {
-                const path = toRelativePath(resolved.fileName, root)
-                navigator.clipboard.writeText(`${path}:${resolved.lineNumber}`)
-              })
-              .catch(() => {})
-          },
-        },
-      ]
-    },
+    actionPanel: CopyToClipboardActionPanel,
   }
 }

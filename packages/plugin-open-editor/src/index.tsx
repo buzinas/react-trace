@@ -1,6 +1,12 @@
-import { resolveSource, toAbsolutePath } from '@react-xray/core'
-import type { ComponentContext, RVEPlugin, RVEServices } from '@react-xray/core'
-import { OpenInEditorIcon } from '@react-xray/ui-components'
+import {
+  resolveSource,
+  toAbsolutePath,
+  useClearSelectedContext,
+  useProjectRoot,
+  useSelectedSource,
+  type RVEPlugin,
+} from '@react-xray/core'
+import { DropdownMenu, OpenInEditorIcon } from '@react-xray/ui-components'
 
 export type EditorPreset =
   | 'vscode'
@@ -51,33 +57,44 @@ export function OpenEditorPlugin({
   editor = 'vscode',
 }: OpenEditorOptions = {}): RVEPlugin {
   const editorLabel = EDITOR_LABELS[editor]
+
+  function OpenEditorActionPanel() {
+    const selectedSource = useSelectedSource()
+    const projectRoot = useProjectRoot()
+    const clearSelectedContext = useClearSelectedContext()
+
+    if (!selectedSource) return null
+
+    const handleOpenEditor = async () => {
+      clearSelectedContext()
+
+      try {
+        const resolved = await resolveSource(selectedSource)
+        const path = toAbsolutePath(resolved.fileName, projectRoot)
+        if (!path) return
+
+        const url = buildEditorUrl(
+          editor,
+          path,
+          resolved.lineNumber,
+          resolved.columnNumber,
+        )
+        window.open(url)
+      } catch {}
+    }
+
+    return (
+      <DropdownMenu.Item onClick={handleOpenEditor}>
+        <span style={{ display: 'flex', alignItems: 'center' }}>
+          <OpenInEditorIcon />
+        </span>
+        {`Open in ${editorLabel}`}
+      </DropdownMenu.Item>
+    )
+  }
+
   return {
     name: 'open-editor',
-    actions(ctx: ComponentContext, services: RVEServices) {
-      if (!ctx.source) return []
-      const root = services.root
-      return [
-        {
-          id: 'open-in-editor',
-          label: `Open in ${editorLabel}`,
-          icon: <OpenInEditorIcon />,
-          onClick(ctx: ComponentContext) {
-            resolveSource(ctx.source!)
-              .then((resolved) => {
-                const path = toAbsolutePath(resolved.fileName, root)
-                if (!path) return
-                const url = buildEditorUrl(
-                  editor,
-                  path,
-                  resolved.lineNumber,
-                  resolved.columnNumber,
-                )
-                window.open(url)
-              })
-              .catch(() => {})
-          },
-        },
-      ]
-    },
+    actionPanel: OpenEditorActionPanel,
   }
 }
