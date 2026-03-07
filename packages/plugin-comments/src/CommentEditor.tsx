@@ -1,5 +1,10 @@
-import { useWidgetPortalContainer } from '@react-xray/core'
-import { Button, Popover, Separator, Textarea } from '@react-xray/ui-components'
+import { useWidgetPortalContainer } from '@react-trace/core'
+import {
+  Button,
+  Popover,
+  Separator,
+  Textarea,
+} from '@react-trace/ui-components'
 import { useEffect, useRef, useState } from 'react'
 
 import { useCommentsActions, usePendingComment } from './store'

@@ -1,5 +1,5 @@
 /**
- * Production stub for @react-xray/ui-components.
+ * Production stub for @react-trace/ui-components.
  *
  * All React components render null — zero runtime cost in production.
  * panelPopupStyle is an empty object; nothing renders to apply styles to.

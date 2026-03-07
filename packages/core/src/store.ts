@@ -4,11 +4,11 @@ import { atomFamily } from 'jotai-family'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 import { fileSystemService } from './fs'
-import type { ComponentContext, XRayServices, XRaySettings } from './types'
+import type { ComponentContext, TraceServices, TraceSettings } from './types'
 
 /**
- * The scoped Jotai store used by the XRay widget.
- * Created once per `<XRay />` mount via the Provider in XRay.tsx.
+ * The scoped Jotai store used by the Trace widget.
+ * Created once per `<Trace />` mount via the Provider in Trace.tsx.
  * Plugins import atoms from this module and read them through the hooks in
  * `./hooks.ts`, which are scoped to the nearest Provider.
  */
@@ -22,26 +22,26 @@ export const projectRootAtom = atom<string>('')
  * Settings atom per project root, persisted in localStorage.
  */
 const settingsAtom = atomFamily((root: string) =>
-  atomWithStorage<XRaySettings>(
+  atomWithStorage<TraceSettings>(
     `my-widget:settings:${root}`,
     { core: { position: 'bottom-right' } },
-    createJSONStorage<XRaySettings>(() => localStorage),
+    createJSONStorage<TraceSettings>(() => localStorage),
     { getOnInit: typeof window !== 'undefined' },
   ),
 )
 
 const currentSettingsAtom = atom(
   (get) => get(settingsAtom(get(projectRootAtom))),
-  (get, set, value: XRaySettings) => {
+  (get, set, value: TraceSettings) => {
     const root = get(projectRootAtom)
     set(settingsAtom(root), value)
   },
 )
 
-const settingsPluginFamily = atomFamily((pluginKey: keyof XRaySettings) =>
+const settingsPluginFamily = atomFamily((pluginKey: keyof TraceSettings) =>
   atom(
     (get) => get(currentSettingsAtom)[pluginKey],
-    (get, set, value: XRaySettings[keyof XRaySettings]) => {
+    (get, set, value: TraceSettings[keyof TraceSettings]) => {
       const prev = get(currentSettingsAtom)
       set(currentSettingsAtom, { ...prev, [pluginKey]: value })
     },
@@ -53,11 +53,13 @@ const settingsPluginFamily = atomFamily((pluginKey: keyof XRaySettings) =>
  * @param pluginKey
  * @returns
  */
-export function settingsPluginAtom<K extends keyof XRaySettings>(pluginKey: K) {
+export function settingsPluginAtom<K extends keyof TraceSettings>(
+  pluginKey: K,
+) {
   // wrapper function to narrow down the type of the atom family
   return settingsPluginFamily(pluginKey) as WritableAtom<
-    XRaySettings[K],
-    [XRaySettings[K]],
+    TraceSettings[K],
+    [TraceSettings[K]],
     void
   >
 }
@@ -69,11 +71,11 @@ export const coreSettingsAtom = settingsPluginFamily('core')
  * this to mount their own portals inside the same container.
  */
 export const portalContainerAtom = atom(() => {
-  const existing = document.querySelector('[data-react-xray]')
+  const existing = document.querySelector('[data-react-trace]')
   if (existing) return existing as HTMLDivElement
 
   const container = document.createElement('div')
-  container.setAttribute('data-react-xray', '')
+  container.setAttribute('data-react-trace', '')
   container.style.cssText =
     'position:fixed;inset:0;pointer-events:none;z-index:999997;'
   document.body.appendChild(container)
@@ -83,7 +85,7 @@ export const portalContainerAtom = atom(() => {
 /**
  * Services provided by core to all plugins.
  */
-export const servicesAtom = atom<XRayServices>({ fs: fileSystemService })
+export const servicesAtom = atom<TraceServices>({ fs: fileSystemService })
 
 /**
  * Inspector active state.
@@ -102,6 +104,6 @@ export const selectedSourceAtom =
   atom<ComponentContext['all'][number]['source']>(null)
 
 /**
- * Creates a new Jotai store instance for XRay widget.
+ * Creates a new Jotai store instance for Trace widget.
  */
 export const createWidgetStore = () => createStore()

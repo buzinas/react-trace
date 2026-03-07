@@ -1,7 +1,7 @@
 import { createOpencodeClient } from '@opencode-ai/sdk'
 import type { Session } from '@opencode-ai/sdk'
-import { useWidgetPortalContainer } from '@react-xray/core'
-import { Button, Select, Textarea } from '@react-xray/ui-components'
+import { useWidgetPortalContainer } from '@react-trace/core'
+import { Button, Select, Textarea } from '@react-trace/ui-components'
 import { useEffect, useRef, useState } from 'react'
 
 import type { CommentEntry } from './store'

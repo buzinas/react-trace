@@ -11,7 +11,7 @@
   "dependencies": {
     "react": "^19",
     "react-dom": "^19",
-    "react-xray": "workspace:*"
+    "react-trace": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19",

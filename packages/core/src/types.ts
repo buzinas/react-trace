@@ -50,11 +50,11 @@ export interface FileSystemService {
   write(path: string, content: string): Promise<void>
 }
 
-export interface XRayServices {
+export interface TraceServices {
   fs: FileSystemService
 }
 
-export interface XRayPlugin {
+export interface TracePlugin {
   name: string
   /**
    * Component to render inside the widget's toolbar.
@@ -72,16 +72,16 @@ export interface XRayPlugin {
 
 type WidgetPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 
-export interface XRayProps {
+export interface TraceProps {
   /**
    * Absolute path to the project root, forwarded to all plugins
    */
   root: string
-  plugins?: XRayPlugin[]
+  plugins?: TracePlugin[]
   position?: WidgetPosition
 }
 
-export interface XRaySettings {
+export interface TraceSettings {
   core: {
     position: WidgetPosition
   }

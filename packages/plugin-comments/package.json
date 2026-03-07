@@ -1,5 +1,5 @@
 {
-  "name": "@react-xray/plugin-comments",
+  "name": "@react-trace/plugin-comments",
   "version": "0.0.1",
   "files": [
     "dist"
@@ -53,8 +53,8 @@
     "jotai": "^2.18.0"
   },
   "devDependencies": {
-    "@react-xray/core": "workspace:*",
-    "@react-xray/ui-components": "workspace:*",
+    "@react-trace/core": "workspace:*",
+    "@react-trace/ui-components": "workspace:*",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "oxlint": "latest",
@@ -64,8 +64,8 @@
     "typescript": "^5"
   },
   "peerDependencies": {
-    "@react-xray/core": "workspace:*",
-    "@react-xray/ui-components": "workspace:*",
+    "@react-trace/core": "workspace:*",
+    "@react-trace/ui-components": "workspace:*",
     "react": ">=18",
     "react-dom": ">=18"
   }

@@ -9,14 +9,14 @@ import {
   ToolbarButton,
   Tooltip,
   XIcon,
-} from '@react-xray/ui-components'
+} from '@react-trace/ui-components'
 import { useAtom } from 'jotai'
 import type { CSSProperties } from 'react'
 import { Fragment, useRef, useState } from 'react'
 
 import { useDeactivateInspector, useWidgetPortalContainer } from '../hooks'
 import { coreSettingsAtom, projectRootAtom } from '../store'
-import type { XRayPlugin, XRaySettings } from '../types'
+import type { TracePlugin, TraceSettings } from '../types'
 
 const SECTION_TITLE_STYLE: CSSProperties = {
   fontSize: 11,
@@ -47,7 +47,7 @@ const INPUT_STYLE: CSSProperties = {
 }
 
 const POSITION_OPTIONS: Array<{
-  value: XRaySettings['core']['position']
+  value: TraceSettings['core']['position']
   label: string
 }> = [
   { value: 'bottom-right', label: 'Bottom right' },
@@ -134,7 +134,7 @@ function CoreSettingsSection() {
   )
 }
 
-export function SettingsMenu({ plugins }: { plugins: XRayPlugin[] }) {
+export function SettingsMenu({ plugins }: { plugins: TracePlugin[] }) {
   const portalContainer = useWidgetPortalContainer()
   const deactivateInspector = useDeactivateInspector()
 
@@ -144,8 +144,8 @@ export function SettingsMenu({ plugins }: { plugins: XRayPlugin[] }) {
   const settingsPlugins = plugins.filter(
     (
       plugin,
-    ): plugin is XRayPlugin & {
-      settings: NonNullable<XRayPlugin['settings']>
+    ): plugin is TracePlugin & {
+      settings: NonNullable<TracePlugin['settings']>
     } => Boolean(plugin.settings),
   )
 

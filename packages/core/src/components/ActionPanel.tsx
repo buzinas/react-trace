@@ -4,7 +4,7 @@ import {
   PanelHeader,
   Popover,
   XIcon,
-} from '@react-xray/ui-components'
+} from '@react-trace/ui-components'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { ReactNode } from 'react'
 import { useCallback } from 'react'
@@ -15,10 +15,10 @@ import {
   selectedContextAtom,
   selectedSourceAtom,
 } from '../store'
-import type { ComponentContext, ComponentSource, XRayPlugin } from '../types'
+import type { ComponentContext, ComponentSource, TracePlugin } from '../types'
 
 interface ActionPanelProps {
-  plugins: XRayPlugin[]
+  plugins: TracePlugin[]
 }
 
 // ---------------------------------------------------------------------------
@@ -256,7 +256,7 @@ function Submenu({
   source,
 }: {
   entryContent: ReactNode
-  plugins: XRayPlugin[]
+  plugins: TracePlugin[]
   source: ComponentSource
 }) {
   const portalContainer = useAtomValue(portalContainerAtom)

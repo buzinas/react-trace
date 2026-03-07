@@ -1,16 +1,16 @@
-import type { XRayPlugin } from '@react-xray/core'
+import type { TracePlugin } from '@react-trace/core'
 import {
   useDeactivateInspector,
   useProjectRoot,
   useWidgetPortalContainer,
   useWidgetServices,
-} from '@react-xray/core'
+} from '@react-trace/core'
 import {
   FolderIcon,
   Popover,
   ToolbarButton,
   Tooltip,
-} from '@react-xray/ui-components'
+} from '@react-trace/ui-components'
 import { useRef, useState, useSyncExternalStore } from 'react'
 
 import { FolderAccessPrompt, handleGrantAccess } from './FolderAccessPrompt'
@@ -123,7 +123,7 @@ function PreviewToolbar() {
   )
 }
 
-export function PreviewPlugin(options: PreviewPluginOptions = {}): XRayPlugin {
+export function PreviewPlugin(options: PreviewPluginOptions = {}): TracePlugin {
   function PreviewActionPanel() {
     return <SourcePreview options={options} />
   }

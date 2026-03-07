@@ -1,5 +1,5 @@
 {
-  "name": "@react-xray/core",
+  "name": "@react-trace/core",
   "version": "0.0.1",
   "files": [
     "dist"
@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@jridgewell/trace-mapping": "^0.3.31",
-    "@react-xray/ui-components": "workspace:*",
+    "@react-trace/ui-components": "workspace:*",
     "jotai": "^2.18.0",
     "jotai-family": "^1.0.1"
   },

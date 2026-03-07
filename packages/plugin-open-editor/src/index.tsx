@@ -1,4 +1,4 @@
-import type { XRayPlugin } from '@react-xray/core'
+import type { TracePlugin } from '@react-trace/core'
 import {
   resolveSource,
   toAbsolutePath,
@@ -6,12 +6,12 @@ import {
   useProjectRoot,
   useSelectedSource,
   useWidgetPortalContainer,
-} from '@react-xray/core'
+} from '@react-trace/core'
 import {
   DropdownMenu,
   OpenInEditorIcon,
   Select,
-} from '@react-xray/ui-components'
+} from '@react-trace/ui-components'
 import { useAtom, useAtomValue } from 'jotai'
 import type { CSSProperties } from 'react'
 
@@ -71,7 +71,7 @@ function buildEditorUrl(
 
 export function OpenEditorPlugin({
   editor = 'vscode',
-}: OpenEditorPluginOptions = {}): XRayPlugin {
+}: OpenEditorPluginOptions = {}): TracePlugin {
   function OpenEditorActionPanel() {
     const selectedSource = useSelectedSource()
     const projectRoot = useProjectRoot()

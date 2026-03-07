@@ -1,4 +1,4 @@
-# AGENTS.md — react-xray
+# AGENTS.md — react-trace
 
 Guidelines for AI coding agents working in this repository.
 
@@ -8,15 +8,15 @@ Guidelines for AI coding agents working in this repository.
 
 ```
 packages/
-  ui-components/            @react-xray/ui-components — Kbd, Tooltip, Button, IconButton,
+  ui-components/            @react-trace/ui-components — Kbd, Tooltip, Button, IconButton,
                                                         PanelHeader, Popover, DropdownMenu,
                                                         icons (via @hugeicons/core-free-icons)
-  core/                     @react-xray/core          — XRay component, plugin API, utilities
-  plugin-preview/           @react-xray/plugin-preview — Monaco editor action panel, FS access
-  plugin-comments/          @react-xray/plugin-comments — inline comments + Send to OpenCode
-  plugin-copy-to-clipboard/ @react-xray/plugin-copy-to-clipboard
-  plugin-open-editor/       @react-xray/plugin-open-editor
-  react-xray/               react-xray               — batteries-included convenience wrapper
+  core/                     @react-trace/core          — Trace component, plugin API, utilities
+  plugin-preview/           @react-trace/plugin-preview — Monaco editor action panel, FS access
+  plugin-comments/          @react-trace/plugin-comments — inline comments + Send to OpenCode
+  plugin-copy-to-clipboard/ @react-trace/plugin-copy-to-clipboard
+  plugin-open-editor/       @react-trace/plugin-open-editor
+  react-trace/               react-trace               — batteries-included convenience wrapper
 apps/
   example/                  Vite + React demo app
 ```
@@ -42,15 +42,15 @@ pnpm test           # vitest run across all packages
 ### Single package
 
 ```bash
-pnpm --filter @react-xray/core build
-pnpm --filter @react-xray/plugin-comments typecheck
-pnpm --filter @react-xray/core test
+pnpm --filter @react-trace/core build
+pnpm --filter @react-trace/plugin-comments typecheck
+pnpm --filter @react-trace/core test
 ```
 
 ### Single test file
 
 ```bash
-pnpm --filter @react-xray/core exec vitest run src/path.test.ts
+pnpm --filter @react-trace/core exec vitest run src/path.test.ts
 ```
 
 ### Example app
@@ -89,11 +89,11 @@ Order (enforced by oxlint):
 
 1. External packages (`react`, `@monaco-editor/react`, etc.)
 2. Blank line
-3. Internal workspace packages (`@react-xray/core`)
+3. Internal workspace packages (`@react-trace/core`)
 4. Blank line
 5. Local relative imports (`./store`, `../utils`)
 
-Always use named exports. Default exports only in `react-xray/src/index.tsx` (the convenience component).
+Always use named exports. Default exports only in `react-trace/src/index.tsx` (the convenience component).
 
 ---
 
@@ -124,14 +124,14 @@ Always use named exports. Default exports only in `react-xray/src/index.tsx` (th
 - **Functions/variables:** `camelCase`
 - **Interfaces/types:** `PascalCase`
 - **Constants:** `SCREAMING_SNAKE_CASE` for module-level primitives (e.g. `LINE_HEIGHT`, `IS_MAC`)
-- **Plugin factory functions:** `XxxPlugin()` — returns `XRayPlugin`
+- **Plugin factory functions:** `XxxPlugin()` — returns `TracePlugin`
 - **Store files:** module-level `let` + subscribe/getSnapshot/set pattern (compatible with `useSyncExternalStore`)
 
 ---
 
 ## Plugin architecture
 
-Plugins implement `XRayPlugin`:
+Plugins implement `TracePlugin`:
 
 ```ts
 {
@@ -147,9 +147,9 @@ Plugins implement `XRayPlugin`:
 - `settings` renders plugin-owned UI directly inside the widget settings popover.
 - The deprecated compatibility contract (`toolbarItems`, `actions`, `subpanel`, `ToolbarItem`, `Action`) has been removed and should not be documented or used as supported API.
 
-Shared hook surface from `@react-xray/core`:
+Shared hook surface from `@react-trace/core`:
 
-- `useProjectRoot()` — absolute project root from `<XRay root="..." />`
+- `useProjectRoot()` — absolute project root from `<Trace root="..." />`
 - `useInspectorActive()` — whether inspector mode is currently active
 - `useSelectedContext()` — currently selected component context
 - `useSelectedSource()` — currently selected source for action-panel flows
@@ -174,10 +174,10 @@ Plugin-owned UI should render directly from `toolbar`, `actionPanel`, or `settin
 
 1. Create `packages/plugin-xxx/` mirroring an existing plugin (e.g. `plugin-copy-to-clipboard`)
 2. Add `src/index.tsx` (plugin factory) and `src/index.prod.ts` (no-op stub)
-3. Add `"@react-xray/plugin-xxx"` to the alias map in `apps/example/vite.config.ts`
-4. Add `"@react-xray/ui-components"` and `"react-xray/plugin-xxx"` to the `neverBundle` list in the new package's `tsdown.config.ts`
-5. Add `@react-xray/ui-components` to both `peerDependencies` and `devDependencies` in `package.json`
-6. Optionally wire into `packages/react-xray/src/index.tsx` for the convenience bundle
+3. Add `"@react-trace/plugin-xxx"` to the alias map in `apps/example/vite.config.ts`
+4. Add `"@react-trace/ui-components"` and `"react-trace/plugin-xxx"` to the `neverBundle` list in the new package's `tsdown.config.ts`
+5. Add `@react-trace/ui-components` to both `peerDependencies` and `devDependencies` in `package.json`
+6. Optionally wire into `packages/react-trace/src/index.tsx` for the convenience bundle
 
 ---
 

@@ -1,30 +1,30 @@
-# @react-xray/plugin-preview
+# @react-trace/plugin-preview
 
-Monaco-based source preview plugin for `@react-xray/core`.
+Monaco-based source preview plugin for `@react-trace/core`.
 
 This package adds a toolbar control for connecting the current project folder and an action-panel preview for the selected source file.
 
 ## Installation
 
 ```bash
-pnpm add --dev @react-xray/core @react-xray/ui-components @react-xray/plugin-preview
+pnpm add --dev @react-trace/core @react-trace/ui-components @react-trace/plugin-preview
 ```
 
-If you are already using `react-xray`, this plugin is included there by default.
+If you are already using `react-trace`, this plugin is included there by default.
 
 ## Usage
 
 ```tsx
-import { XRay } from '@react-xray/core'
-import { PreviewPlugin } from '@react-xray/plugin-preview'
+import { Trace } from '@react-trace/core'
+import { PreviewPlugin } from '@react-trace/plugin-preview'
 
 import App from './App'
 
-export function AppWithXRay() {
+export function AppWithTrace() {
   return (
     <>
       <App />
-      <XRay
+      <Trace
         root={import.meta.env.VITE_ROOT}
         plugins={[PreviewPlugin({ theme: 'one-dark-pro' })]}
       />
@@ -33,7 +33,7 @@ export function AppWithXRay() {
 }
 ```
 
-`root` should be the absolute project root passed to XRay so the plugin can resolve relative file paths for comments.
+`root` should be the absolute project root passed to Trace so the plugin can resolve relative file paths for comments.
 
 ## What it adds
 
@@ -45,10 +45,10 @@ export function AppWithXRay() {
 
 ## Folder access expectations
 
-The preview plugin reads files from the project through XRay's file-system service, so users must grant folder access before the preview can load file contents.
+The preview plugin reads files from the project through Trace's file-system service, so users must grant folder access before the preview can load file contents.
 
-- Pass the absolute project root to `<XRay root="..." />`.
-- When prompted, select the same project folder that contains the source files XRay resolves.
+- Pass the absolute project root to `<Trace root="..." />`.
+- When prompted, select the same project folder that contains the source files Trace resolves.
 - If a root path is available, the plugin copies that path to the clipboard to make the folder picker easier to use.
 - Until access is granted, the toolbar button and action panel show the access flow instead of a live file preview.
 - When editing is enabled, saves are written back through the same file-system access.
@@ -71,7 +71,7 @@ interface PreviewPluginOptions {
 
 ## Settings
 
-The plugin also contributes a settings panel inside XRay where users can:
+The plugin also contributes a settings panel inside Trace where users can:
 
 - toggle code editing on or off
 - switch the preview theme

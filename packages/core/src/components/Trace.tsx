@@ -13,7 +13,7 @@ import {
   projectRootAtom,
   selectedContextAtom,
 } from '../store'
-import type { ComponentContext, XRayProps } from '../types'
+import type { ComponentContext, TraceProps } from '../types'
 import { ActionPanel } from './ActionPanel'
 import { Overlay } from './Overlay'
 import { Toolbar } from './Toolbar'
@@ -23,11 +23,11 @@ import { Toolbar } from './Toolbar'
  */
 const LONGPRESS_MS = 600
 
-export function XRay({
+export function Trace({
   root,
   plugins = [],
   position = 'bottom-right',
-}: XRayProps) {
+}: TraceProps) {
   const [jotaiStore] = useState(() => {
     const store = createWidgetStore()
     store.set(projectRootAtom, root)
@@ -37,12 +37,16 @@ export function XRay({
 
   return (
     <Provider store={jotaiStore}>
-      <XRayRoot plugins={plugins} />
+      <TraceRoot plugins={plugins} />
     </Provider>
   )
 }
 
-function XRayRoot({ plugins }: { plugins: NonNullable<XRayProps['plugins']> }) {
+function TraceRoot({
+  plugins,
+}: {
+  plugins: NonNullable<TraceProps['plugins']>
+}) {
   const portalContainer = useAtomValue(portalContainerAtom)
 
   const [inspectorActive, setInspectorActive] = useAtom(inspectorActiveAtom)

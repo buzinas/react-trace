@@ -1,12 +1,12 @@
-import type { XRayPlugin } from '@react-xray/core'
+import type { TracePlugin } from '@react-trace/core'
 import {
   resolveSource,
   toRelativePath,
   useClearSelectedContext,
   useProjectRoot,
   useSelectedSource,
-} from '@react-xray/core'
-import { ClipboardIcon, DropdownMenu } from '@react-xray/ui-components'
+} from '@react-trace/core'
+import { ClipboardIcon, DropdownMenu } from '@react-trace/ui-components'
 
 function CopyToClipboardActionPanel() {
   const selectedSource = useSelectedSource()
@@ -36,7 +36,7 @@ function CopyToClipboardActionPanel() {
   )
 }
 
-export function CopyToClipboardPlugin(): XRayPlugin {
+export function CopyToClipboardPlugin(): TracePlugin {
   return {
     name: 'copy-to-clipboard',
     actionPanel: CopyToClipboardActionPanel,

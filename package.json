@@ -1,5 +1,5 @@
 {
-  "name": "react-xray",
+  "name": "react-trace",
   "private": true,
   "scripts": {
     "build": "turbo build",

@@ -23,7 +23,7 @@ export default function App() {
         </Card>
         <Card title="Getting Started">
           <p>
-            Add <code>{'<XRay />'}</code> anywhere in your app tree.
+            Add <code>{'<Trace />'}</code> anywhere in your app tree.
           </p>
         </Card>
         <Card title="Direct text">{CONSTANT_TEXT}</Card>

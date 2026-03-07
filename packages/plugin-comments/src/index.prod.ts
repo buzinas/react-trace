@@ -1,5 +1,5 @@
 /**
- * Production stub for @react-xray/plugin-comments.
+ * Production stub for @react-trace/plugin-comments.
  */
 export const CommentsPlugin = () => ({ name: 'comments' as const })
 

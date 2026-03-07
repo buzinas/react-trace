@@ -1,6 +1,6 @@
 /**
- * Production stub for @react-xray/core.
- * XRay renders null so the inspector has zero runtime cost in production.
+ * Production stub for @react-trace/core.
+ * Trace renders null so the inspector has zero runtime cost in production.
  */
 
 import type { WritableAtom } from 'jotai'
@@ -8,8 +8,8 @@ import type { WritableAtom } from 'jotai'
 import type {
   ComponentSource,
   FileSystemService,
-  XRayServices,
-  XRaySettings,
+  TraceServices,
+  TraceSettings,
 } from './types'
 
 const NOOP = () => {}
@@ -30,11 +30,11 @@ const NOOP_FILE_SYSTEM_SERVICE: FileSystemService = {
   },
   async write() {},
 }
-const NOOP_WIDGET_SERVICES: XRayServices = {
+const NOOP_WIDGET_SERVICES: TraceServices = {
   fs: NOOP_FILE_SYSTEM_SERVICE,
 }
 
-export const XRay = () => null
+export const Trace = () => null
 
 export const useProjectRoot = () => null
 export const useInspectorActive = () => false
@@ -51,10 +51,12 @@ export const toRelativePath = (path: string) => path
 
 export { IS_MAC, MOD_KEY } from './platform'
 
-export function settingsPluginAtom<K extends keyof XRaySettings>(pluginKey: K) {
+export function settingsPluginAtom<K extends keyof TraceSettings>(
+  pluginKey: K,
+) {
   return pluginKey as unknown as WritableAtom<
-    XRaySettings[K],
-    [XRaySettings[K]],
+    TraceSettings[K],
+    [TraceSettings[K]],
     void
   >
 }
@@ -63,8 +65,8 @@ export type {
   ComponentContext,
   ComponentSource,
   FileSystemService,
-  XRayPlugin,
-  XRayServices,
-  XRayProps,
-  XRaySettings,
+  TracePlugin,
+  TraceServices,
+  TraceProps,
+  TraceSettings,
 } from './types'

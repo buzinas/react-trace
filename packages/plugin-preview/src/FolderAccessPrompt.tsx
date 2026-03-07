@@ -1,5 +1,5 @@
-import { IS_MAC, toAbsolutePath } from '@react-xray/core'
-import { Button, FolderIcon, Kbd, KbdGroup } from '@react-xray/ui-components'
+import { IS_MAC, toAbsolutePath } from '@react-trace/core'
+import { Button, FolderIcon, Kbd, KbdGroup } from '@react-trace/ui-components'
 
 export function FolderAccessPrompt({
   root,

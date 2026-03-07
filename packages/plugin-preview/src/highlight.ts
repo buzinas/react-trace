@@ -1,16 +1,16 @@
 /** Injects the CSS animation for the highlighted source line — idempotent. */
 export function ensureHighlightStyle() {
-  if (document.getElementById('xray-highlighted-line')) return
+  if (document.getElementById('react-trace-highlighted-line')) return
 
   const style = document.createElement('style')
-  style.id = 'xray-highlighted-line'
+  style.id = 'react-trace-highlighted-line'
   style.textContent = `
-    .xray-highlighted-line {
+    .react-trace-highlighted-line {
       background-color: rgba(0, 200, 255, 0.25);
-      animation: xray-highlight-flash 1.2s ease-out;
+      animation: react-trace-highlight-flash 1.2s ease-out;
     }
 
-    @keyframes xray-highlight-flash {
+    @keyframes react-trace-highlight-flash {
       from { background-color: rgba(0, 200, 255, 0.6); }
       to   { background-color: rgba(0, 200, 255, 0.25); }
     }

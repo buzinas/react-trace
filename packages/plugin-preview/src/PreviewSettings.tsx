@@ -1,5 +1,5 @@
-import { useWidgetPortalContainer } from '@react-xray/core'
-import { Combobox } from '@react-xray/ui-components'
+import { useWidgetPortalContainer } from '@react-trace/core'
+import { Combobox } from '@react-trace/ui-components'
 import { useAtom } from 'jotai'
 import type { CSSProperties } from 'react'
 import { useRef, useState } from 'react'

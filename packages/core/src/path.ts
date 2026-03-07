@@ -2,7 +2,7 @@
  * Shared path utilities for converting Vite dev URLs and absolute filesystem
  * paths into relative or absolute forms needed by plugins.
  *
- * Handles all three fileName conventions react-xray encounters:
+ * Handles all three fileName conventions react-trace encounters:
  *   - Vite dev URL        http://localhost:5173/src/App.tsx
  *   - Vite /@fs/ URL      http://localhost:5173/@fs/abs/path/src/App.tsx
  *   - Absolute path       /Users/you/project/src/App.tsx  (React 18 _debugSource)

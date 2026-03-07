@@ -1,4 +1,4 @@
-import { ToolbarButton, Tooltip } from '@react-xray/ui-components'
+import { ToolbarButton, Tooltip } from '@react-trace/ui-components'
 import { useAtom, useAtomValue } from 'jotai'
 
 import logo from '../logo.png'
@@ -8,17 +8,17 @@ import {
   inspectorActiveAtom,
   portalContainerAtom,
 } from '../store'
-import type { XRayPlugin, XRayProps } from '../types'
+import type { TracePlugin, TraceProps } from '../types'
 import { SettingsMenu } from './SettingsMenu'
 
 interface ToolbarProps {
-  plugins: XRayPlugin[]
+  plugins: TracePlugin[]
 }
 
 const DEFAULT_SPACING = 32
 
 const POSITION_STYLES: Record<
-  NonNullable<XRayProps['position']>,
+  NonNullable<TraceProps['position']>,
   React.CSSProperties
 > = {
   'bottom-right': { bottom: DEFAULT_SPACING, right: DEFAULT_SPACING },

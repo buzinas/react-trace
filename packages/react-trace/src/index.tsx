@@ -1,12 +1,12 @@
-import { XRay as CoreXRay } from '@react-xray/core'
-import type { XRayProps } from '@react-xray/core'
-import { CommentsPlugin } from '@react-xray/plugin-comments'
-import { CopyToClipboardPlugin } from '@react-xray/plugin-copy-to-clipboard'
-import { OpenEditorPlugin } from '@react-xray/plugin-open-editor'
-import type { EditorPreset } from '@react-xray/plugin-open-editor'
-import { PreviewPlugin } from '@react-xray/plugin-preview'
+import { Trace as CoreTrace } from '@react-trace/core'
+import type { TraceProps } from '@react-trace/core'
+import { CommentsPlugin } from '@react-trace/plugin-comments'
+import { CopyToClipboardPlugin } from '@react-trace/plugin-copy-to-clipboard'
+import { OpenEditorPlugin } from '@react-trace/plugin-open-editor'
+import type { EditorPreset } from '@react-trace/plugin-open-editor'
+import { PreviewPlugin } from '@react-trace/plugin-preview'
 
-export interface XRayAllInOneProps extends XRayProps {
+export interface TraceAllInOneProps extends TraceProps {
   /**
    * Disable inline file editing in the preview panel.
    * Hides the Save button (⌘S) and the expand button.
@@ -21,22 +21,22 @@ export interface XRayAllInOneProps extends XRayProps {
 }
 
 /**
- * Batteries-included XRay with all official plugins pre-wired:
+ * Batteries-included Trace with all official plugins pre-wired:
  * - preview (inline Monaco editor)
  * - copy-to-clipboard
  * - open-editor
  * - comments (with Send to OpenCode)
  *
- * For granular control, use the individual `@react-xray/*` packages instead.
+ * For granular control, use the individual `@react-trace/*` packages instead.
  */
-export default function XRay({
+export default function Trace({
   editingDisabled = false,
   editor = 'vscode',
   plugins = [],
   ...rest
-}: XRayAllInOneProps) {
+}: TraceAllInOneProps) {
   return (
-    <CoreXRay
+    <CoreTrace
       {...rest}
       plugins={[
         PreviewPlugin({ disabled: editingDisabled }),

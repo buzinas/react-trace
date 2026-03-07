@@ -1,4 +1,4 @@
-export { toRelativePath } from '@react-xray/core'
+export { toRelativePath } from '@react-trace/core'
 
 /**
  * Formats a comment as a compact `file:line: comment` string.

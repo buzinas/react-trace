@@ -1,5 +1,5 @@
 import type { Monaco } from '@monaco-editor/react'
-import { toRelativePath } from '@react-xray/core'
+import { toRelativePath } from '@react-trace/core'
 import type { Uri } from 'monaco-types'
 
 export function cleanPath(fileName: string): string {

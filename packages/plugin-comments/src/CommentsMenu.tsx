@@ -1,4 +1,4 @@
-import { useProjectRoot } from '@react-xray/core'
+import { useProjectRoot } from '@react-trace/core'
 import {
   Button,
   ClipboardIcon,
@@ -9,7 +9,7 @@ import {
   Textarea,
   TrashIcon,
   XIcon,
-} from '@react-xray/ui-components'
+} from '@react-trace/ui-components'
 import { useEffect, useRef, useState } from 'react'
 
 import { SendToOpencodeForm } from './SendToOpencode'

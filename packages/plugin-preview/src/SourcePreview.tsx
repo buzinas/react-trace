@@ -3,7 +3,7 @@ import {
   useProjectRoot,
   useSelectedSource,
   useWidgetServices,
-} from '@react-xray/core'
+} from '@react-trace/core'
 import {
   Button,
   CollapseIcon,
@@ -11,7 +11,7 @@ import {
   IconButton,
   panelPopupStyle,
   SaveIcon,
-} from '@react-xray/ui-components'
+} from '@react-trace/ui-components'
 import { useAtom } from 'jotai'
 import type { editor } from 'monaco-types'
 import { useRef, useState } from 'react'
@@ -176,7 +176,7 @@ export function SourcePreview({ options }: SourcePreviewProps) {
                     range: new monaco.Range(lineNumber, 1, lineNumber, 1),
                     options: {
                       isWholeLine: true,
-                      className: 'xray-highlighted-line',
+                      className: 'react-trace-highlighted-line',
                     },
                   },
                 ])

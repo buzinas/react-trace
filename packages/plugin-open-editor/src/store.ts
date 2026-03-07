@@ -1,11 +1,11 @@
-import type { XRaySettings } from '@react-xray/core'
-import { settingsPluginAtom } from '@react-xray/core'
+import type { TraceSettings } from '@react-trace/core'
+import { settingsPluginAtom } from '@react-trace/core'
 import type { WritableAtom } from 'jotai'
 
 import type { EditorPreset } from './types'
 
-declare module '@react-xray/core' {
-  interface XRaySettings {
+declare module '@react-trace/core' {
+  interface TraceSettings {
     openEditor?: {
       editor: EditorPreset
     }
@@ -15,7 +15,7 @@ declare module '@react-xray/core' {
 export const openEditorSettingsAtom = settingsPluginAtom(
   'openEditor',
 ) as WritableAtom<
-  XRaySettings['openEditor'],
-  [XRaySettings['openEditor']],
+  TraceSettings['openEditor'],
+  [TraceSettings['openEditor']],
   void
 >

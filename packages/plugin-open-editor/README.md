@@ -1,6 +1,6 @@
-# @react-xray/plugin-open-editor
+# @react-trace/plugin-open-editor
 
-Open the currently selected component source in a local editor from the XRay action panel.
+Open the currently selected component source in a local editor from the Trace action panel.
 
 This plugin adds:
 
@@ -12,24 +12,24 @@ This plugin adds:
 Install the plugin alongside its peer dependencies:
 
 ```bash
-pnpm add --dev @react-xray/core @react-xray/ui-components @react-xray/plugin-open-editor
+pnpm add --dev @react-trace/core @react-trace/ui-components @react-trace/plugin-open-editor
 ```
 
-If you are already using `react-xray`, this plugin is included there by default.
+If you are already using `react-trace`, this plugin is included there by default.
 
 ## Usage
 
 ```tsx
-import { XRay } from '@react-xray/core'
-import { OpenEditorPlugin } from '@react-xray/plugin-open-editor'
+import { Trace } from '@react-trace/core'
+import { OpenEditorPlugin } from '@react-trace/plugin-open-editor'
 
 import App from './App'
 
-export function AppWithXRay() {
+export function AppWithTrace() {
   return (
     <>
       <App />
-      <XRay
+      <Trace
         root={import.meta.env.VITE_ROOT}
         plugins={[OpenEditorPlugin({ editor: 'vscode' })]}
       />
@@ -38,7 +38,7 @@ export function AppWithXRay() {
 }
 ```
 
-`root` should be the absolute project root passed to XRay so the plugin can resolve relative file paths for comments.
+`root` should be the absolute project root passed to Trace so the plugin can resolve relative file paths for comments.
 
 ## `editor` option
 
@@ -67,4 +67,4 @@ These are the currently implemented presets:
 
 ## Behavior
 
-When a source location is selected, the plugin resolves the file path relative to the XRay `root` and opens the generated editor URL with `window.open(...)`.
+When a source location is selected, the plugin resolves the file path relative to the Trace `root` and opens the generated editor URL with `window.open(...)`.

@@ -1,5 +1,5 @@
 {
-  "name": "@react-xray/plugin-preview",
+  "name": "@react-trace/plugin-preview",
   "version": "0.0.1",
   "files": [
     "dist"
@@ -55,8 +55,8 @@
   },
   "devDependencies": {
     "@monaco-editor/react": "^4.7.0",
-    "@react-xray/core": "workspace:*",
-    "@react-xray/ui-components": "workspace:*",
+    "@react-trace/core": "workspace:*",
+    "@react-trace/ui-components": "workspace:*",
     "@types/node": "^24.11.0",
     "@types/react": "^19",
     "@types/react-dom": "^19.2.3",
@@ -68,8 +68,8 @@
     "typescript": "^5"
   },
   "peerDependencies": {
-    "@react-xray/core": "workspace:*",
-    "@react-xray/ui-components": "workspace:*",
+    "@react-trace/core": "workspace:*",
+    "@react-trace/ui-components": "workspace:*",
     "jotai": "^2.18.0",
     "react": ">=18"
   }

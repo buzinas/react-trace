@@ -1,5 +1,5 @@
 {
-  "name": "@react-xray/ui-components",
+  "name": "@react-trace/ui-components",
   "version": "0.0.1",
   "files": [
     "dist"

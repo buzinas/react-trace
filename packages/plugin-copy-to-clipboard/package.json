@@ -1,5 +1,5 @@
 {
-  "name": "@react-xray/plugin-copy-to-clipboard",
+  "name": "@react-trace/plugin-copy-to-clipboard",
   "version": "0.0.1",
   "files": [
     "dist"
@@ -49,8 +49,8 @@
     "lint": "oxlint src"
   },
   "devDependencies": {
-    "@react-xray/core": "workspace:*",
-    "@react-xray/ui-components": "workspace:*",
+    "@react-trace/core": "workspace:*",
+    "@react-trace/ui-components": "workspace:*",
     "@types/react": "^19",
     "oxlint": "latest",
     "react": "^19",
@@ -58,8 +58,8 @@
     "typescript": "^5"
   },
   "peerDependencies": {
-    "@react-xray/core": "workspace:*",
-    "@react-xray/ui-components": "workspace:*",
+    "@react-trace/core": "workspace:*",
+    "@react-trace/ui-components": "workspace:*",
     "react": ">=18"
   }
 }

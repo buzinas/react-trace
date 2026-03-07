@@ -32,9 +32,9 @@ importers:
       react-dom:
         specifier: ^19
         version: 19.2.4(react@19.2.4)
-      react-xray:
+      react-trace:
         specifier: workspace:*
-        version: link:../../packages/react-xray
+        version: link:../../packages/react-trace
     devDependencies:
       '@types/react':
         specifier: ^19
@@ -60,7 +60,7 @@ importers:
       '@jridgewell/trace-mapping':
         specifier: ^0.3.31
         version: 0.3.31
-      '@react-xray/ui-components':
+      '@react-trace/ui-components':
         specifier: workspace:*
         version: link:../ui-components
       jotai:
@@ -107,10 +107,10 @@ importers:
         specifier: ^2.18.0
         version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
     devDependencies:
-      '@react-xray/core':
+      '@react-trace/core':
         specifier: workspace:*
         version: link:../core
-      '@react-xray/ui-components':
+      '@react-trace/ui-components':
         specifier: workspace:*
         version: link:../ui-components
       '@types/react':
@@ -137,10 +137,10 @@ importers:
 
   packages/plugin-copy-to-clipboard:
     devDependencies:
-      '@react-xray/core':
+      '@react-trace/core':
         specifier: workspace:*
         version: link:../core
-      '@react-xray/ui-components':
+      '@react-trace/ui-components':
         specifier: workspace:*
         version: link:../ui-components
       '@types/react':
@@ -165,10 +165,10 @@ importers:
         specifier: ^2.18.0
         version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
     devDependencies:
-      '@react-xray/core':
+      '@react-trace/core':
         specifier: workspace:*
         version: link:../core
-      '@react-xray/ui-components':
+      '@react-trace/ui-components':
         specifier: workspace:*
         version: link:../ui-components
       '@types/react':
@@ -202,10 +202,10 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
     devDependencies:
-      '@react-xray/core':
+      '@react-trace/core':
         specifier: workspace:*
         version: link:../core
-      '@react-xray/ui-components':
+      '@react-trace/ui-components':
         specifier: workspace:*
         version: link:../ui-components
       '@types/node':
@@ -236,21 +236,21 @@ importers:
         specifier: ^5
         version: 5.9.3
 
-  packages/react-xray:
+  packages/react-trace:
     dependencies:
-      '@react-xray/core':
+      '@react-trace/core':
         specifier: workspace:*
         version: link:../core
-      '@react-xray/plugin-comments':
+      '@react-trace/plugin-comments':
         specifier: workspace:*
         version: link:../plugin-comments
-      '@react-xray/plugin-copy-to-clipboard':
+      '@react-trace/plugin-copy-to-clipboard':
         specifier: workspace:*
         version: link:../plugin-copy-to-clipboard
-      '@react-xray/plugin-open-editor':
+      '@react-trace/plugin-open-editor':
         specifier: workspace:*
         version: link:../plugin-open-editor
-      '@react-xray/plugin-preview':
+      '@react-trace/plugin-preview':
         specifier: workspace:*
         version: link:../plugin-preview
     devDependencies:

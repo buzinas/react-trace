@@ -1,4 +1,4 @@
-export { XRay } from './components/XRay'
+export { Trace } from './components/Trace'
 export {
   useProjectRoot,
   useInspectorActive,
@@ -19,8 +19,8 @@ export type {
   ComponentContext,
   ComponentSource,
   FileSystemService,
-  XRayPlugin,
-  XRayServices,
-  XRayProps,
-  XRaySettings,
+  TracePlugin,
+  TraceServices,
+  TraceProps,
+  TraceSettings,
 } from './types'

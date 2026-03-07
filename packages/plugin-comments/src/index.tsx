@@ -1,4 +1,4 @@
-import type { XRayPlugin } from '@react-xray/core'
+import type { TracePlugin } from '@react-trace/core'
 import {
   resolveSource,
   toRelativePath,
@@ -8,13 +8,13 @@ import {
   useSelectedContext,
   useSelectedSource,
   useWidgetPortalContainer,
-} from '@react-xray/core'
+} from '@react-trace/core'
 import {
   ChatBubbleIcon,
   DropdownMenu,
   ToolbarButton,
   Tooltip,
-} from '@react-xray/ui-components'
+} from '@react-trace/ui-components'
 import { useRef, useState } from 'react'
 
 import { CommentEditorOverlay } from './CommentEditor'
@@ -146,7 +146,7 @@ function CommentsActionPanel() {
   )
 }
 
-export function CommentsPlugin(): XRayPlugin {
+export function CommentsPlugin(): TracePlugin {
   return {
     name: 'comments',
     toolbar: CommentsToolbar,

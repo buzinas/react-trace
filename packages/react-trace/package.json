@@ -1,5 +1,5 @@
 {
-  "name": "react-xray",
+  "name": "react-trace",
   "version": "0.0.1",
   "description": "Batteries-included React visual inspector — all official plugins pre-wired.",
   "files": [
@@ -50,11 +50,11 @@
     "lint": "oxlint src"
   },
   "dependencies": {
-    "@react-xray/core": "workspace:*",
-    "@react-xray/plugin-comments": "workspace:*",
-    "@react-xray/plugin-copy-to-clipboard": "workspace:*",
-    "@react-xray/plugin-open-editor": "workspace:*",
-    "@react-xray/plugin-preview": "workspace:*"
+    "@react-trace/core": "workspace:*",
+    "@react-trace/plugin-comments": "workspace:*",
+    "@react-trace/plugin-copy-to-clipboard": "workspace:*",
+    "@react-trace/plugin-open-editor": "workspace:*",
+    "@react-trace/plugin-preview": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19",
