@@ -5,17 +5,22 @@ import {
   useClearSelectedContext,
   useProjectRoot,
   useSelectedSource,
+  useWidgetPortalContainer,
 } from '@react-xray/core'
-import { DropdownMenu, OpenInEditorIcon } from '@react-xray/ui-components'
+import {
+  DropdownMenu,
+  OpenInEditorIcon,
+  Select,
+} from '@react-xray/ui-components'
+import { useAtom, useAtomValue } from 'jotai'
+import type { CSSProperties } from 'react'
 
-export type EditorPreset =
-  | 'vscode'
-  | 'cursor'
-  | 'windsurf'
-  | 'webstorm'
-  | 'intellij'
+import { openEditorSettingsAtom } from './store'
+import type { EditorPreset } from './types'
 
-export interface OpenEditorOptions {
+export type { EditorPreset }
+
+export interface OpenEditorPluginOptions {
   /**
    * The editor to open files in.
    * @default 'vscode'
@@ -29,6 +34,17 @@ const EDITOR_LABELS: Record<EditorPreset, string> = {
   windsurf: 'Windsurf',
   webstorm: 'WebStorm',
   intellij: 'IntelliJ',
+}
+
+const editors = Object.entries(EDITOR_LABELS).map(([value, label]) => ({
+  value: value as EditorPreset,
+  label,
+}))
+
+const LABEL_STYLE: CSSProperties = {
+  fontSize: 12,
+  color: '#d4d4d8',
+  fontFamily: 'system-ui, sans-serif',
 }
 
 /**
@@ -55,13 +71,13 @@ function buildEditorUrl(
 
 export function OpenEditorPlugin({
   editor = 'vscode',
-}: OpenEditorOptions = {}): XRayPlugin {
-  const editorLabel = EDITOR_LABELS[editor]
-
+}: OpenEditorPluginOptions = {}): XRayPlugin {
   function OpenEditorActionPanel() {
     const selectedSource = useSelectedSource()
     const projectRoot = useProjectRoot()
     const clearSelectedContext = useClearSelectedContext()
+    const editorSettings = useAtomValue(openEditorSettingsAtom)
+    const currentEditor = editorSettings?.editor ?? editor
 
     if (!selectedSource) return null
 
@@ -74,7 +90,7 @@ export function OpenEditorPlugin({
         if (!path) return
 
         const url = buildEditorUrl(
-          editor,
+          currentEditor,
           path,
           resolved.lineNumber,
           resolved.columnNumber,
@@ -88,13 +104,63 @@ export function OpenEditorPlugin({
         <span style={{ display: 'flex', alignItems: 'center' }}>
           <OpenInEditorIcon />
         </span>
-        {`Open in ${editorLabel}`}
+        {`Open in ${EDITOR_LABELS[currentEditor]}`}
       </DropdownMenu.Item>
+    )
+  }
+
+  function OpenEditorSettings() {
+    const portalContainer = useWidgetPortalContainer()
+
+    const [editorSettings = { editor }, setEditorSettings] = useAtom(
+      openEditorSettingsAtom,
+    )
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <label style={LABEL_STYLE}>Default editor</label>
+          <Select.Root
+            value={editorSettings.editor}
+            items={editors}
+            onValueChange={(value) => {
+              if (value) {
+                setEditorSettings({ ...editorSettings, editor: value })
+              }
+            }}
+          >
+            <Select.Trigger onClick={(e) => e.stopPropagation()}>
+              <Select.Value />
+            </Select.Trigger>
+
+            <Select.Portal container={portalContainer}>
+              <Select.Positioner
+                style={{ zIndex: 100000000, pointerEvents: 'auto' }}
+              >
+                <Select.Popup>
+                  <Select.List>
+                    {editors.map((option) => (
+                      <Select.Item
+                        key={option.value}
+                        value={option.value}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Select.ItemText>{option.label}</Select.ItemText>
+                      </Select.Item>
+                    ))}
+                  </Select.List>
+                </Select.Popup>
+              </Select.Positioner>
+            </Select.Portal>
+          </Select.Root>
+        </div>
+      </div>
     )
   }
 
   return {
     name: 'open-editor',
     actionPanel: OpenEditorActionPanel,
+    settings: OpenEditorSettings,
   }
 }

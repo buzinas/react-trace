@@ -60,6 +60,7 @@
   "peerDependencies": {
     "@react-xray/core": "workspace:*",
     "@react-xray/ui-components": "workspace:*",
+    "jotai": "^2.18.0",
     "react": ">=18"
   }
 }

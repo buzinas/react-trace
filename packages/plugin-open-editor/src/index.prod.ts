@@ -3,4 +3,6 @@
  */
 export const OpenEditorPlugin = () => ({ name: 'open-editor' as const })
 
-export type { EditorPreset, OpenEditorOptions } from './index'
+export type { OpenEditorPluginOptions } from './index'
+
+export type { EditorPreset } from './types'

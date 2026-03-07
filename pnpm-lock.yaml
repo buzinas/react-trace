@@ -163,6 +163,10 @@ importers:
         version: 5.9.3
 
   packages/plugin-open-editor:
+    dependencies:
+      jotai:
+        specifier: ^2.18.0
+        version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
     devDependencies:
       '@react-xray/core':
         specifier: workspace:*
