@@ -41,7 +41,7 @@ export default function XRay({
     <CoreXRay
       {...rest}
       plugins={[
-        PreviewPlugin({ editable: !editingDisabled }),
+        PreviewPlugin({ disabled: editingDisabled }),
         CopyToClipboardPlugin(),
         OpenEditorPlugin({ editor }),
         CommentsPlugin(),

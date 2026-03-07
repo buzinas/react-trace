@@ -12,29 +12,37 @@ import {
   panelPopupStyle,
   SaveIcon,
 } from '@react-xray/ui-components'
+import { useAtom } from 'jotai'
 import type { editor } from 'monaco-types'
 import { useRef, useState } from 'react'
 
 import { FolderAccessPrompt, handleGrantAccess } from './FolderAccessPrompt'
 import { ensureHighlightStyle } from './highlight'
 import { configureBefore } from './monaco'
+import { previewSettingsAtom } from './store'
 import {
   EDITOR_WIDTH,
   INLINE_HEIGHT,
   LINE_HEIGHT,
   TOOLBAR_HEIGHT,
 } from './styles'
+import type { PreviewPluginOptions } from './types'
 import { cleanPath, detectLanguage, pathToUri, shortName } from './utils'
 
 type LoadState = 'needs-access' | 'loading' | 'ready'
 
-export function SourcePreview({
-  editable,
-  theme,
-}: {
-  editable: boolean
-  theme: string
-}) {
+type SourcePreviewProps = {
+  options: PreviewPluginOptions
+}
+export function SourcePreview({ options }: SourcePreviewProps) {
+  let { theme = 'one-dark-pro', disabled = false } = options
+  const [persistedOptions, setPreviewSettings] = useAtom(previewSettingsAtom)
+  if (!persistedOptions) {
+    setPreviewSettings({ theme, disabled })
+  }
+  theme = persistedOptions?.theme || theme
+  disabled = persistedOptions?.disabled ?? disabled
+
   const root = useProjectRoot()
   const services = useWidgetServices()
   const source = useSelectedSource()
@@ -67,10 +75,10 @@ export function SourcePreview({
   }
 
   const editorHeight = expanded
-    ? `calc(80vh - ${editable ? TOOLBAR_HEIGHT : 0}px)`
-    : INLINE_HEIGHT - (editable ? TOOLBAR_HEIGHT : 0)
+    ? `calc(80vh - ${!disabled ? TOOLBAR_HEIGHT : 0}px)`
+    : INLINE_HEIGHT - (!disabled ? TOOLBAR_HEIGHT : 0)
 
-  const toolbar = editable ? (
+  const toolbar = !disabled ? (
     <div
       style={{
         display: 'flex',
@@ -123,7 +131,7 @@ export function SourcePreview({
         width="100%"
         theme={theme}
         options={{
-          readOnly: !editable,
+          readOnly: disabled,
           minimap: { enabled: false },
           lineNumbers: 'on',
           scrollBeyondLastLine: false,
@@ -138,7 +146,7 @@ export function SourcePreview({
         beforeMount={configureBefore}
         onMount={(editor, monaco) => {
           editorRef.current = editor
-          if (editable) {
+          if (!disabled) {
             editor.addCommand(
               monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
               handleSave,

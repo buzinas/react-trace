@@ -5,4 +5,4 @@
  */
 export const PreviewPlugin = () => ({ name: 'preview' as const })
 
-export type { PreviewPluginOptions } from './index'
+export type { PreviewPluginOptions } from './types'

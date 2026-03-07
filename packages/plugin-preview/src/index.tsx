@@ -12,17 +12,13 @@ import {
   Tooltip,
 } from '@react-xray/ui-components'
 import { useRef, useState, useSyncExternalStore } from 'react'
-import type { BundledTheme } from 'shiki'
 
 import { FolderAccessPrompt, handleGrantAccess } from './FolderAccessPrompt'
+import { PreviewSettings } from './PreviewSettings'
 import { SourcePreview } from './SourcePreview'
+import type { PreviewPluginOptions } from './types'
 
-export interface PreviewPluginOptions {
-  /** Allow editing. Shows Save (⌘S) + Expand buttons. Saves via FileSystemService. @default false */
-  editable?: boolean
-  /** Shiki theme ID. @default 'one-dark-pro' — any https://shiki.style/themes value works. */
-  theme?: BundledTheme
-}
+export type { PreviewPluginOptions }
 
 function FolderToolbarIcon({ hasAccess }: { hasAccess: boolean }) {
   return (
@@ -128,15 +124,14 @@ function PreviewToolbar() {
 }
 
 export function PreviewPlugin(options: PreviewPluginOptions = {}): XRayPlugin {
-  const { editable = false, theme = 'one-dark-pro' } = options
-
   function PreviewActionPanel() {
-    return <SourcePreview editable={editable} theme={theme} />
+    return <SourcePreview options={options} />
   }
 
   return {
     name: 'preview',
     toolbar: PreviewToolbar,
     actionPanel: PreviewActionPanel,
+    settings: PreviewSettings,
   }
 }
