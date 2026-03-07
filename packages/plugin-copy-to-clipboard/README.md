@@ -12,7 +12,7 @@ Install the plugin alongside its peer dependencies:
 pnpm add --dev @react-trace/core @react-trace/ui-components @react-trace/plugin-copy-to-clipboard
 ```
 
-If you are already using `react-trace`, this plugin is included there by default.
+If you are already using `@react-trace/kit`, this plugin is included there by default.
 
 ## Usage
 

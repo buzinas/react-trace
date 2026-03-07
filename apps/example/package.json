@@ -9,9 +9,9 @@
     "lint": "oxlint src"
   },
   "dependencies": {
+    "@react-trace/kit": "workspace:*",
     "react": "^19",
-    "react-dom": "^19",
-    "react-trace": "workspace:*"
+    "react-dom": "^19"
   },
   "devDependencies": {
     "@types/react": "^19",

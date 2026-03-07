@@ -26,15 +26,15 @@ importers:
 
   apps/example:
     dependencies:
+      '@react-trace/kit':
+        specifier: workspace:*
+        version: link:../../packages/react-trace
       react:
         specifier: ^19
         version: 19.2.4
       react-dom:
         specifier: ^19
         version: 19.2.4(react@19.2.4)
-      react-trace:
-        specifier: workspace:*
-        version: link:../../packages/react-trace
     devDependencies:
       '@types/react':
         specifier: ^19

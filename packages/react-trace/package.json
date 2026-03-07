@@ -1,5 +1,5 @@
 {
-  "name": "react-trace",
+  "name": "@react-trace/kit",
   "version": "0.0.1",
   "description": "Batteries-included React visual inspector — all official plugins pre-wired.",
   "files": [

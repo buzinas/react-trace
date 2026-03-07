@@ -1,13 +1,13 @@
-# react-trace
+# @react-trace/kit
 
-`react-trace` is the batteries-included package for adding the React Trace inspector to an app without wiring plugins manually.
+`@react-trace/kit` is the batteries-included package for adding the React Trace inspector to an app without wiring plugins manually.
 
 It ships a default `Trace` export that wraps `@react-trace/core` and preconfigures all official plugins.
 
 ## Installation
 
 ```bash
-pnpm add --dev react-trace
+pnpm add --dev @react-trace/kit
 ```
 
 Peer requirements:
@@ -17,16 +17,16 @@ Peer requirements:
 
 ## When to use this package
 
-Use `react-trace` when you want the standard inspector setup with all official plugins already enabled.
+Use `@react-trace/kit` when you want the standard inspector setup with all official plugins already enabled.
 
-If you need granular control over plugin composition or plugin-specific options beyond the wrapper props documented here, use `@react-trace/core` with individual `@react-trace/plugin-*` packages instead.
+If you need granular control over plugin composition, use `@react-trace/core` with individual `@react-trace/plugin-*` packages instead.
 
 ## Default export
 
 The package exports a default `Trace` component:
 
 ```tsx
-import Trace from 'react-trace'
+import Trace from '@react-trace/kit'
 
 function AppShell() {
   return <Trace root={import.meta.env.VITE_ROOT} />
@@ -37,7 +37,7 @@ function AppShell() {
 
 ## Bundled plugins
 
-`react-trace` currently wires these official plugins in this order:
+`@react-trace/kit` currently wires these official plugins in this order:
 
 1. `@react-trace/plugin-preview` — adds the source preview panel with inline Monaco-based file preview and editing support.
 2. `@react-trace/plugin-copy-to-clipboard` — adds an action-panel item for copying the selected source location.
@@ -75,7 +75,7 @@ Change your dev script to export the project root e.g.:
 Then add it next to your app:
 
 ```tsx
-import Trace from 'react-trace'
+import Trace from '@react-trace/kit'
 
 import App from './App'
 

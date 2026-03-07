@@ -16,7 +16,7 @@ packages/
   plugin-comments/          @react-trace/plugin-comments — inline comments + Send to OpenCode
   plugin-copy-to-clipboard/ @react-trace/plugin-copy-to-clipboard
   plugin-open-editor/       @react-trace/plugin-open-editor
-  react-trace/               react-trace               — batteries-included convenience wrapper
+  react-trace/              @react-trace/kit               — batteries-included convenience wrapper
 apps/
   example/                  Vite + React demo app
 ```

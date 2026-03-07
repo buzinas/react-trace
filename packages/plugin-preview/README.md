@@ -10,7 +10,7 @@ This package adds a toolbar control for connecting the current project folder an
 pnpm add --dev @react-trace/core @react-trace/ui-components @react-trace/plugin-preview
 ```
 
-If you are already using `react-trace`, this plugin is included there by default.
+If you are already using `@react-trace/kit`, this plugin is included there by default.
 
 ## Usage
 

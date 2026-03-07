@@ -2,16 +2,16 @@
 
 React Trace is a development-time React inspector that helps you identify rendered components, resolve their source locations, and run source-aware actions such as previewing code, adding comments, copying paths, and opening files in your editor.
 
-Use `react-trace` for the recommended all-in-one setup, or compose `@react-trace/core` with the official plugins when you want explicit control over the plugin list.
+Use `@react-trace/kit` for the recommended all-in-one setup, or compose `@react-trace/core` with the official plugins when you want explicit control over the plugin list.
 
 ## Installation
 
-### Recommended: `react-trace`
+### Recommended: `@react-trace/kit`
 
-Use the `react-trace` package when you want the standard inspector setup with all official plugins already wired for you.
+Use the `@react-trace/kit` package when you want the standard inspector setup with all official plugins already wired for you.
 
 ```bash
-pnpm add --dev react-trace
+pnpm add --dev @react-trace/kit
 ```
 
 Peer requirements:
@@ -31,7 +31,7 @@ Change your dev script to export the project root e.g.:
 Then add it next to your app:
 
 ```tsx
-import Trace from 'react-trace'
+import Trace from '@react-trace/kit'
 
 import App from './App'
 
@@ -106,7 +106,7 @@ Clone the repo. Run `nvm use` and `pnpm i`.
 ### Monorepo layout
 
 - `packages/core` — `@react-trace/core`, the `Trace` component, plugin API, hooks, and utilities.
-- `packages/react-trace` — `react-trace`, the convenience wrapper with all official plugins pre-wired.
+- `packages/react-trace` — `@react-trace/kit`, the convenience wrapper with all official plugins pre-wired.
 - `packages/ui-components` — `@react-trace/ui-components`, shared UI primitives used by the official plugins.
 - `packages/plugin-preview` — `@react-trace/plugin-preview`, source preview/editor action panel with project-folder access.
 - `packages/plugin-comments` — `@react-trace/plugin-comments`, inline comments and Send to OpenCode flows.
