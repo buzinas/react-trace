@@ -38,6 +38,8 @@ export {
 
 export { Popover, panelPopupStyle } from './Popover'
 
+export { Combobox } from './Combobox'
+
 export { DropdownMenu } from './DropdownMenu'
 export type {
   DropdownMenuRootProps,

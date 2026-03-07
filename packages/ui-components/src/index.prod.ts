@@ -30,6 +30,7 @@ export const SaveIcon = () => null
 export const ExpandIcon = () => null
 export const CollapseIcon = () => null
 export const FolderIcon = () => null
+export const SettingsIcon = () => null
 export const OpencodeIcon = () => null
 
 export const Popover = {
@@ -56,9 +57,27 @@ export const Select = {
   Trigger: () => null,
   Value: () => null,
   Positioner: () => null,
+  Portal: () => null,
   Popup: () => null,
+  List: () => null,
   Item: () => null,
   ItemText: () => null,
+  ItemIndicator: () => null,
+  Group: ({ children }: { children?: ReactNode }) => children,
+  GroupLabel: () => null,
+  Separator: () => null,
+}
+
+export const Combobox = {
+  Root: ({ children }: { children?: ReactNode }) => children,
+  Trigger: () => null,
+  Value: () => null,
+  Positioner: () => null,
+  Popup: () => null,
+  List: () => null,
+  Empty: () => null,
+  Item: () => null,
+  Input: () => null,
   ItemIndicator: () => null,
   Group: ({ children }: { children?: ReactNode }) => children,
   GroupLabel: () => null,
