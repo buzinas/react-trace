@@ -6,10 +6,7 @@ import { OpenEditorPlugin } from '@react-xray/plugin-open-editor'
 import type { EditorPreset } from '@react-xray/plugin-open-editor'
 import { PreviewPlugin } from '@react-xray/plugin-preview'
 
-export interface XRayAllInOneProps extends Pick<
-  XRayProps,
-  'root' | 'position'
-> {
+export interface XRayAllInOneProps extends XRayProps {
   /**
    * Disable inline file editing in the preview panel.
    * Hides the Save button (⌘S) and the expand button.
@@ -35,6 +32,7 @@ export interface XRayAllInOneProps extends Pick<
 export default function XRay({
   editingDisabled = false,
   editor = 'vscode',
+  plugins = [],
   ...rest
 }: XRayAllInOneProps) {
   return (
@@ -45,6 +43,7 @@ export default function XRay({
         CopyToClipboardPlugin(),
         OpenEditorPlugin({ editor }),
         CommentsPlugin(),
+        ...plugins,
       ]}
     />
   )
