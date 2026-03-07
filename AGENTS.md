@@ -138,11 +138,13 @@ Plugins implement `XRayPlugin`:
   name: string
   toolbar?: ComponentType
   actionPanel?: ComponentType
+  settings?: ComponentType
 }
 ```
 
 - `toolbar` renders plugin-owned UI directly inside the core toolbar.
 - `actionPanel` renders plugin-owned UI directly inside the widget action panel. These components receive no props; read shared state through the public hooks.
+- `settings` renders plugin-owned UI directly inside the widget settings popover.
 - The deprecated compatibility contract (`toolbarItems`, `actions`, `subpanel`, `ToolbarItem`, `Action`) has been removed and should not be documented or used as supported API.
 
 Shared hook surface from `@react-xray/core`:
@@ -156,7 +158,7 @@ Shared hook surface from `@react-xray/core`:
 - `useDeactivateInspector()` — disable inspector mode before opening plugin-owned interactive UI
 - `useClearSelectedContext()` — clear the current selection when a plugin flow should dismiss it
 
-Plugin-owned UI should render directly from `toolbar` / `actionPanel`. For popovers, dropdowns, tooltips, and other portal-mounted UI, use the widget portal container instead of singleton overlay mount patterns like `ensureXxxMounted()` or rendering to `document.body`.
+Plugin-owned UI should render directly from `toolbar`, `actionPanel`, or `settings`. For popovers, dropdowns, tooltips, and other portal-mounted UI, use the widget portal container instead of rendering to `document.body`.
 
 ---
 
