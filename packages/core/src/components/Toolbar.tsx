@@ -5,12 +5,16 @@ import { useAtom, useAtomValue } from 'jotai'
 
 import logo from '../logo.png'
 import { IS_MAC } from '../platform'
-import { inspectorActiveAtom, portalContainerAtom } from '../store'
+import {
+  coreSettingsAtom,
+  inspectorActiveAtom,
+  portalContainerAtom,
+} from '../store'
 import type { XRayPlugin, XRayProps } from '../types'
+import { SettingsMenu } from './SettingsMenu'
 
 interface ToolbarProps {
   plugins: XRayPlugin[]
-  position: NonNullable<XRayProps['position']>
 }
 
 const DEFAULT_SPACING = 32
@@ -27,16 +31,17 @@ const POSITION_STYLES: Record<
 
 const TOGGLE_SHORTCUT = IS_MAC ? 'Long-press ⌘X' : 'Long-press Ctrl+X'
 
-export function Toolbar({ plugins, position }: ToolbarProps) {
+export function Toolbar({ plugins }: ToolbarProps) {
   const [isInspectorActive, setInspectorActive] = useAtom(inspectorActiveAtom)
   const portalContainer = useAtomValue(portalContainerAtom)
+  const coreSettings = useAtomValue(coreSettingsAtom)
 
   return (
     <TooltipPrimitive.Provider delay={300}>
       <ToolbarPrimitive.Root
         style={{
           position: 'fixed',
-          ...POSITION_STYLES[position],
+          ...POSITION_STYLES[coreSettings.position],
           display: 'flex',
           alignItems: 'center',
           background: '#18181b',
@@ -75,6 +80,7 @@ export function Toolbar({ plugins, position }: ToolbarProps) {
             const ToolbarContent = plugin.toolbar!
             return <ToolbarContent key={plugin.name} />
           })}
+        <SettingsMenu plugins={plugins} />
       </ToolbarPrimitive.Root>
     </TooltipPrimitive.Provider>
   )

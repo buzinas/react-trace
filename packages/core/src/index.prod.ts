@@ -3,9 +3,14 @@
  * XRay renders null so the inspector has zero runtime cost in production.
  */
 
-import type { ComponentSource, FileSystemService, XRayServices } from './types'
+import type { WritableAtom } from 'jotai'
 
-export { IS_MAC, MOD_KEY } from './platform'
+import type {
+  ComponentSource,
+  FileSystemService,
+  XRayServices,
+  XRaySettings,
+} from './types'
 
 const NOOP = () => {}
 const NOOP_FILE_SYSTEM_SERVICE: FileSystemService = {
@@ -44,6 +49,16 @@ export const resolveSource = async (source: ComponentSource) => source
 export const toAbsolutePath = (path: string) => path
 export const toRelativePath = (path: string) => path
 
+export { IS_MAC, MOD_KEY } from './platform'
+
+export function settingsPluginAtom<K extends keyof XRaySettings>(pluginKey: K) {
+  return pluginKey as unknown as WritableAtom<
+    XRaySettings[K],
+    [XRaySettings[K]],
+    void
+  >
+}
+
 export type {
   ComponentContext,
   ComponentSource,
@@ -51,4 +66,5 @@ export type {
   XRayPlugin,
   XRayServices,
   XRayProps,
+  XRaySettings,
 } from './types'

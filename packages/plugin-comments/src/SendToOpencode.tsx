@@ -1,5 +1,6 @@
 import { createOpencodeClient } from '@opencode-ai/sdk'
 import type { Session } from '@opencode-ai/sdk'
+import { useWidgetPortalContainer } from '@react-xray/core'
 import { Button, Select, Textarea } from '@react-xray/ui-components'
 import { useEffect, useRef, useState } from 'react'
 
@@ -29,6 +30,7 @@ export function SendToOpencodeForm({
   onClearComments(): void
   onDone(): void
 }) {
+  const portalContainer = useWidgetPortalContainer()
   const [sessions, setSessions] = useState<Session[]>([])
   const [selectedId, setSelectedId] = useState<string>('__new__')
   const [generalComment, setGeneralComment] = useState('')
@@ -213,28 +215,36 @@ export function SendToOpencodeForm({
           disabled={disabled}
         >
           <Select.Trigger style={{ borderRadius: 4 }}>
-            <Select.Value placeholder="Select a session…" />
+            <Select.Value placeholder="Select a session…">
+              {(value) => sessions.find((s) => s.id === value)?.title ?? value}
+            </Select.Value>
           </Select.Trigger>
-          <Select.Positioner style={{ zIndex: 9999999 }}>
-            <Select.Popup>
-              <Select.Item value="__new__">
-                <Select.ItemText>+ New session</Select.ItemText>
-              </Select.Item>
-              {loading ? (
-                <Select.Item value="__loading__" disabled>
-                  <Select.ItemText>Loading sessions…</Select.ItemText>
-                </Select.Item>
-              ) : (
-                sessions.map((s) => (
-                  <Select.Item key={s.id} value={s.id}>
-                    <Select.ItemText>
-                      {s.title || `Session ${s.id.slice(0, 8)}`}
-                    </Select.ItemText>
+          <Select.Portal container={portalContainer}>
+            <Select.Positioner
+              style={{ zIndex: 9999999, pointerEvents: 'auto' }}
+            >
+              <Select.Popup>
+                <Select.List>
+                  <Select.Item value="__new__">
+                    <Select.ItemText>+ New session</Select.ItemText>
                   </Select.Item>
-                ))
-              )}
-            </Select.Popup>
-          </Select.Positioner>
+                  {loading ? (
+                    <Select.Item value="__loading__" disabled>
+                      <Select.ItemText>Loading sessions…</Select.ItemText>
+                    </Select.Item>
+                  ) : (
+                    sessions.map((s) => (
+                      <Select.Item key={s.id} value={s.id}>
+                        <Select.ItemText>
+                          {s.title || `Session ${s.id.slice(0, 8)}`}
+                        </Select.ItemText>
+                      </Select.Item>
+                    ))
+                  )}
+                </Select.List>
+              </Select.Popup>
+            </Select.Positioner>
+          </Select.Portal>
         </Select.Root>
       </div>
 

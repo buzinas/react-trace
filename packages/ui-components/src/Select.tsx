@@ -24,7 +24,6 @@ function StyledTrigger({
         fontSize: 12,
         fontFamily: 'system-ui, sans-serif',
         padding: '5px 8px',
-        outline: 'none',
         cursor: state.disabled ? 'not-allowed' : 'pointer',
         opacity: state.disabled ? 0.5 : 1,
         boxSizing: 'border-box',
@@ -38,6 +37,20 @@ function StyledTrigger({
   )
 }
 
+function StyledPositioner({
+  ...props
+}: ComponentProps<typeof SelectPrimitive.Positioner>) {
+  return (
+    <SelectPrimitive.Positioner
+      align="start"
+      side="top"
+      sideOffset={4}
+      alignItemWithTrigger={false}
+      {...props}
+    />
+  )
+}
+
 function StyledPopup({
   style,
   ...props
@@ -45,6 +58,21 @@ function StyledPopup({
   return (
     <SelectPrimitive.Popup
       style={{ ...panelPopupStyle, paddingBlock: 4, ...style }}
+      {...props}
+    />
+  )
+}
+
+function StyledList({
+  style,
+  ...props
+}: ComponentProps<typeof SelectPrimitive.List>) {
+  return (
+    <SelectPrimitive.List
+      style={{
+        ...style,
+        width: 'var(--anchor-width)',
+      }}
       {...props}
     />
   )
@@ -84,8 +112,10 @@ export const Select = {
   Root: SelectPrimitive.Root,
   Trigger: StyledTrigger,
   Value: SelectPrimitive.Value,
-  Positioner: SelectPrimitive.Positioner,
+  Portal: SelectPrimitive.Portal,
+  Positioner: StyledPositioner,
   Popup: StyledPopup,
+  List: StyledList,
   Item: StyledItem,
   ItemText: SelectPrimitive.ItemText,
   ItemIndicator: SelectPrimitive.ItemIndicator,

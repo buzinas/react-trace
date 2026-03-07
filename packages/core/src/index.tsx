@@ -13,6 +13,8 @@ export { resolveSource } from './fiber'
 export { toAbsolutePath, toRelativePath } from './path'
 export { IS_MAC, MOD_KEY } from './platform'
 
+export { settingsPluginAtom } from './store'
+
 export type {
   ComponentContext,
   ComponentSource,
@@ -20,4 +22,5 @@ export type {
   XRayPlugin,
   XRayServices,
   XRayProps,
+  XRaySettings,
 } from './types'

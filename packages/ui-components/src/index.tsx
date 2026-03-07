@@ -31,6 +31,7 @@ export {
   OpencodeIcon,
   OpenInEditorIcon,
   SaveIcon,
+  SettingsIcon,
   TrashIcon,
   XIcon,
 } from './icons'

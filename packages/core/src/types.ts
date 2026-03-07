@@ -64,7 +64,13 @@ export interface XRayPlugin {
    * Component to render inside the action panel when a context is selected in the inspector.
    */
   actionPanel?: ComponentType
+  /**
+   * Component to render inside the settings dropdown.
+   */
+  settings?: ComponentType
 }
+
+type WidgetPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 
 export interface XRayProps {
   /**
@@ -72,5 +78,11 @@ export interface XRayProps {
    */
   root: string
   plugins?: XRayPlugin[]
-  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
+  position?: WidgetPosition
+}
+
+export interface XRaySettings {
+  core: {
+    position: WidgetPosition
+  }
 }

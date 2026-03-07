@@ -21,7 +21,6 @@ const baseStyle: CSSProperties = {
   fontSize: 12,
   fontFamily: 'system-ui, sans-serif',
   fontWeight: 500,
-  outline: 'none',
   transition: 'opacity 0.15s',
   cursor: 'pointer',
   whiteSpace: 'nowrap',

@@ -69,6 +69,9 @@ importers:
       jotai:
         specifier: ^2.18.0
         version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
+      jotai-family:
+        specifier: ^1.0.1
+        version: 1.0.1(jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4))
     devDependencies:
       '@types/react':
         specifier: ^19
@@ -1486,6 +1489,12 @@ packages:
   import-without-cache@0.2.5:
     resolution: {integrity: sha512-B6Lc2s6yApwnD2/pMzFh/d5AVjdsDXjgkeJ766FmFuJELIGHNycKRj+l3A39yZPM4CchqNCB4RITEAYB1KUM6A==}
     engines: {node: '>=20.19.0'}
+
+  jotai-family@1.0.1:
+    resolution: {integrity: sha512-Zb/79GNDhC/z82R+6qTTpeKW4l4H6ZCApfF5W8G4SH37E4mhbysU7r8DkP0KX94hWvjB/6lt/97nSr3wB+64Zg==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      jotai: '>=2.9.0'
 
   jotai@2.18.0:
     resolution: {integrity: sha512-XI38kGWAvtxAZ+cwHcTgJsd+kJOJGf3OfL4XYaXWZMZ7IIY8e53abpIHvtVn1eAgJ5dlgwlGFnP4psrZ/vZbtA==}
@@ -2970,6 +2979,10 @@ snapshots:
   html-void-elements@3.0.0: {}
 
   import-without-cache@0.2.5: {}
+
+  jotai-family@1.0.1(jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)):
+    dependencies:
+      jotai: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
 
   jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4):
     optionalDependencies:

@@ -6,6 +6,7 @@ import { getComponentContext, resolveSource } from '../fiber'
 import { fileSystemService } from '../fs'
 import { IS_MAC } from '../platform'
 import {
+  coreSettingsAtom,
   createWidgetStore,
   inspectorActiveAtom,
   portalContainerAtom,
@@ -30,23 +31,18 @@ export function XRay({
   const [jotaiStore] = useState(() => {
     const store = createWidgetStore()
     store.set(projectRootAtom, root)
+    store.set(coreSettingsAtom, { position })
     return store
   })
 
   return (
     <Provider store={jotaiStore}>
-      <XRayRoot plugins={plugins} position={position} />
+      <XRayRoot plugins={plugins} />
     </Provider>
   )
 }
 
-function XRayRoot({
-  plugins,
-  position,
-}: {
-  plugins: NonNullable<XRayProps['plugins']>
-  position: NonNullable<XRayProps['position']>
-}) {
+function XRayRoot({ plugins }: { plugins: NonNullable<XRayProps['plugins']> }) {
   const portalContainer = useAtomValue(portalContainerAtom)
 
   const [inspectorActive, setInspectorActive] = useAtom(inspectorActiveAtom)
@@ -191,7 +187,7 @@ function XRayRoot({
     <>
       {/* Toolbar — pointer-events:auto so buttons are clickable */}
       <div style={{ pointerEvents: 'auto' }}>
-        <Toolbar plugins={plugins} position={position} />
+        <Toolbar plugins={plugins} />
       </div>
 
       {/* Overlay — pointer-events:none, managed by the container */}

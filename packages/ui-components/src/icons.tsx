@@ -7,6 +7,7 @@ import {
   MessageSquare,
   Minimize2,
   Save,
+  Settings,
   Trash2,
   X,
 } from 'lucide-react'
@@ -14,9 +15,9 @@ import {
 const DEFAULT_STROKE_WIDTH = 2
 const DEFAULT_SIZE = 16
 
-// ---------------------------------------------------------------------------
-// Shared icons
-// ---------------------------------------------------------------------------
+export function SettingsIcon({ size = DEFAULT_SIZE }: { size?: number }) {
+  return <Settings size={size} strokeWidth={DEFAULT_STROKE_WIDTH} aria-hidden />
+}
 
 export function ClipboardIcon({ size = DEFAULT_SIZE }: { size?: number }) {
   return (
@@ -40,10 +41,6 @@ export function OpenInEditorIcon({ size = DEFAULT_SIZE }: { size?: number }) {
   )
 }
 
-// ---------------------------------------------------------------------------
-// Communication icons (plugin-comments)
-// ---------------------------------------------------------------------------
-
 export function ChatBubbleIcon({ size = DEFAULT_SIZE }: { size?: number }) {
   return (
     <MessageSquare size={size} strokeWidth={DEFAULT_STROKE_WIDTH} aria-hidden />
@@ -53,10 +50,6 @@ export function ChatBubbleIcon({ size = DEFAULT_SIZE }: { size?: number }) {
 export function TrashIcon({ size = DEFAULT_SIZE }: { size?: number }) {
   return <Trash2 size={size} strokeWidth={DEFAULT_STROKE_WIDTH} aria-hidden />
 }
-
-// ---------------------------------------------------------------------------
-// File & editor icons (plugin-preview)
-// ---------------------------------------------------------------------------
 
 export function SaveIcon({ size = DEFAULT_SIZE }: { size?: number }) {
   return <Save size={size} strokeWidth={DEFAULT_STROKE_WIDTH} aria-hidden />

@@ -1,7 +1,10 @@
 import { atom, createStore } from 'jotai'
+import type { WritableAtom } from 'jotai'
+import { atomFamily } from 'jotai-family'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 import { fileSystemService } from './fs'
-import type { ComponentContext, XRayServices } from './types'
+import type { ComponentContext, XRayServices, XRaySettings } from './types'
 
 /**
  * The scoped Jotai store used by the XRay widget.
@@ -13,7 +16,53 @@ import type { ComponentContext, XRayServices } from './types'
 /**
  * Absolute path to the project root.
  */
-export const projectRootAtom = atom<string>()
+export const projectRootAtom = atom<string>('')
+
+/**
+ * Settings atom per project root, persisted in localStorage.
+ */
+const settingsAtom = atomFamily((root: string) =>
+  atomWithStorage<XRaySettings>(
+    `my-widget:settings:${root}`,
+    { core: { position: 'bottom-right' } },
+    createJSONStorage<XRaySettings>(() => localStorage),
+    { getOnInit: typeof window !== 'undefined' },
+  ),
+)
+
+const currentSettingsAtom = atom(
+  (get) => get(settingsAtom(get(projectRootAtom))),
+  (get, set, value: XRaySettings) => {
+    const root = get(projectRootAtom)
+    set(settingsAtom(root), value)
+  },
+)
+
+const settingsPluginFamily = atomFamily((pluginKey: keyof XRaySettings) =>
+  atom(
+    (get) => get(currentSettingsAtom)[pluginKey],
+    (get, set, value: XRaySettings[keyof XRaySettings]) => {
+      const prev = get(currentSettingsAtom)
+      set(currentSettingsAtom, { ...prev, [pluginKey]: value })
+    },
+  ),
+)
+
+/**
+ * Atom family for plugin-specific settings.
+ * @param pluginKey
+ * @returns
+ */
+export function settingsPluginAtom<K extends keyof XRaySettings>(pluginKey: K) {
+  // wrapper function to narrow down the type of the atom family
+  return settingsPluginFamily(pluginKey) as WritableAtom<
+    XRaySettings[K],
+    [XRaySettings[K]],
+    void
+  >
+}
+
+export const coreSettingsAtom = settingsPluginFamily('core')
 
 /**
  * The portal container element that the widget renders into. Plugins can read
