@@ -1,5 +1,3 @@
-import { Toolbar as ToolbarPrimitive } from '@base-ui/react/toolbar'
-import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip'
 import { ToolbarButton, Tooltip } from '@react-xray/ui-components'
 import { useAtom, useAtomValue } from 'jotai'
 
@@ -37,8 +35,8 @@ export function Toolbar({ plugins }: ToolbarProps) {
   const coreSettings = useAtomValue(coreSettingsAtom)
 
   return (
-    <TooltipPrimitive.Provider delay={300}>
-      <ToolbarPrimitive.Root
+    <Tooltip.Provider delay={300}>
+      <div
         style={{
           position: 'fixed',
           ...POSITION_STYLES[coreSettings.position],
@@ -61,7 +59,7 @@ export function Toolbar({ plugins }: ToolbarProps) {
           label="Inspector"
           shortcut={isInspectorActive ? 'Esc to exit' : TOGGLE_SHORTCUT}
           container={portalContainer}
-          render={<ToolbarButton render={<ToolbarPrimitive.Button />} />}
+          render={<ToolbarButton />}
           aria-label="Inspector"
           onClick={() => setInspectorActive((prev) => !prev)}
         >
@@ -81,7 +79,7 @@ export function Toolbar({ plugins }: ToolbarProps) {
             return <ToolbarContent key={plugin.name} />
           })}
         <SettingsMenu plugins={plugins} />
-      </ToolbarPrimitive.Root>
-    </TooltipPrimitive.Provider>
+      </div>
+    </Tooltip.Provider>
   )
 }

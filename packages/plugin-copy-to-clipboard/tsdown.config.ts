@@ -8,9 +8,12 @@ export default defineConfig({
   deps: {
     neverBundle: [
       'react',
+      'react-dom',
+      'react-dom/client',
       'react/jsx-runtime',
       '@react-xray/core',
       '@react-xray/ui-components',
+      'jotai',
     ],
   },
   sourcemap: true,

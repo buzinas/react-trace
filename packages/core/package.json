@@ -50,7 +50,6 @@
     "lint": "oxlint src"
   },
   "dependencies": {
-    "@base-ui/react": "^1.2.0",
     "@jridgewell/trace-mapping": "^0.3.31",
     "@react-xray/ui-components": "workspace:*",
     "jotai": "^2.18.0",

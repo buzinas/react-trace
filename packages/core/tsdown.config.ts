@@ -26,6 +26,8 @@ export default defineConfig({
       '@jridgewell/sourcemap-codec',
       '@jridgewell/resolve-uri',
       'jotai',
+      'jotai-family',
+      '@react-xray/ui-components',
     ],
     neverBundle: [
       'react',

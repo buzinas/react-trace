@@ -57,3 +57,5 @@ export function Tooltip({
     </TooltipPrimitive.Root>
   )
 }
+
+Tooltip.Provider = TooltipPrimitive.Provider
