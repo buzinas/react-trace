@@ -5,4 +5,4 @@
 const XRay = () => null
 export default XRay
 
-export type { XRayAllInOneProps, EditorPreset, XRayProps } from './index'
+export type { XRayAllInOneProps, EditorPreset } from './index'

@@ -50,4 +50,4 @@ export default function XRay({
 }
 
 // Re-export useful types for consumers
-export type { EditorPreset, XRayProps }
+export type { EditorPreset }
