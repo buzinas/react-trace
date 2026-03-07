@@ -1,10 +1,10 @@
+import type { XRayPlugin } from '@react-xray/core'
 import {
   resolveSource,
   toRelativePath,
   useClearSelectedContext,
   useProjectRoot,
   useSelectedSource,
-  type RVEPlugin,
 } from '@react-xray/core'
 import { ClipboardIcon, DropdownMenu } from '@react-xray/ui-components'
 
@@ -36,7 +36,7 @@ function CopyToClipboardActionPanel() {
   )
 }
 
-export function CopyToClipboardPlugin(): RVEPlugin {
+export function CopyToClipboardPlugin(): XRayPlugin {
   return {
     name: 'copy-to-clipboard',
     actionPanel: CopyToClipboardActionPanel,

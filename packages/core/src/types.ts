@@ -50,11 +50,11 @@ export interface FileSystemService {
   write(path: string, content: string): Promise<void>
 }
 
-export interface RVEServices {
+export interface XRayServices {
   fs: FileSystemService
 }
 
-export interface RVEPlugin {
+export interface XRayPlugin {
   name: string
   /**
    * Component to render inside the widget's toolbar.
@@ -71,6 +71,6 @@ export interface XRayProps {
    * Absolute path to the project root, forwarded to all plugins
    */
   root: string
-  plugins?: RVEPlugin[]
+  plugins?: XRayPlugin[]
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
 }

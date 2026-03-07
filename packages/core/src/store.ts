@@ -1,7 +1,7 @@
 import { atom, createStore } from 'jotai'
 
 import { fileSystemService } from './fs'
-import type { ComponentContext, RVEServices } from './types'
+import type { ComponentContext, XRayServices } from './types'
 
 /**
  * The scoped Jotai store used by the XRay widget.
@@ -34,7 +34,7 @@ export const portalContainerAtom = atom(() => {
 /**
  * Services provided by core to all plugins.
  */
-export const servicesAtom = atom<RVEServices>({ fs: fileSystemService })
+export const servicesAtom = atom<XRayServices>({ fs: fileSystemService })
 
 /**
  * Inspector active state.

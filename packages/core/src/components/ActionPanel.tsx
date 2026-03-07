@@ -15,10 +15,10 @@ import {
   selectedContextAtom,
   selectedSourceAtom,
 } from '../store'
-import type { ComponentContext, ComponentSource, RVEPlugin } from '../types'
+import type { ComponentContext, ComponentSource, XRayPlugin } from '../types'
 
 interface ActionPanelProps {
-  plugins: RVEPlugin[]
+  plugins: XRayPlugin[]
 }
 
 // ---------------------------------------------------------------------------
@@ -256,7 +256,7 @@ function Submenu({
   source,
 }: {
   entryContent: ReactNode
-  plugins: RVEPlugin[]
+  plugins: XRayPlugin[]
   source: ComponentSource
 }) {
   const portalContainer = useAtomValue(portalContainerAtom)

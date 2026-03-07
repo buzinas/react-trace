@@ -124,14 +124,14 @@ Always use named exports. Default exports only in `react-xray/src/index.tsx` (th
 - **Functions/variables:** `camelCase`
 - **Interfaces/types:** `PascalCase`
 - **Constants:** `SCREAMING_SNAKE_CASE` for module-level primitives (e.g. `LINE_HEIGHT`, `IS_MAC`)
-- **Plugin factory functions:** `XxxPlugin()` — returns `RVEPlugin`
+- **Plugin factory functions:** `XxxPlugin()` — returns `XRayPlugin`
 - **Store files:** module-level `let` + subscribe/getSnapshot/set pattern (compatible with `useSyncExternalStore`)
 
 ---
 
 ## Plugin architecture
 
-Plugins implement `RVEPlugin`:
+Plugins implement `XRayPlugin`:
 
 ```ts
 {

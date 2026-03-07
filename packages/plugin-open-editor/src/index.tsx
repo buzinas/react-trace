@@ -1,10 +1,10 @@
+import type { XRayPlugin } from '@react-xray/core'
 import {
   resolveSource,
   toAbsolutePath,
   useClearSelectedContext,
   useProjectRoot,
   useSelectedSource,
-  type RVEPlugin,
 } from '@react-xray/core'
 import { DropdownMenu, OpenInEditorIcon } from '@react-xray/ui-components'
 
@@ -55,7 +55,7 @@ function buildEditorUrl(
 
 export function OpenEditorPlugin({
   editor = 'vscode',
-}: OpenEditorOptions = {}): RVEPlugin {
+}: OpenEditorOptions = {}): XRayPlugin {
   const editorLabel = EDITOR_LABELS[editor]
 
   function OpenEditorActionPanel() {

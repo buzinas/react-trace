@@ -17,7 +17,7 @@ export type {
   ComponentContext,
   ComponentSource,
   FileSystemService,
-  RVEPlugin,
-  RVEServices,
+  XRayPlugin,
+  XRayServices,
   XRayProps,
 } from './types'

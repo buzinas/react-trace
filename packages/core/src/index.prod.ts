@@ -3,7 +3,7 @@
  * XRay renders null so the inspector has zero runtime cost in production.
  */
 
-import type { ComponentSource, FileSystemService, RVEServices } from './types'
+import type { ComponentSource, FileSystemService, XRayServices } from './types'
 
 export { IS_MAC, MOD_KEY } from './platform'
 
@@ -25,7 +25,7 @@ const NOOP_FILE_SYSTEM_SERVICE: FileSystemService = {
   },
   async write() {},
 }
-const NOOP_WIDGET_SERVICES: RVEServices = {
+const NOOP_WIDGET_SERVICES: XRayServices = {
   fs: NOOP_FILE_SYSTEM_SERVICE,
 }
 
@@ -48,7 +48,7 @@ export type {
   ComponentContext,
   ComponentSource,
   FileSystemService,
-  RVEPlugin,
-  RVEServices,
+  XRayPlugin,
+  XRayServices,
   XRayProps,
 } from './types'

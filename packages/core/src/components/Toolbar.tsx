@@ -6,10 +6,10 @@ import { useAtom, useAtomValue } from 'jotai'
 import logo from '../logo.png'
 import { IS_MAC } from '../platform'
 import { inspectorActiveAtom, portalContainerAtom } from '../store'
-import type { RVEPlugin, XRayProps } from '../types'
+import type { XRayPlugin, XRayProps } from '../types'
 
 interface ToolbarProps {
-  plugins: RVEPlugin[]
+  plugins: XRayPlugin[]
   position: NonNullable<XRayProps['position']>
 }
 

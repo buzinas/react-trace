@@ -1,3 +1,4 @@
+import type { XRayPlugin } from '@react-xray/core'
 import {
   resolveSource,
   toRelativePath,
@@ -7,7 +8,6 @@ import {
   useSelectedContext,
   useSelectedSource,
   useWidgetPortalContainer,
-  type RVEPlugin,
 } from '@react-xray/core'
 import {
   ChatBubbleIcon,
@@ -146,7 +146,7 @@ function CommentsActionPanel() {
   )
 }
 
-export function CommentsPlugin(): RVEPlugin {
+export function CommentsPlugin(): XRayPlugin {
   return {
     name: 'comments',
     toolbar: CommentsToolbar,

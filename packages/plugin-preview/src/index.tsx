@@ -1,9 +1,9 @@
+import type { XRayPlugin } from '@react-xray/core'
 import {
   useDeactivateInspector,
   useProjectRoot,
   useWidgetPortalContainer,
   useWidgetServices,
-  type RVEPlugin,
 } from '@react-xray/core'
 import {
   FolderIcon,
@@ -127,7 +127,7 @@ function PreviewToolbar() {
   )
 }
 
-export function PreviewPlugin(options: PreviewPluginOptions = {}): RVEPlugin {
+export function PreviewPlugin(options: PreviewPluginOptions = {}): XRayPlugin {
   const { editable = false, theme = 'one-dark-pro' } = options
 
   function PreviewActionPanel() {
