@@ -8,9 +8,9 @@ export {
   useSelectedSource,
   useWidgetPortalContainer,
 } from './hooks'
-export { resolveSource } from './fiber'
-export { toAbsolutePath, toRelativePath } from './path'
-export { IS_MAC, MOD_KEY } from './platform'
+export { resolveSource } from './utils/fiber'
+export { toAbsolutePath, toRelativePath } from './utils/path'
+export { IS_MAC, MOD_KEY } from './utils/platform'
 
 export { settingsPluginAtom } from './store'
 

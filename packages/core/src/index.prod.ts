@@ -23,7 +23,7 @@ export const resolveSource = async (source: ComponentSource) => source
 export const toAbsolutePath = (path: string) => path
 export const toRelativePath = (path: string) => path
 
-export { IS_MAC, MOD_KEY } from './platform'
+export { IS_MAC, MOD_KEY } from './utils/platform'
 
 export function settingsPluginAtom<K extends keyof TraceSettings>(
   pluginKey: K,

@@ -2,13 +2,13 @@ import { ToolbarButton, Tooltip } from '@react-trace/ui-components'
 import { Logo } from '@react-trace/ui-components'
 import { useAtom, useAtomValue } from 'jotai'
 
-import { IS_MAC } from '../platform'
 import {
   coreSettingsAtom,
   inspectorActiveAtom,
   portalContainerAtom,
 } from '../store'
 import type { TracePlugin, TraceProps } from '../types'
+import { IS_MAC } from '../utils/platform'
 import { SettingsMenu } from './SettingsMenu'
 
 interface ToolbarProps {

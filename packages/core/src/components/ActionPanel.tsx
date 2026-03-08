@@ -9,13 +9,13 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { ReactNode } from 'react'
 import { useCallback } from 'react'
 
-import { toRelativePath } from '../path'
 import {
   portalContainerAtom,
   selectedContextAtom,
   selectedSourceAtom,
 } from '../store'
 import type { ComponentContext, ComponentSource, TracePlugin } from '../types'
+import { toRelativePath } from '../utils/path'
 
 interface ActionPanelProps {
   plugins: TracePlugin[]

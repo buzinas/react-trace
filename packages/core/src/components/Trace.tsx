@@ -2,8 +2,6 @@ import { Provider, useAtom, useAtomValue } from 'jotai'
 import { useEffect, useEffectEvent, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-import { getComponentContext, resolveSource } from '../fiber'
-import { IS_MAC } from '../platform'
 import {
   coreSettingsAtom,
   createWidgetStore,
@@ -13,6 +11,8 @@ import {
   selectedContextAtom,
 } from '../store'
 import type { ComponentContext, TraceProps } from '../types'
+import { getComponentContext, resolveSource } from '../utils/fiber'
+import { IS_MAC } from '../utils/platform'
 import { ActionPanel } from './ActionPanel'
 import { Overlay } from './Overlay'
 import { Toolbar } from './Toolbar'

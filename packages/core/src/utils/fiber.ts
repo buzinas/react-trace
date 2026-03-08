@@ -1,7 +1,7 @@
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping'
 import type { EncodedSourceMap } from '@jridgewell/trace-mapping'
 
-import type { ComponentContext, ComponentSource } from './types'
+import type { ComponentContext, ComponentSource } from '../types'
 
 // ---------------------------------------------------------------------------
 // Source map resolution
