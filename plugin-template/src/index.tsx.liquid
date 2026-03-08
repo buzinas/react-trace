@@ -1,0 +1,96 @@
+import type { TracePlugin } from '@react-trace/core'
+{% if hasActionPanel or hasSettings or hasToolbar %}import {
+{% if hasActionPanel %}  useClearSelectedContext,
+  useSelectedSource,
+{% endif %}{% if hasToolbar or hasSettings %}  useWidgetPortalContainer,
+{% endif %}} from '@react-trace/core'
+{% endif %}{% if hasToolbar or hasActionPanel %}import {
+{% if hasActionPanel %}  DropdownMenu,
+{% endif %}{% if hasToolbar %}  IconButton,
+  Tooltip,
+{% endif %}} from '@react-trace/ui-components'
+{% endif %}{% if hasSettings %}import { useAtom } from 'jotai'
+
+import { {{ pluginName | camelCase }}SettingsAtom } from './store'
+
+import type { {{ pluginName | pascalCase }}PluginOptions } from './types'
+{% endif %}
+{% if hasToolbar %}
+function {{ pluginName | pascalCase }}Toolbar() {
+  const portalContainer = useWidgetPortalContainer()
+
+  return (
+    <Tooltip.Provider>
+      <Tooltip.Root>
+        <Tooltip.Trigger
+          render={
+            <IconButton aria-label="{{ pluginName | pascalCase }}">
+              {/* TODO: Replace with your icon */}
+              <span style={% raw %}{{ fontSize: 14 }}{% endraw %}>P</span>
+            </IconButton>
+          }
+        />
+        <Tooltip.Portal container={portalContainer}>
+          <Tooltip.Positioner>
+            <Tooltip.Popup>{{ pluginName | pascalCase }}</Tooltip.Popup>
+          </Tooltip.Positioner>
+        </Tooltip.Portal>
+      </Tooltip.Root>
+    </Tooltip.Provider>
+  )
+}
+{% endif %}
+{% if hasActionPanel %}
+function {{ pluginName | pascalCase }}ActionPanel() {
+  const selectedSource = useSelectedSource()
+  const clearSelectedContext = useClearSelectedContext()
+
+  if (!selectedSource) return null
+
+  const handleClick = () => {
+    clearSelectedContext()
+    // TODO: Implement action
+  }
+
+  return (
+    <DropdownMenu.Item onClick={handleClick}>
+      <span style={% raw %}{{ display: 'flex', alignItems: 'center' }}{% endraw %}>
+        {/* TODO: Replace with your icon */}
+        <span style={% raw %}{{ fontSize: 14 }}{% endraw %}>P</span>
+      </span>
+      {{ pluginName | pascalCase }}
+    </DropdownMenu.Item>
+  )
+}
+{% endif %}
+
+export function {{ pluginName | pascalCase }}Plugin({% if hasSettings %}options: {{ pluginName | pascalCase }}PluginOptions = {}{% endif %}): TracePlugin {
+  {% if hasSettings %}
+  function {{ pluginName | pascalCase }}Settings() {
+    const [settings = options, setSettings] = useAtom({{ pluginName | camelCase }}SettingsAtom)
+
+    return (
+      <div style={% raw %}{{ display: 'flex', flexDirection: 'column', gap: 12 }}{% endraw %}>
+        <div style={% raw %}{{ display: 'flex', flexDirection: 'column', gap: 6 }}{% endraw %}>
+          <label
+            style={% raw %}{{
+              fontSize: 12,
+              color: '#d4d4d8',
+              fontFamily: 'system-ui, sans-serif',
+            }}{% endraw %}
+          >
+            {{ pluginName | pascalCase }} setting
+          </label>
+          {/* TODO: Add settings controls. Use `options` as defaults, `settings` atom for overrides */}
+        </div>
+      </div>
+    )
+  }
+  {% endif %}
+  return {
+    name: '{{ pluginName }}',{% if hasToolbar %}
+    toolbar: {{ pluginName | pascalCase }}Toolbar,{% endif %}{% if hasActionPanel %}
+    actionPanel: {{ pluginName | pascalCase }}ActionPanel,{% endif %}{% if hasSettings %}
+    settings: {{ pluginName | pascalCase }}Settings,{% endif %}
+  }
+}

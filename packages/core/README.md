@@ -85,6 +85,8 @@ Plugin-owned components receive no props. Read shared widget state through the e
 
 ### Minimal plugin example
 
+> Tip: Run `pnpm create react-trace-plugin` to scaffold a full plugin package with build config and production stubs.
+
 ```tsx
 import { Trace, useSelectedContext, type TracePlugin } from '@react-trace/core'
 

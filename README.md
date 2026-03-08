@@ -93,7 +93,15 @@ export function Root() {
 
 ## Writing your own plugin
 
-Build custom plugins against `@react-trace/core` when you want your own plugin list or plugin-specific UI. A plugin is an `TracePlugin` object with a `name` and optional React components for the widget `toolbar`, selected-component `actionPanel`, and `settings` menu.
+The fastest way to start is with the scaffolding CLI:
+
+```bash
+pnpm create react-trace-plugin
+```
+
+This generates a complete plugin package with build config, production stubs, and optional toolbar/action-panel/settings scaffolding.
+
+A plugin is a `TracePlugin` object with a `name` and optional React components for the widget `toolbar`, selected-component `actionPanel`, and `settings` menu.
 
 Those plugin components receive no props. Instead, read shared state through the public hooks exported by `@react-trace/core`, including `useProjectRoot()`, `useInspectorActive()`, `useDeactivateInspector()`, `useSelectedContext()`, `useClearSelectedContext()`, `useSelectedSource()`, and `useWidgetPortalContainer()`.
 

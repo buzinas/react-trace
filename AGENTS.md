@@ -171,12 +171,24 @@ Plugin-owned UI should render directly from `toolbar`, `actionPanel`, or `settin
 
 ## Adding a new plugin
 
-1. Create `packages/plugin-xxx/` mirroring an existing plugin (e.g. `plugin-copy-to-clipboard`)
-2. Add `src/index.tsx` (plugin factory) and `src/index.prod.ts` (no-op stub)
-3. Add `"@react-trace/plugin-xxx"` to the alias map in `apps/example/vite.config.ts`
-4. Add `"@react-trace/ui-components"` and `"react-trace/plugin-xxx"` to the `neverBundle` list in the new package's `tsdown.config.ts`
-5. Add `@react-trace/ui-components` to both `peerDependencies` and `devDependencies` in `package.json`
-6. Optionally wire into `packages/react-trace/src/index.tsx` for the convenience bundle
+### Scaffold with the CLI
+
+```bash
+# External plugin (for third-party authors)
+pnpm create react-trace-plugin
+
+# Workspace plugin (for this monorepo)
+pnpm create-plugin
+# or: pnpm create-plugin -w --name my-feature --description "..." --slots toolbar,actionPanel,settings
+```
+
+The CLI prompts for a plugin name, description, and which slots to scaffold (toolbar, actionPanel, settings), then generates a complete plugin package with build config, production stub, and README.
+
+### After scaffolding a workspace plugin
+
+The CLI creates `packages/plugin-xxx/` with all source files, but this manual step is still needed:
+
+1. Optionally wire into `packages/react-trace/src/index.tsx` for the convenience bundle
 
 ---
 

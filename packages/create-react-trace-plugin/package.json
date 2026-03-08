@@ -1,0 +1,38 @@
+{
+  "name": "create-react-trace-plugin",
+  "version": "0.0.1",
+  "description": "Scaffold a new react-trace plugin",
+  "keywords": [
+    "create",
+    "react-trace",
+    "react-trace-plugin",
+    "scaffold"
+  ],
+  "bin": {
+    "create-react-trace-plugin": "./dist/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch --no-clean",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.1.0",
+    "citty": "^0.2.1",
+    "execa": "^9.0.0",
+    "giget": "^2.0.0",
+    "liquidjs": "^10.25.0",
+    "oxfmt": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "oxlint": "latest",
+    "tsdown": "^0.21.0-beta.2",
+    "typescript": "^5"
+  }
+}

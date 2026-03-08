@@ -1,0 +1,20 @@
+{% if hasSettings %}import type { TraceSettings } from '@react-trace/core'
+import { settingsPluginAtom } from '@react-trace/core'
+import type { WritableAtom } from 'jotai'
+
+import type { {{ pluginName | pascalCase }}PluginOptions } from './types'
+
+declare module '@react-trace/core' {
+  interface TraceSettinge {
+    {{ pluginName | camelCase }}?: {{ pluginName | pascalCase }}PluginOptions
+  }
+}
+
+export const {{ pluginName | camelCase }}SettingsAtom = settingsPluginAtom(
+  '{{ pluginName | camelCase }}',
+) as WritableAtom<
+  TraceSettings['{{ pluginName | camelCase }}'],
+  [TraceSettings['{{ pluginName | camelCase }}']],
+  void
+>
+{% endif %}

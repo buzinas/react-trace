@@ -17,7 +17,8 @@
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "fmt": "oxfmt .",
-    "fmt:check": "oxfmt --check ."
+    "fmt:check": "oxfmt --check .",
+    "create-plugin": "USE_LOCAL=true node packages/create-react-trace-plugin/dist/index.mjs"
   },
   "devDependencies": {
     "@types/node": "^24",

@@ -1,0 +1,51 @@
+{
+  "name": "{{ packageName }}",
+  "version": "0.0.1",
+  "description": "react-trace plugin: {{ pluginDescription }}",
+  "keywords": ["react-trace", "react-trace-plugin"],
+  "files": ["dist"],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "development": {
+        "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+        "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      },
+      "production": {
+        "import": { "types": "./dist/index.d.ts", "default": "./dist/index.prod.js" },
+        "require": { "types": "./dist/index.d.cts", "default": "./dist/index.prod.cjs" }
+      },
+      "default": {
+        "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+        "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch --no-clean",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src",
+    "fmt": "oxfmt .",
+    "fmt:check": "oxfmt --check ."
+  },
+  "devDependencies": {
+    "@react-trace/core": "{% if workspace %}workspace:*{% else %}latest{% endif %}",
+    "@react-trace/ui-components": "{% if workspace %}workspace:*{% else %}latest{% endif %}",
+    "@types/react": "^19",
+    "oxfmt": "latest",
+    "oxlint": "latest",
+    "react": "^19",
+    "tsdown": "^0.21.0-beta.2",
+    "typescript": "^5"
+  },
+  "peerDependencies": {
+    "@react-trace/core": "{% if workspace %}workspace:*{% else %}*{% endif %}",
+    "@react-trace/ui-components": "{% if workspace %}workspace:*{% else %}*{% endif %}",{% if hasSettings %}
+    "jotai": "^2.18.0",{% endif %}
+    "react": ">=18"
+  }
+}

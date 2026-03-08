@@ -1,0 +1,10 @@
+/**
+ * Production stub for {{ packageName }}.
+ */
+export const {{ pluginName | pascalCase }}Plugin = () => ({
+  name: '{{ pluginName }}' as const,
+})
+{% if hasSettings %}
+
+export type { {{ pluginName | pascalCase }}PluginOptions } from './types'
+{% endif %}

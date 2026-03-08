@@ -1,0 +1,38 @@
+# {{ packageName }}
+
+{{ pluginDescription }}
+
+## Install
+
+{% if workspace %}Install the plugin alongside its peer dependencies:
+
+```bash
+pnpm add --dev @react-trace/core @react-trace/ui-components {{ packageName }}
+```
+
+If you are already using `@react-trace/kit`, this plugin is included there by default.
+{% else %}```bash
+pnpm add --dev @react-trace/kit {{ packageName }}
+```
+{% endif %}
+## Usage
+
+```tsx
+{% if workspace %}import { Trace } from '@react-trace/core'
+{% else %}import { Trace } from '@react-trace/kit'
+{% endif %}import { {{ pluginName | pascalCase }}Plugin } from '{{ packageName }}'
+
+import App from './App'
+
+export function AppWithTrace() {
+  return (
+    <>
+      <App />
+      <Trace
+        root={import.meta.env.VITE_ROOT}
+        plugins={[{{ pluginName | pascalCase }}Plugin()]}
+      />
+    </>
+  )
+}
+```
