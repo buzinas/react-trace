@@ -1,7 +1,17 @@
 {
   "name": "@react-trace/plugin-preview",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "react-trace plugin: Monaco-powered source code preview for inspected components",
+  "license": "MIT",
+  "author": "Vitor Buzinaro",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/buzinas/react-trace",
+    "directory": "packages/plugin-preview"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "react-trace",
     "react-trace-plugin"
@@ -51,7 +61,8 @@
     "build": "tsdown",
     "dev": "tsdown --watch --no-clean",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src"
+    "lint": "oxlint src",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
@@ -59,9 +70,8 @@
     "shiki": "^4.0.1"
   },
   "devDependencies": {
-    "@monaco-editor/react": "^4.7.0",
-    "@react-trace/core": "workspace:*",
-    "@react-trace/ui-components": "workspace:*",
+    "@react-trace/core": "workspace:^",
+    "@react-trace/ui-components": "workspace:^",
     "@types/node": "^24.11.0",
     "@types/react": "^19",
     "@types/react-dom": "^19.2.3",
@@ -74,8 +84,8 @@
     "typescript": "^5"
   },
   "peerDependencies": {
-    "@react-trace/core": "workspace:*",
-    "@react-trace/ui-components": "workspace:*",
+    "@react-trace/core": "workspace:^",
+    "@react-trace/ui-components": "workspace:^",
     "jotai": "^2.18.0",
     "react": ">=18"
   }

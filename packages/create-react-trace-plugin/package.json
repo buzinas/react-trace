@@ -1,7 +1,14 @@
 {
   "name": "create-react-trace-plugin",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Scaffold a new react-trace plugin",
+  "license": "MIT",
+  "author": "Vitor Buzinaro",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/buzinas/react-trace",
+    "directory": "packages/create-react-trace-plugin"
+  },
   "keywords": [
     "create",
     "react-trace",
@@ -19,7 +26,8 @@
     "build": "tsdown",
     "dev": "tsdown --watch --no-clean",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src"
+    "lint": "oxlint src",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@clack/prompts": "^1.1.0",

@@ -1,7 +1,17 @@
 {
   "name": "@react-trace/ui-components",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Shared UI primitives (buttons, tooltips, popovers, icons) for react-trace plugins",
+  "license": "MIT",
+  "author": "Vitor Buzinaro",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/buzinas/react-trace",
+    "directory": "packages/ui-components"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "react-trace"
   ],
@@ -50,7 +60,8 @@
     "build": "tsdown",
     "dev": "tsdown --watch --no-clean",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src"
+    "lint": "oxlint src",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
