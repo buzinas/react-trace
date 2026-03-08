@@ -1,8 +1,9 @@
-import { Provider, useAtom, useAtomValue } from 'jotai'
-import { useEffect, useState } from 'react'
+import { Provider, useAtomValue } from 'jotai'
+import { useState } from 'react'
 import { createPortal } from 'react-dom'
 
-import { useEffectEvent } from '../hooks/useEffectEvent'
+import { useInspectorBehavior } from '../hooks/useInspectorBehavior'
+import { useLongPressHotkey } from '../hooks/useLongPressHotkey'
 import {
   coreSettingsAtom,
   createWidgetStore,
@@ -11,17 +12,10 @@ import {
   projectRootAtom,
   selectedContextAtom,
 } from '../store'
-import type { ComponentContext, TraceProps } from '../types'
-import { getComponentContext, resolveSource } from '../utils/fiber'
-import { IS_MAC } from '../utils/platform'
+import type { TraceProps } from '../types'
 import { ActionPanel } from './ActionPanel'
 import { Overlay } from './Overlay'
 import { Toolbar } from './Toolbar'
-
-/**
- * How long Cmd/Ctrl+X must be held before the inspector latches on
- */
-const LONGPRESS_MS = 600
 
 export function Trace({
   root,
@@ -42,154 +36,24 @@ export function Trace({
   )
 }
 
-function TraceRoot({
-  plugins,
-}: {
+type TraceRootProps = {
   plugins: NonNullable<TraceProps['plugins']>
-}) {
+}
+function TraceRoot({ plugins }: TraceRootProps) {
   const portalContainer = useAtomValue(portalContainerAtom)
+  const inspectorActive = useAtomValue(inspectorActiveAtom)
+  const selectedContext = useAtomValue(selectedContextAtom)
 
-  const [inspectorActive, setInspectorActive] = useAtom(inspectorActiveAtom)
-  const [hoveredContext, setHoveredContext] = useState<ComponentContext | null>(
-    null,
-  )
-  const [selectedContext, setSelectedContext] = useAtom(selectedContextAtom)
-  const applySelectedContext = useEffectEvent(() =>
-    setSelectedContext(hoveredContext),
-  )
+  const { hoveredContext } = useInspectorBehavior()
 
-  const toggleInspector = useEffectEvent((value?: boolean) =>
-    setInspectorActive((prev) => value ?? !prev),
-  )
-
-  const onEscapeKeyDown = useEffectEvent((e: KeyboardEvent) => {
-    if (e.key !== 'Escape') return
-
-    // First Escape: clear selected context (if any)
-    if (selectedContext) {
-      setSelectedContext(null)
-      return
-    }
-
-    // Second Escape: turn inspector off
-    setInspectorActive(false)
-    setHoveredContext(null)
-  })
-
-  // Long-press Cmd+X (Mac) / Ctrl+X (other): hold for LONGPRESS_MS to latch inspector on.
-  // Releasing before the timer fires cancels — no accidental activation.
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null
-
-    function onKeyDown(e: KeyboardEvent) {
-      const modifierHeld = IS_MAC ? e.metaKey : e.ctrlKey
-      if (e.key === 'x' && modifierHeld && !e.repeat && timer === null) {
-        e.preventDefault() // prevent browser Cut
-        timer = setTimeout(() => {
-          timer = null
-          toggleInspector(true)
-        }, LONGPRESS_MS)
-      }
-    }
-
-    function onKeyUp(e: KeyboardEvent) {
-      // If either key is released before the timer fires, cancel
-      if (e.key === 'x' || e.key === 'Meta' || e.key === 'Control') {
-        if (timer !== null) {
-          clearTimeout(timer)
-          timer = null
-        }
-      }
-    }
-
-    document.addEventListener('keydown', onKeyDown)
-    document.addEventListener('keyup', onKeyUp)
-    return () => {
-      document.removeEventListener('keydown', onKeyDown)
-      document.removeEventListener('keyup', onKeyUp)
-      if (timer !== null) clearTimeout(timer)
-    }
-  }, [])
-
-  // Inspector mouse + keyboard listeners — active whenever enabled
-  useEffect(() => {
-    if (!inspectorActive) return
-
-    let lastHoveredElement: HTMLElement | null = null
-
-    function onMouseMove(e: MouseEvent) {
-      const target = e.target as HTMLElement | null
-      if (!target || target === lastHoveredElement) return
-      if (portalContainer.contains(target)) return
-
-      lastHoveredElement = target
-      const ctx = getComponentContext(target)
-      setHoveredContext(ctx)
-
-      // Async: remap compiled positions → original TypeScript positions via source map.
-      // Resolves the top-level source AND every entry in ctx.all in parallel (all
-      // cached per URL, so only the first hover on each file incurs a fetch).
-      if (ctx) {
-        Promise.all([
-          ctx.source ? resolveSource(ctx.source) : Promise.resolve(null),
-          ...ctx.all.map((e) =>
-            e.source ? resolveSource(e.source) : Promise.resolve(null),
-          ),
-        ])
-          .then(([resolvedSource, ...resolvedAll]) => {
-            if (lastHoveredElement !== target) return
-            setHoveredContext((prev) => {
-              if (prev?.element !== target) return prev
-              return {
-                ...prev,
-                ...(resolvedSource && { source: resolvedSource }),
-                all: prev.all.map((e, i) => ({
-                  ...e,
-                  source: resolvedAll[i] ?? e.source,
-                })),
-              }
-            })
-          })
-          .catch(() => {})
-      }
-    }
-
-    function onClick(e: MouseEvent) {
-      const target = e.target as HTMLElement | null
-      if (portalContainer.contains(target)) return
-
-      e.stopPropagation()
-      e.preventDefault()
-      applySelectedContext()
-    }
-
-    document.addEventListener('mousemove', onMouseMove, { passive: true })
-    document.addEventListener('click', onClick, true) // capture phase
-    document.addEventListener('keydown', onEscapeKeyDown)
-
-    return () => {
-      document.removeEventListener('mousemove', onMouseMove)
-      document.removeEventListener('click', onClick, true)
-      document.removeEventListener('keydown', onEscapeKeyDown)
-    }
-  }, [inspectorActive])
-
-  // Clear hover/select when inspector is turned off
-  useEffect(() => {
-    if (!inspectorActive) {
-      setHoveredContext(null)
-      setSelectedContext(null)
-    }
-  }, [inspectorActive, setSelectedContext])
+  useLongPressHotkey()
 
   return createPortal(
     <>
-      {/* Toolbar — pointer-events:auto so buttons are clickable */}
       <div style={{ pointerEvents: 'auto' }}>
         <Toolbar plugins={plugins} />
       </div>
 
-      {/* Overlay — pointer-events:none, managed by the container */}
       {inspectorActive && (
         <Overlay
           hoveredContext={hoveredContext}
@@ -197,10 +61,6 @@ function TraceRoot({
         />
       )}
 
-      {/*
-        ActionPanel — always rendered when inspector is active so the Popover can
-        animate open/closed. The Popover.Positioner handles pointer-events itself.
-      */}
       {inspectorActive && <ActionPanel plugins={plugins} />}
     </>,
     portalContainer,
