@@ -16,6 +16,7 @@ import {
 } from '../store'
 import type { ComponentContext, ComponentSource, TracePlugin } from '../types'
 import { toRelativePath } from '../utils/path'
+import { ErrorBoundary } from './ErrorBoundary'
 
 interface ActionPanelProps {
   plugins: TracePlugin[]
@@ -301,7 +302,11 @@ function Submenu({
           >
             {plugins.map((plugin) => {
               const ActionPanelContent = plugin.actionPanel!
-              return <ActionPanelContent key={`action-panel:${plugin.name}`} />
+              return (
+                <ErrorBoundary key={`action-panel:${plugin.name}`}>
+                  <ActionPanelContent />
+                </ErrorBoundary>
+              )
             })}
           </DropdownMenu.Popup>
         </DropdownMenu.Positioner>
