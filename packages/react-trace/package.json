@@ -1,6 +1,6 @@
 {
   "name": "@react-trace/kit",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Batteries-included React visual inspector — all official plugins pre-wired.",
   "keywords": [
     "react-find",
@@ -10,6 +10,13 @@
     "react-inspector",
     "react-trace"
   ],
+  "license": "MIT",
+  "author": "Vitor Buzinaro",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/buzinas/react-trace",
+    "directory": "packages/react-trace"
+  },
   "files": [
     "dist"
   ],
@@ -51,18 +58,22 @@
       }
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch --no-clean",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src"
+    "lint": "oxlint src",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "@react-trace/core": "workspace:*",
-    "@react-trace/plugin-comments": "workspace:*",
-    "@react-trace/plugin-copy-to-clipboard": "workspace:*",
-    "@react-trace/plugin-open-editor": "workspace:*",
-    "@react-trace/plugin-preview": "workspace:*"
+    "@react-trace/core": "workspace:^",
+    "@react-trace/plugin-comments": "workspace:^",
+    "@react-trace/plugin-copy-to-clipboard": "workspace:^",
+    "@react-trace/plugin-open-editor": "workspace:^",
+    "@react-trace/plugin-preview": "workspace:^"
   },
   "devDependencies": {
     "@types/react": "^19",

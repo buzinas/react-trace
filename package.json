@@ -18,9 +18,13 @@
     "typecheck": "turbo typecheck",
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check .",
-    "create-plugin": "USE_LOCAL=true node packages/create-react-trace-plugin/dist/index.mjs"
+    "create-plugin": "USE_LOCAL=true node packages/create-react-trace-plugin/dist/index.mjs",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "pnpm build && changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.30.0",
     "@types/node": "^24",
     "oxfmt": "latest",
     "oxlint": "latest",

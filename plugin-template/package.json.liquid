@@ -2,6 +2,16 @@
   "name": "{{ packageName }}",
   "version": "0.0.1",
   "description": "react-trace plugin: {{ pluginDescription }}",
+  "license": "MIT",{% if workspace %}
+  "author": "Vitor Buzinaro",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/buzinas/react-trace",
+    "directory": "packages/plugin-{{ pluginName }}"
+  },
+  "publishConfig": {
+    "access": "public"
+  },{% endif %}
   "keywords": ["react-trace", "react-trace-plugin"],
   "files": ["dist"],
   "type": "module",
@@ -28,23 +38,24 @@
     "build": "tsdown",
     "dev": "tsdown --watch --no-clean",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src",
+    "lint": "oxlint src",{% unless workspace %}
     "fmt": "oxfmt .",
-    "fmt:check": "oxfmt --check ."
+    "fmt:check": "oxfmt --check .",{% endunless %}
+    "prepublishOnly": "pnpm build"
   },
   "devDependencies": {
-    "@react-trace/core": "{% if workspace %}workspace:*{% else %}latest{% endif %}",
-    "@react-trace/ui-components": "{% if workspace %}workspace:*{% else %}latest{% endif %}",
-    "@types/react": "^19",
-    "oxfmt": "latest",
+    "@react-trace/core": "{% if workspace %}workspace:^{% else %}latest{% endif %}",
+    "@react-trace/ui-components": "{% if workspace %}workspace:^{% else %}latest{% endif %}",
+    "@types/react": "^19",{% unless workspace %}
+    "oxfmt": "latest",{% endunless %}
     "oxlint": "latest",
     "react": "^19",
     "tsdown": "^0.21.0-beta.2",
     "typescript": "^5"
   },
   "peerDependencies": {
-    "@react-trace/core": "{% if workspace %}workspace:*{% else %}*{% endif %}",
-    "@react-trace/ui-components": "{% if workspace %}workspace:*{% else %}*{% endif %}",{% if hasSettings %}
+    "@react-trace/core": "{% if workspace %}workspace:^{% else %}*{% endif %}",
+    "@react-trace/ui-components": "{% if workspace %}workspace:^{% else %}*{% endif %}",{% if hasSettings %}
     "jotai": "^2.18.0",{% endif %}
     "react": ">=18"
   }

@@ -1,6 +1,6 @@
 {
   "name": "@react-trace/plugin-comments",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "react-trace plugin: inline code comments with OpenCode AI integration",
   "keywords": [
     "react-trace",
@@ -9,6 +9,13 @@
     "react-trace-comments",
     "react-trace-plugin"
   ],
+  "license": "MIT",
+  "author": "Vitor Buzinaro",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/buzinas/react-trace",
+    "directory": "packages/plugin-comments"
+  },
   "files": [
     "dist"
   ],
@@ -50,19 +57,23 @@
       }
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch --no-clean",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src"
+    "lint": "oxlint src",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@opencode-ai/sdk": "^1.2.16",
     "jotai": "^2.18.0"
   },
   "devDependencies": {
-    "@react-trace/core": "workspace:*",
-    "@react-trace/ui-components": "workspace:*",
+    "@react-trace/core": "workspace:^",
+    "@react-trace/ui-components": "workspace:^",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "oxlint": "latest",
@@ -72,8 +83,8 @@
     "typescript": "^5"
   },
   "peerDependencies": {
-    "@react-trace/core": "workspace:*",
-    "@react-trace/ui-components": "workspace:*",
+    "@react-trace/core": "workspace:^",
+    "@react-trace/ui-components": "workspace:^",
     "react": ">=18",
     "react-dom": ">=18"
   }

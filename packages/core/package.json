@@ -1,6 +1,6 @@
 {
   "name": "@react-trace/core",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Core runtime for react-trace: inspector overlay, plugin API, and shared hooks",
   "keywords": [
     "react-find",
@@ -10,6 +10,13 @@
     "react-inspector",
     "react-trace"
   ],
+  "license": "MIT",
+  "author": "Vitor Buzinaro",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/buzinas/react-trace",
+    "directory": "packages/core"
+  },
   "files": [
     "dist"
   ],
@@ -51,16 +58,20 @@
       }
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch --no-clean",
     "test": "vitest run --passWithNoTests",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src"
+    "lint": "oxlint src",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@jridgewell/trace-mapping": "^0.3.31",
-    "@react-trace/ui-components": "workspace:*",
+    "@react-trace/ui-components": "workspace:^",
     "jotai": "^2.18.0",
     "jotai-family": "^1.0.1"
   },
