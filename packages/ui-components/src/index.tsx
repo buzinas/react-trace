@@ -48,3 +48,5 @@ export type {
 } from './DropdownMenu'
 
 export { Select } from './Select'
+
+export { Logo } from './Logo'

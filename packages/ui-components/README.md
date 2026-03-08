@@ -45,6 +45,10 @@ These are the symbols currently present in both `src/index.tsx` and the producti
 - `TrashIcon`
 - `XIcon`
 
+### Logo
+
+- `Logo`
+
 ## Intended usage for package authors
 
 - Prefer these primitives over package-local replacements when you need standard buttons, headers, menus, selects, or text inputs.

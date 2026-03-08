@@ -1,7 +1,7 @@
 import { ToolbarButton, Tooltip } from '@react-trace/ui-components'
+import { Logo } from '@react-trace/ui-components'
 import { useAtom, useAtomValue } from 'jotai'
 
-import logo from '../logo.png'
 import { IS_MAC } from '../platform'
 import {
   coreSettingsAtom,
@@ -63,13 +63,7 @@ export function Toolbar({ plugins }: ToolbarProps) {
           aria-label="Inspector"
           onClick={() => setInspectorActive((prev) => !prev)}
         >
-          <img
-            src={logo}
-            alt="Inspect"
-            style={{ borderRadius: 8 }}
-            width={24}
-            height={24}
-          />
+          <Logo />
         </Tooltip>
         {/* Plugin toolbar content */}
         {plugins
