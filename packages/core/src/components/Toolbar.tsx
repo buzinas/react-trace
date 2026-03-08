@@ -9,6 +9,7 @@ import {
 } from '../store'
 import type { TracePlugin, TraceProps } from '../types'
 import { IS_MAC } from '../utils/platform'
+import { ErrorBoundary } from './ErrorBoundary'
 import { SettingsMenu } from './SettingsMenu'
 
 interface ToolbarProps {
@@ -70,7 +71,11 @@ export function Toolbar({ plugins }: ToolbarProps) {
           .filter((plugin) => plugin.toolbar)
           .map((plugin) => {
             const ToolbarContent = plugin.toolbar!
-            return <ToolbarContent key={plugin.name} />
+            return (
+              <ErrorBoundary key={plugin.name}>
+                <ToolbarContent />
+              </ErrorBoundary>
+            )
           })}
         <SettingsMenu plugins={plugins} />
       </div>
