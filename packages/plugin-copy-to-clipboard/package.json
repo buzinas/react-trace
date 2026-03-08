@@ -1,6 +1,6 @@
 {
   "name": "@react-trace/plugin-copy-to-clipboard",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "react-trace plugin: copy selected component source and path to clipboard",
   "license": "MIT",
   "author": "Vitor Buzinaro",
