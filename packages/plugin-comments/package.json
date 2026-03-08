@@ -1,6 +1,6 @@
 {
   "name": "@react-trace/plugin-comments",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "react-trace plugin: inline code comments with OpenCode AI integration",
   "keywords": [
     "react-trace",
