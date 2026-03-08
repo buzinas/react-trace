@@ -1,7 +1,8 @@
 import { Provider, useAtom, useAtomValue } from 'jotai'
-import { useEffect, useEffectEvent, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
+import { useEffectEvent } from '../hooks/useEffectEvent'
 import {
   coreSettingsAtom,
   createWidgetStore,
