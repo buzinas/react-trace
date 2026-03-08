@@ -1,6 +1,15 @@
 {
   "name": "react-trace",
   "private": true,
+  "description": "React Trace: batteries-included React visual inspector",
+  "keywords": [
+    "react-find",
+    "react-find-source",
+    "react-grab",
+    "react-inspect",
+    "react-inspector",
+    "react-trace"
+  ],
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",

@@ -2,6 +2,14 @@
   "name": "@react-trace/kit",
   "version": "0.0.1",
   "description": "Batteries-included React visual inspector — all official plugins pre-wired.",
+  "keywords": [
+    "react-find",
+    "react-find-source",
+    "react-grab",
+    "react-inspect",
+    "react-inspector",
+    "react-trace"
+  ],
   "files": [
     "dist"
   ],

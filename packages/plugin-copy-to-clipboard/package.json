@@ -1,6 +1,11 @@
 {
   "name": "@react-trace/plugin-copy-to-clipboard",
   "version": "0.0.1",
+  "description": "react-trace plugin: copy selected component source and path to clipboard",
+  "keywords": [
+    "react-trace",
+    "react-trace-plugin"
+  ],
   "files": [
     "dist"
   ],

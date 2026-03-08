@@ -1,6 +1,10 @@
 {
   "name": "@react-trace/ui-components",
   "version": "0.0.1",
+  "description": "Shared UI primitives (buttons, tooltips, popovers, icons) for react-trace plugins",
+  "keywords": [
+    "react-trace"
+  ],
   "files": [
     "dist"
   ],
