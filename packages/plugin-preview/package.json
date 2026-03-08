@@ -70,8 +70,6 @@
     "shiki": "^4.0.1"
   },
   "devDependencies": {
-    "@react-trace/core": "workspace:^",
-    "@react-trace/ui-components": "workspace:^",
     "@types/node": "^24.11.0",
     "@types/react": "^19",
     "@types/react-dom": "^19.2.3",

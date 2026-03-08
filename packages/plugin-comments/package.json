@@ -72,8 +72,6 @@
     "jotai": "^2.18.0"
   },
   "devDependencies": {
-    "@react-trace/core": "workspace:^",
-    "@react-trace/ui-components": "workspace:^",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "oxlint": "latest",
