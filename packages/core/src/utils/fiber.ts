@@ -262,31 +262,6 @@ function getSource(fiber: ReactFiber | null): ComponentSource | null {
 }
 
 /**
- * Returns true when the element's visible text content matches a string prop
- * on the component fiber — indicating the text came from outside the component
- * (a prop passed by a parent) rather than being written in the component itself.
- *
- * When true, we use the component fiber's source (the callsite in the parent)
- * rather than the DOM element fiber's source (the element definition in the
- * component template).
- *
- * Examples:
- *   <Card title="About" />  →  "About" matches `title` prop  →  show App.tsx
- *   <Header />              →  no string props               →  show Header.tsx
- */
-function isContentFromProps(
-  element: HTMLElement,
-  componentFiber: ReactFiber,
-): boolean {
-  const text = element.textContent?.trim()
-  if (!text) return false
-  const props = componentFiber.memoizedProps as Record<string, unknown>
-  return Object.values(props).some(
-    (v) => typeof v === 'string' && v.trim() === text,
-  )
-}
-
-/**
  * Given a DOM element, returns the ComponentContext describing the nearest
  * React component that rendered it — including display name, breadcrumb path,
  * source location (definition file), and current props.
@@ -341,14 +316,6 @@ export function getComponentContext(
     fiber = fiber.return
   }
 
-  // Decide which fiber's source to use:
-  // - If the element's text content matches a string prop on the component, the text
-  //   came from outside (a prop) → use the component fiber's source (callsite in parent)
-  // - Otherwise the content is self-contained → use the DOM element fiber's source
-  //   (where the element is written inside the component's own template)
-  const useCallsite = fiber != null && isContentFromProps(element, fiber)
-  const source = getSource(useCallsite ? fiber : domFiber)
-
   // parts: [hovered, …ancestors, Component] — reverse for display order
   const all = parts.map((part) => ({
     source: part.source,
@@ -373,7 +340,6 @@ export function getComponentContext(
     element,
     displayName,
     breadcrumb,
-    source,
     all: files,
     props: domFiber.memoizedProps ?? {},
   }

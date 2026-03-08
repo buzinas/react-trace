@@ -62,23 +62,20 @@ export function useInspectorBehavior() {
       setHoveredContext(ctx)
 
       // Async: remap compiled positions to original TypeScript positions via
-      // source map. Resolves the top-level source AND every entry in ctx.all
-      // in parallel (all cached per URL, so only the first hover on each file
-      // incurs a fetch).
+      // source map. All cached per URL, so only the first hover on each file
+      // incurs a fetch.
       if (ctx) {
-        Promise.all([
-          ctx.source ? resolveSource(ctx.source) : Promise.resolve(null),
-          ...ctx.all.map((entry) =>
+        Promise.all(
+          ctx.all.map((entry) =>
             entry.source ? resolveSource(entry.source) : Promise.resolve(null),
           ),
-        ])
-          .then(([resolvedSource, ...resolvedAll]) => {
+        )
+          .then((resolvedAll) => {
             if (lastHoveredElement !== target) return
             setHoveredContext((prev) => {
               if (prev?.element !== target) return prev
               return {
                 ...prev,
-                ...(resolvedSource && { source: resolvedSource }),
                 all: prev.all.map((entry, i) => ({
                   ...entry,
                   source: resolvedAll[i] ?? entry.source,
