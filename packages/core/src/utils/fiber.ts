@@ -283,9 +283,9 @@ function getSource(fiber: ReactFiber | null): ComponentSource | null {
  * - The element is not part of a React tree
  * - No component fiber is found in the ancestor chain
  */
-export function getComponentContext(
+export async function getComponentContext(
   element: HTMLElement,
-): ComponentContext | null {
+): Promise<ComponentContext | null> {
   const domFiber = findFiber(element)
   if (!domFiber) return null
 
@@ -316,9 +316,13 @@ export function getComponentContext(
     fiber = fiber.return
   }
 
+  const sources = await Promise.all(
+    parts.map((part) => (part.source ? resolveSource(part.source) : null)),
+  )
+
   // parts: [hovered, …ancestors, Component] — reverse for display order
-  const all = parts.map((part) => ({
-    source: part.source,
+  const all = parts.map((part, i) => ({
+    source: sources[i] ?? part.source,
     names: part.names.reverse(),
   }))
 

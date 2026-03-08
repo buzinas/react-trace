@@ -7,7 +7,7 @@ import {
   selectedContextAtom,
 } from '../store'
 import type { ComponentContext } from '../types'
-import { getComponentContext, resolveSource } from '../utils/fiber'
+import { getComponentContext } from '../utils/fiber'
 import { useEffectEvent } from './useEffectEvent'
 
 /**
@@ -52,39 +52,18 @@ export function useInspectorBehavior() {
 
     let lastHoveredElement: HTMLElement | null = null
 
-    function onMouseMove(e: MouseEvent) {
+    async function onMouseMove(e: MouseEvent) {
       const target = e.target as HTMLElement | null
       if (!target || target === lastHoveredElement) return
       if (portalContainer.contains(target)) return
 
       lastHoveredElement = target
-      const ctx = getComponentContext(target)
-      setHoveredContext(ctx)
 
-      // Async: remap compiled positions to original TypeScript positions via
-      // source map. All cached per URL, so only the first hover on each file
-      // incurs a fetch.
-      if (ctx) {
-        Promise.all(
-          ctx.all.map((entry) =>
-            entry.source ? resolveSource(entry.source) : Promise.resolve(null),
-          ),
-        )
-          .then((resolvedAll) => {
-            if (lastHoveredElement !== target) return
-            setHoveredContext((prev) => {
-              if (prev?.element !== target) return prev
-              return {
-                ...prev,
-                all: prev.all.map((entry, i) => ({
-                  ...entry,
-                  source: resolvedAll[i] ?? entry.source,
-                })),
-              }
-            })
-          })
-          .catch(() => {})
-      }
+      try {
+        const ctx = await getComponentContext(target)
+        if (lastHoveredElement !== target) return
+        setHoveredContext(ctx)
+      } catch {}
     }
 
     function onClick(e: MouseEvent) {
