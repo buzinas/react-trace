@@ -65,8 +65,6 @@
     "prepublishOnly": "pnpm build"
   },
   "devDependencies": {
-    "@react-trace/core": "workspace:^",
-    "@react-trace/ui-components": "workspace:^",
     "@types/react": "^19",
     "oxlint": "latest",
     "react": "^19",

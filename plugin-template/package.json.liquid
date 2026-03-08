@@ -43,9 +43,9 @@
     "fmt:check": "oxfmt --check .",{% endunless %}
     "prepublishOnly": "pnpm build"
   },
-  "devDependencies": {
-    "@react-trace/core": "{% if workspace %}workspace:^{% else %}latest{% endif %}",
-    "@react-trace/ui-components": "{% if workspace %}workspace:^{% else %}latest{% endif %}",
+  "devDependencies": {{% unless workspace %}
+    "@react-trace/core": "latest",
+    "@react-trace/ui-components": "latest",{% endunless %}
     "@types/react": "^19",{% unless workspace %}
     "oxfmt": "latest",{% endunless %}
     "oxlint": "latest",

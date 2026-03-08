@@ -137,16 +137,16 @@ importers:
       '@opencode-ai/sdk':
         specifier: ^1.2.16
         version: 1.2.16
-      jotai:
-        specifier: ^2.18.0
-        version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
-    devDependencies:
       '@react-trace/core':
         specifier: workspace:^
         version: link:../core
       '@react-trace/ui-components':
         specifier: workspace:^
         version: link:../ui-components
+      jotai:
+        specifier: ^2.18.0
+        version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
+    devDependencies:
       '@types/react':
         specifier: ^19
         version: 19.2.14
@@ -170,13 +170,14 @@ importers:
         version: 5.9.3
 
   packages/plugin-copy-to-clipboard:
-    devDependencies:
+    dependencies:
       '@react-trace/core':
         specifier: workspace:^
         version: link:../core
       '@react-trace/ui-components':
         specifier: workspace:^
         version: link:../ui-components
+    devDependencies:
       '@types/react':
         specifier: ^19
         version: 19.2.14
@@ -195,16 +196,16 @@ importers:
 
   packages/plugin-open-editor:
     dependencies:
-      jotai:
-        specifier: ^2.18.0
-        version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
-    devDependencies:
       '@react-trace/core':
         specifier: workspace:^
         version: link:../core
       '@react-trace/ui-components':
         specifier: workspace:^
         version: link:../ui-components
+      jotai:
+        specifier: ^2.18.0
+        version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
+    devDependencies:
       '@types/react':
         specifier: ^19
         version: 19.2.14
@@ -226,6 +227,12 @@ importers:
       '@monaco-editor/react':
         specifier: ^4.7.0
         version: 4.7.0(monaco-editor@0.55.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@react-trace/core':
+        specifier: workspace:^
+        version: link:../core
+      '@react-trace/ui-components':
+        specifier: workspace:^
+        version: link:../ui-components
       '@shikijs/monaco':
         specifier: ^4.0.1
         version: 4.0.1
@@ -236,12 +243,6 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
     devDependencies:
-      '@react-trace/core':
-        specifier: workspace:^
-        version: link:../core
-      '@react-trace/ui-components':
-        specifier: workspace:^
-        version: link:../ui-components
       '@types/node':
         specifier: ^24.11.0
         version: 24.11.0
