@@ -112,7 +112,6 @@ export function AppShell() {
 - `useClearSelectedContext()` — returns a callback that clears the current selection
 - `useSelectedSource()` — returns the currently selected `ComponentSource | null`
 - `useWidgetPortalContainer()` — returns the widget portal container element
-- `useWidgetServices()` — returns shared services such as `fs`
 
 ## Exported utilities and constants
 
@@ -127,15 +126,12 @@ export function AppShell() {
 
 - `ComponentContext`
 - `ComponentSource`
-- `FileSystemService`
 - `TracePlugin`
 - `TraceProps`
-- `TraceServices`
 - `TraceSettings`
 
 ## Notes for plugin authors
 
-- `useWidgetServices().fs` exposes the file-system service used by official plugins.
 - `useWidgetPortalContainer()` lets plugin popovers, tooltips, and menus render inside the widget portal instead of `document.body`.
 - `settingsPluginAtom()` is keyed by `TraceSettings`, so plugin settings should live under a stable top-level key.
 

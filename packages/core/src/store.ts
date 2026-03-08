@@ -3,8 +3,7 @@ import type { WritableAtom } from 'jotai'
 import { atomFamily } from 'jotai-family'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
-import { fileSystemService } from './fs'
-import type { ComponentContext, TraceServices, TraceSettings } from './types'
+import type { ComponentContext, TraceSettings } from './types'
 
 /**
  * The scoped Jotai store used by the Trace widget.
@@ -81,11 +80,6 @@ export const portalContainerAtom = atom(() => {
   document.body.appendChild(container)
   return container
 })
-
-/**
- * Services provided by core to all plugins.
- */
-export const servicesAtom = atom<TraceServices>({ fs: fileSystemService })
 
 /**
  * Inspector active state.

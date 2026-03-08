@@ -76,9 +76,6 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.2.3(@types/react@19.2.14)
-      '@types/wicg-file-system-access':
-        specifier: ^2023.10.7
-        version: 2023.10.7
       oxlint:
         specifier: latest
         version: 1.51.0
@@ -217,6 +214,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
+      '@types/wicg-file-system-access':
+        specifier: ^2023.10.7
+        version: 2023.10.7
       monaco-types:
         specifier: ^0.1.2
         version: 0.1.2

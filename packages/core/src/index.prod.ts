@@ -5,34 +5,9 @@
 
 import type { WritableAtom } from 'jotai'
 
-import type {
-  ComponentSource,
-  FileSystemService,
-  TraceServices,
-  TraceSettings,
-} from './types'
+import type { ComponentSource, TraceSettings } from './types'
 
 const NOOP = () => {}
-const NOOP_FILE_SYSTEM_SERVICE: FileSystemService = {
-  isSupported: false,
-  hasAccess: false,
-  async tryRestore() {
-    return false
-  },
-  async requestAccess() {
-    return false
-  },
-  subscribe() {
-    return NOOP
-  },
-  async read() {
-    return ''
-  },
-  async write() {},
-}
-const NOOP_WIDGET_SERVICES: TraceServices = {
-  fs: NOOP_FILE_SYSTEM_SERVICE,
-}
 
 export const Trace = () => null
 
@@ -43,7 +18,6 @@ export const useSelectedContext = () => null
 export const useClearSelectedContext = () => NOOP
 export const useSelectedSource = () => null
 export const useWidgetPortalContainer = () => null
-export const useWidgetServices = () => NOOP_WIDGET_SERVICES
 
 export const resolveSource = async (source: ComponentSource) => source
 export const toAbsolutePath = (path: string) => path
@@ -64,9 +38,7 @@ export function settingsPluginAtom<K extends keyof TraceSettings>(
 export type {
   ComponentContext,
   ComponentSource,
-  FileSystemService,
   TracePlugin,
-  TraceServices,
   TraceProps,
   TraceSettings,
 } from './types'

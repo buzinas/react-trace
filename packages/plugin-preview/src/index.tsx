@@ -3,7 +3,6 @@ import {
   useDeactivateInspector,
   useProjectRoot,
   useWidgetPortalContainer,
-  useWidgetServices,
 } from '@react-trace/core'
 import {
   FolderIcon,
@@ -11,9 +10,10 @@ import {
   ToolbarButton,
   Tooltip,
 } from '@react-trace/ui-components'
-import { useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 import { FolderAccessPrompt, handleGrantAccess } from './FolderAccessPrompt'
+import { fileSystemService } from './fs'
 import { PreviewSettings } from './PreviewSettings'
 import { SourcePreview } from './SourcePreview'
 import type { PreviewPluginOptions } from './types'
@@ -44,23 +44,27 @@ function FolderToolbarIcon({ hasAccess }: { hasAccess: boolean }) {
 }
 
 function PreviewToolbar() {
-  const services = useWidgetServices()
   const projectRoot = useProjectRoot()
   const portalContainer = useWidgetPortalContainer()
   const deactivateInspector = useDeactivateInspector()
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [isPromptOpen, setIsPromptOpen] = useState(false)
   const hasAccess = useSyncExternalStore(
-    services.fs.subscribe.bind(services.fs),
-    () => services.fs.hasAccess,
+    fileSystemService.subscribe.bind(fileSystemService),
+    () => fileSystemService.hasAccess,
     () => false,
   )
+
+  // Silently try to restore a previously granted FS handle on mount
+  useEffect(() => {
+    fileSystemService.tryRestore().catch(() => {})
+  }, [])
 
   const handleClick = () => {
     deactivateInspector()
 
-    if (services.fs.hasAccess) {
-      services.fs.requestAccess().catch(() => {})
+    if (fileSystemService.hasAccess) {
+      fileSystemService.requestAccess().catch(() => {})
       return
     }
 
@@ -69,7 +73,7 @@ function PreviewToolbar() {
 
   const handleGrant = async () => {
     const granted = await handleGrantAccess(projectRoot, () =>
-      services.fs.requestAccess(),
+      fileSystemService.requestAccess(),
     )
     if (granted) setIsPromptOpen(false)
   }

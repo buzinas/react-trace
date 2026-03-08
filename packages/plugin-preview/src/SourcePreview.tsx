@@ -1,9 +1,5 @@
 import Editor from '@monaco-editor/react'
-import {
-  useProjectRoot,
-  useSelectedSource,
-  useWidgetServices,
-} from '@react-trace/core'
+import { useProjectRoot, useSelectedSource } from '@react-trace/core'
 import {
   Button,
   CollapseIcon,
@@ -17,6 +13,7 @@ import type { editor } from 'monaco-types'
 import { useRef, useState } from 'react'
 
 import { FolderAccessPrompt, handleGrantAccess } from './FolderAccessPrompt'
+import { fileSystemService } from './fs'
 import { ensureHighlightStyle } from './highlight'
 import { configureBefore } from './monaco'
 import { previewSettingsAtom } from './store'
@@ -44,12 +41,11 @@ export function SourcePreview({ options }: SourcePreviewProps) {
   disabled = persistedOptions?.disabled ?? disabled
 
   const root = useProjectRoot()
-  const services = useWidgetServices()
   const source = useSelectedSource()
   const [expanded, setExpanded] = useState(false)
   const [dirty, setDirty] = useState(false)
   const [loadState, setLoadState] = useState<LoadState>(
-    services.fs.hasAccess ? 'loading' : 'needs-access',
+    fileSystemService.hasAccess ? 'loading' : 'needs-access',
   )
   const editorRef = useRef<editor.ICodeEditor>(null)
 
@@ -59,7 +55,7 @@ export function SourcePreview({ options }: SourcePreviewProps) {
 
   const handleGrant = async () => {
     const granted = await handleGrantAccess(root, () =>
-      services.fs.requestAccess(),
+      fileSystemService.requestAccess(),
     )
     if (granted) setLoadState('loading')
   }
@@ -67,7 +63,7 @@ export function SourcePreview({ options }: SourcePreviewProps) {
   const handleSave = () => {
     const val = editorRef.current?.getValue()
     if (val != null) {
-      services.fs
+      fileSystemService
         .write(currentPath, val)
         .then(() => setDirty(false))
         .catch(() => {})
@@ -157,7 +153,7 @@ export function SourcePreview({ options }: SourcePreviewProps) {
 
           const key = cleanPath(source.fileName)
           const uri = pathToUri(monaco, key)
-          services.fs
+          fileSystemService
             .read(key)
             .then((fileContent) => {
               if (!monaco.editor.getModel(uri)) {

@@ -7,7 +7,6 @@ export {
   useClearSelectedContext,
   useSelectedSource,
   useWidgetPortalContainer,
-  useWidgetServices,
 } from './hooks'
 export { resolveSource } from './fiber'
 export { toAbsolutePath, toRelativePath } from './path'
@@ -18,9 +17,7 @@ export { settingsPluginAtom } from './store'
 export type {
   ComponentContext,
   ComponentSource,
-  FileSystemService,
   TracePlugin,
-  TraceServices,
   TraceProps,
   TraceSettings,
 } from './types'

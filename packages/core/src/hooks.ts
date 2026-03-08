@@ -7,7 +7,6 @@ import {
   projectRootAtom,
   selectedContextAtom,
   selectedSourceAtom,
-  servicesAtom,
 } from './store'
 
 export function useProjectRoot() {
@@ -34,10 +33,6 @@ export function useClearSelectedContext() {
 
 export function useSelectedSource() {
   return useAtomValue(selectedSourceAtom)
-}
-
-export function useWidgetServices() {
-  return useAtomValue(servicesAtom)
 }
 
 export function useWidgetPortalContainer() {

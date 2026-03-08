@@ -3,7 +3,6 @@ import { useEffect, useEffectEvent, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { getComponentContext, resolveSource } from '../fiber'
-import { fileSystemService } from '../fs'
 import { IS_MAC } from '../platform'
 import {
   coreSettingsAtom,
@@ -57,11 +56,6 @@ function TraceRoot({
   const applySelectedContext = useEffectEvent(() =>
     setSelectedContext(hoveredContext),
   )
-
-  // Silently try to restore a previously granted FS handle on mount
-  useEffect(() => {
-    fileSystemService.tryRestore().catch(() => {})
-  }, [])
 
   const toggleInspector = useEffectEvent((value?: boolean) =>
     setInspectorActive((prev) => value ?? !prev),

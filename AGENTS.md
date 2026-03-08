@@ -153,7 +153,6 @@ Shared hook surface from `@react-trace/core`:
 - `useInspectorActive()` — whether inspector mode is currently active
 - `useSelectedContext()` — currently selected component context
 - `useSelectedSource()` — currently selected source for action-panel flows
-- `useWidgetServices()` — shared widget services such as `fs`
 - `useWidgetPortalContainer()` — portal container inside the widget shell for tooltips, dropdowns, popovers, and other portal UI
 - `useDeactivateInspector()` — disable inspector mode before opening plugin-owned interactive UI
 - `useClearSelectedContext()` — clear the current selection when a plugin flow should dismiss it

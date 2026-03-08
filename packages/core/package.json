@@ -58,7 +58,6 @@
   "devDependencies": {
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/wicg-file-system-access": "^2023.10.7",
     "oxlint": "latest",
     "react": "^19",
     "react-dom": "^19",

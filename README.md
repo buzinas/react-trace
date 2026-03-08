@@ -95,9 +95,9 @@ export function Root() {
 
 Build custom plugins against `@react-trace/core` when you want your own plugin list or plugin-specific UI. A plugin is an `TracePlugin` object with a `name` and optional React components for the widget `toolbar`, selected-component `actionPanel`, and `settings` menu.
 
-Those plugin components receive no props. Instead, read shared state and services through the public hooks exported by `@react-trace/core`, including `useProjectRoot()`, `useInspectorActive()`, `useDeactivateInspector()`, `useSelectedContext()`, `useClearSelectedContext()`, `useSelectedSource()`, `useWidgetPortalContainer()`, and `useWidgetServices()`.
+Those plugin components receive no props. Instead, read shared state through the public hooks exported by `@react-trace/core`, including `useProjectRoot()`, `useInspectorActive()`, `useDeactivateInspector()`, `useSelectedContext()`, `useClearSelectedContext()`, `useSelectedSource()`, and `useWidgetPortalContainer()`.
 
-In practice, plugin authors usually read the current selection with `useSelectedContext()` or `useSelectedSource()`, access shared services such as `fs` through `useWidgetServices()`, and render popovers or menus through `useWidgetPortalContainer()` so plugin UI stays inside the widget shell.
+In practice, plugin authors usually read the current selection with `useSelectedContext()` or `useSelectedSource()`, and render popovers or menus through `useWidgetPortalContainer()` so plugin UI stays inside the widget shell.
 
 ## Contributing
 
