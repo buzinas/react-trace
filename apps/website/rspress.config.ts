@@ -4,8 +4,6 @@ import { pluginNodePolyfill } from '@rsbuild/plugin-node-polyfill'
 import { defineConfig } from '@rspress/core'
 
 export default defineConfig({
-  // TODO: remove once the .js.org domain is approved
-  base: '/react-trace/',
   root: 'docs',
   globalStyles: join(__dirname, 'tailwind.css'),
   title: 'React Trace',
