@@ -117,17 +117,14 @@ export function AppShell() {
 
 ## Exported utilities and constants
 
-- `resolveSource(source)` — resolves URL-based source locations back to original source-map positions when possible
-- `toAbsolutePath(fileName, root?)` — converts a source filename or Vite URL to an absolute filesystem path
-- `toRelativePath(fileName, root?)` — converts a source filename or Vite URL to a path relative to the project root when possible
 - `settingsPluginAtom(pluginKey)` — returns a writable Jotai atom for a section of `TraceSettings`
 - `IS_MAC` — `true` on macOS/iOS user agents
 - `MOD_KEY` — platform-specific modifier key label (`⌘` or `Ctrl`)
 
 ## Exported types
 
-- `ComponentContext`
-- `ComponentSource`
+- `ComponentContext` — full context of an inspected component (element, name, breadcrumb, props, sources)
+- `ComponentSource` — source file location (`fileName`, `lineNumber`, `columnNumber`, `relativePath`, `absolutePath`)
 - `TracePlugin`
 - `TraceProps`
 - `TraceSettings`

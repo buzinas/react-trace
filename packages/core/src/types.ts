@@ -4,6 +4,10 @@ export interface ComponentSource {
   fileName: string
   lineNumber: number
   columnNumber: number
+  /** Path relative to the project root, e.g. "src/App.tsx" */
+  relativePath: string
+  /** Absolute filesystem path, e.g. "/Users/you/project/src/App.tsx" */
+  absolutePath: string
 }
 
 export interface ComponentContext {

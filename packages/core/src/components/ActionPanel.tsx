@@ -11,11 +11,11 @@ import { useCallback } from 'react'
 
 import {
   portalContainerAtom,
+  projectRootAtom,
   selectedContextAtom,
   selectedSourceAtom,
 } from '../store'
 import type { ComponentContext, ComponentSource, TracePlugin } from '../types'
-import { toRelativePath } from '../utils/path'
 import { ErrorBoundary } from './ErrorBoundary'
 
 interface ActionPanelProps {
@@ -30,14 +30,18 @@ type ChainGroup =
   | { kind: 'entry'; names: string[]; source: ComponentSource; index: number }
   | { kind: 'third-party'; names: string[][]; count: number }
 
-function groupChain(all: ComponentContext['all']): ChainGroup[] {
+function groupChain(root: string, all: ComponentContext['all']): ChainGroup[] {
   const result: ChainGroup[] = []
   let tpCount = 0
   let names: string[][] = []
 
   for (let i = 0; i < all.length; i++) {
     const entry = all[i]!
-    if (!entry.source) {
+    if (
+      !entry.source ||
+      !entry.source.absolutePath.startsWith(root) ||
+      entry.source.relativePath.startsWith('node_modules/')
+    ) {
       tpCount++
       names.push(entry.names)
     } else {
@@ -64,8 +68,7 @@ function groupChain(all: ComponentContext['all']): ChainGroup[] {
 // ---------------------------------------------------------------------------
 
 function SourceLabel({ source }: { source: ComponentSource }) {
-  const rel = toRelativePath(source.fileName)
-  const short = rel.split('/').slice(-2).join('/')
+  const short = source.relativePath.split('/').slice(-2).join('/')
 
   return (
     <span
@@ -74,7 +77,7 @@ function SourceLabel({ source }: { source: ComponentSource }) {
         fontFamily: 'ui-monospace, monospace',
         color: '#97979b',
       }}
-      title={`${rel}:${source.lineNumber}`}
+      title={`${source.relativePath}:${source.lineNumber}`}
     >
       {short}:{source.lineNumber}
     </span>
@@ -108,9 +111,12 @@ function entryStyle(active: boolean): React.CSSProperties {
 // ---------------------------------------------------------------------------
 
 export function ActionPanel({ plugins }: ActionPanelProps) {
+  const projectRoot = useAtomValue(projectRootAtom)
   const [selectedContext, setSelectedContext] = useAtom(selectedContextAtom)
   const portalContainer = useAtomValue(portalContainerAtom)
-  const groups = selectedContext ? groupChain(selectedContext.all) : []
+  const groups = selectedContext
+    ? groupChain(projectRoot, selectedContext.all)
+    : []
 
   const onClose = useCallback(
     () => setSelectedContext(null),

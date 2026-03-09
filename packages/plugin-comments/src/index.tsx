@@ -1,10 +1,7 @@
 import type { TracePlugin } from '@react-trace/core'
 import {
-  resolveSource,
-  toRelativePath,
   useClearSelectedContext,
   useDeactivateInspector,
-  useProjectRoot,
   useSelectedContext,
   useSelectedSource,
   useWidgetPortalContainer,
@@ -113,20 +110,16 @@ function CommentsToolbar() {
 function CommentsActionPanel() {
   const selectedContext = useSelectedContext()
   const selectedSource = useSelectedSource()
-  const root = useProjectRoot()
   const { setPending } = useCommentsActions()
   const clearSelectedContext = useClearSelectedContext()
   const deactivateInspector = useDeactivateInspector()
 
   if (!selectedContext || !selectedSource) return null
 
-  const handleAddComment = async () => {
-    const { fileName, lineNumber } = await resolveSource(selectedSource)
-    const filePath = toRelativePath(fileName, root)
-
+  const handleAddComment = () => {
     setPending({
-      filePath,
-      lineNumber,
+      filePath: selectedSource.relativePath,
+      lineNumber: selectedSource.lineNumber,
       anchorEl: selectedContext.element,
     })
     clearSelectedContext()
@@ -134,10 +127,7 @@ function CommentsActionPanel() {
   }
 
   return (
-    <DropdownMenu.Item
-      closeOnClick
-      onClick={() => handleAddComment().catch(() => {})}
-    >
+    <DropdownMenu.Item closeOnClick onClick={handleAddComment}>
       <span style={{ display: 'flex', alignItems: 'center' }}>
         <ChatBubbleIcon />
       </span>

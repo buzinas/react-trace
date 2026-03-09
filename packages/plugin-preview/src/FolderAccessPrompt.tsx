@@ -1,4 +1,4 @@
-import { IS_MAC, toAbsolutePath } from '@react-trace/core'
+import { IS_MAC } from '@react-trace/core'
 import { Button, FolderIcon, Kbd, KbdGroup } from '@react-trace/ui-components'
 
 export function FolderAccessPrompt({
@@ -83,12 +83,9 @@ export function FolderAccessPrompt({
  * Copies the root path to clipboard then calls requestAccess().
  */
 export async function handleGrantAccess(
-  root: string | undefined,
+  root: string,
   requestAccess: () => Promise<boolean>,
 ): Promise<boolean> {
-  if (root) {
-    const absPath = toAbsolutePath(root, undefined) ?? root
-    navigator.clipboard.writeText(absPath).catch(() => {})
-  }
+  await navigator.clipboard.writeText(root).catch(() => {})
   return requestAccess()
 }

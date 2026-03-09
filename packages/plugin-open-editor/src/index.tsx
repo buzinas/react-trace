@@ -1,9 +1,6 @@
 import type { TracePlugin } from '@react-trace/core'
 import {
-  resolveSource,
-  toAbsolutePath,
   useClearSelectedContext,
-  useProjectRoot,
   useSelectedSource,
   useWidgetPortalContainer,
 } from '@react-trace/core'
@@ -74,29 +71,21 @@ export function OpenEditorPlugin({
 }: OpenEditorPluginOptions = {}): TracePlugin {
   function OpenEditorActionPanel() {
     const selectedSource = useSelectedSource()
-    const projectRoot = useProjectRoot()
     const clearSelectedContext = useClearSelectedContext()
     const editorSettings = useAtomValue(openEditorSettingsAtom)
     const currentEditor = editorSettings?.editor ?? editor
 
     if (!selectedSource) return null
 
-    const handleOpenEditor = async () => {
+    const handleOpenEditor = () => {
       clearSelectedContext()
-
-      try {
-        const resolved = await resolveSource(selectedSource)
-        const path = toAbsolutePath(resolved.fileName, projectRoot)
-        if (!path) return
-
-        const url = buildEditorUrl(
-          currentEditor,
-          path,
-          resolved.lineNumber,
-          resolved.columnNumber,
-        )
-        window.open(url)
-      } catch {}
+      const url = buildEditorUrl(
+        currentEditor,
+        selectedSource.absolutePath,
+        selectedSource.lineNumber,
+        selectedSource.columnNumber,
+      )
+      window.open(url)
     }
 
     return (

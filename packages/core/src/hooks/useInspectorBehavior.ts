@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import {
   inspectorActiveAtom,
   portalContainerAtom,
+  projectRootAtom,
   selectedContextAtom,
 } from '../store'
 import type { ComponentContext } from '../types'
@@ -22,6 +23,7 @@ import { useEffectEvent } from './useEffectEvent'
 export function useInspectorBehavior() {
   const portalContainer = useAtomValue(portalContainerAtom)
   const inspectorActive = useAtomValue(inspectorActiveAtom)
+  const root = useAtomValue(projectRootAtom)
   const setInspectorActive = useSetAtom(inspectorActiveAtom)
   const [hoveredContext, setHoveredContext] = useState<ComponentContext | null>(
     null,
@@ -60,7 +62,7 @@ export function useInspectorBehavior() {
       lastHoveredElement = target
 
       try {
-        const ctx = await getComponentContext(target)
+        const ctx = await getComponentContext(target, root)
         if (lastHoveredElement !== target) return
         setHoveredContext(ctx)
       } catch {}

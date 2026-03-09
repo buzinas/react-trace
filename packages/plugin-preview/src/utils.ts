@@ -1,13 +1,8 @@
 import type { Monaco } from '@monaco-editor/react'
-import { toRelativePath } from '@react-trace/core'
 import type { Uri } from 'monaco-types'
 
-export function cleanPath(fileName: string): string {
-  return fileName.split('?')[0]!
-}
-
 export function detectLanguage(fileName: string): string {
-  const ext = cleanPath(fileName).split('.').pop()?.toLowerCase() ?? ''
+  const ext = fileName.split('.').pop()?.toLowerCase() ?? ''
   const map: Record<string, string> = {
     ts: 'typescript',
     tsx: 'typescript',
@@ -17,11 +12,6 @@ export function detectLanguage(fileName: string): string {
     cjs: 'javascript',
   }
   return map[ext] ?? 'plaintext'
-}
-
-/** Last two path segments — used in the toolbar label. */
-export function shortName(fileName: string): string {
-  return toRelativePath(fileName).split('/').slice(-2).join('/')
 }
 
 /** Convert a file path (URL or absolute) to a monaco file:// URI. */

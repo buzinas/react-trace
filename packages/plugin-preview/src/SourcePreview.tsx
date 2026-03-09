@@ -24,7 +24,7 @@ import {
   TOOLBAR_HEIGHT,
 } from './styles'
 import type { PreviewPluginOptions } from './types'
-import { cleanPath, detectLanguage, pathToUri, shortName } from './utils'
+import { detectLanguage, pathToUri } from './utils'
 
 type LoadState = 'needs-access' | 'loading' | 'ready'
 
@@ -51,7 +51,7 @@ export function SourcePreview({ options }: SourcePreviewProps) {
 
   if (!source) return null
 
-  const currentPath = cleanPath(source.fileName)
+  const currentPath = source.relativePath
 
   const handleGrant = async () => {
     const granted = await handleGrantAccess(root, () =>
@@ -64,7 +64,7 @@ export function SourcePreview({ options }: SourcePreviewProps) {
     const val = editorRef.current?.getValue()
     if (val != null) {
       fileSystemService
-        .write(root, currentPath, val)
+        .write(currentPath, val)
         .then(() => setDirty(false))
         .catch(() => {})
     }
@@ -93,7 +93,7 @@ export function SourcePreview({ options }: SourcePreviewProps) {
           color: '#52525b',
         }}
       >
-        {shortName(source.fileName)}
+        {source.relativePath.split('/').slice(-2).join('/')}
         <span style={{ color: '#3f3f46' }}>:{source.lineNumber}</span>
       </span>
       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -151,11 +151,11 @@ export function SourcePreview({ options }: SourcePreviewProps) {
           }
           editor.updateOptions({ theme })
 
-          const key = cleanPath(source.fileName)
+          const key = source.relativePath
           const uri = pathToUri(monaco, key)
 
           fileSystemService
-            .read(root, key)
+            .read(key)
             .then((fileContent) => {
               if (!monaco.editor.getModel(uri)) {
                 monaco.editor.createModel(fileContent, detectLanguage(key), uri)

@@ -2,6 +2,14 @@ import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping'
 import type { EncodedSourceMap } from '@jridgewell/trace-mapping'
 
 import type { ComponentContext, ComponentSource } from '../types'
+import { toAbsolutePath, toRelativePath } from './path'
+
+/**
+ * Raw source location extracted from React fibers before path enrichment.
+ * Missing the `relativePath` and `absolutePath` fields that are computed
+ * in `getComponentContext` once the project root is known.
+ */
+type RawSource = Omit<ComponentSource, 'relativePath' | 'absolutePath'>
 
 // ---------------------------------------------------------------------------
 // Source map resolution
@@ -67,9 +75,7 @@ function loadTraceMap(fileUrl: string): Promise<TraceMap | null> {
  * so the UI updates the line number once the source map resolves (usually <50ms
  * after the first hover on a given file, instant on subsequent hovers).
  */
-export async function resolveSource(
-  source: ComponentSource,
-): Promise<ComponentSource> {
+async function resolveSource(source: RawSource): Promise<RawSource | null> {
   // Only attempt resolution for URL-form fileNames
   try {
     new URL(source.fileName)
@@ -86,7 +92,7 @@ export async function resolveSource(
     column: source.columnNumber - 1,
   })
 
-  if (original.source == null || original.line == null) return source
+  if (original.source == null || original.line == null) return null
 
   return {
     fileName: original.source,
@@ -149,7 +155,7 @@ interface ReactFiber {
   /** React 19: Error object captured at JSX creation time, stack contains the callsite */
   _debugStack: Error | null
   /** React 18: structured source object injected by Babel/SWC's JSX source transform */
-  _debugSource: ComponentSource | null
+  _debugSource: RawSource | null
   _debugOwner: ReactFiber | null
   return: ReactFiber | null
   stateNode?: HTMLElement | null
@@ -197,9 +203,7 @@ function getDisplayName(type: ComponentType): string {
  * The fileName may be a full URL in Vite dev mode (e.g. "http://localhost:5173/src/Button.tsx").
  * URL → absolute path normalization is deferred to the FileSystemService.
  */
-function parseComponentSource(
-  debugStack: Error | null,
-): ComponentSource | null {
+function parseComponentSource(debugStack: Error | null): RawSource | null {
   if (!debugStack?.stack) return null
 
   let stack = debugStack.stack
@@ -254,7 +258,7 @@ function parseComponentSource(
  * React 18 paths are absolute filesystem paths (/abs/path/to/File.tsx) so
  * resolveSource() will no-op on them — they're already at original positions.
  */
-function getSource(fiber: ReactFiber | null): ComponentSource | null {
+function getSource(fiber: ReactFiber | null): RawSource | null {
   if (!fiber) return null
   if (fiber._debugStack) return parseComponentSource(fiber._debugStack)
   if (fiber._debugSource) return fiber._debugSource
@@ -285,6 +289,7 @@ function getSource(fiber: ReactFiber | null): ComponentSource | null {
  */
 export async function getComponentContext(
   element: HTMLElement,
+  root: string,
 ): Promise<ComponentContext | null> {
   const domFiber = findFiber(element)
   if (!domFiber) return null
@@ -295,7 +300,7 @@ export async function getComponentContext(
   //   raw  → ['code', 'p', 'Card']
   //   display → ['Card', 'p', 'code']
   let fiber: ReactFiber | null = domFiber
-  const parts: Array<{ source: ComponentSource | null; names: string[] }> = [
+  const parts: Array<{ source: RawSource | null; names: string[] }> = [
     { source: getSource(fiber), names: [] },
   ]
   let i = 0
@@ -320,17 +325,28 @@ export async function getComponentContext(
     parts.map((part) => (part.source ? resolveSource(part.source) : null)),
   )
 
-  // parts: [hovered, …ancestors, Component] — reverse for display order
-  const all = parts.map((part, i) => ({
-    source: sources[i] ?? part.source,
-    names: part.names.reverse(),
-  }))
+  /** Enrich a raw source with computed relative and absolute paths. */
+  function enrichSource(raw: RawSource): ComponentSource {
+    return {
+      ...raw,
+      relativePath: toRelativePath(raw.fileName, root),
+      absolutePath: toAbsolutePath(raw.fileName, root) ?? raw.fileName,
+    }
+  }
 
-  // deduplicate same files
+  // parts: [hovered, …ancestors, Component] — reverse for display order
+  const all = parts.map((part, idx) => {
+    const resolved = sources[idx]
+    return {
+      source: resolved ? enrichSource(resolved) : null,
+      names: part.names.reverse(),
+    }
+  })
+
+  // remove files without a source
   const files = all.reduce<typeof all>((acc, part) => {
     if (!part.source) return acc
-    const file = part.source.fileName
-    if (!acc.some((p) => p.source?.fileName === file)) acc.push(part)
+    acc.push(part)
     return acc
   }, [])
 

@@ -1,5 +1,3 @@
-import { toRelativePath } from '@react-trace/core'
-
 export interface FileSystemService {
   /** Whether the File System Access API is available in this browser */
   isSupported: boolean
@@ -22,15 +20,15 @@ export interface FileSystemService {
    */
   subscribe(listener: () => void): () => void
   /**
-   * Read a file by its path (absolute filesystem path or Vite dev URL).
+   * Read a file by its relative path (relative to the granted directory).
    * If no access has been granted yet, triggers requestAccess() first.
    */
-  read(root: string, path: string): Promise<string>
+  read(relativePath: string): Promise<string>
   /**
-   * Write content to a file. Triggers requestAccess() if needed.
+   * Write content to a file by its relative path. Triggers requestAccess() if needed.
    * Written files trigger HMR automatically in the dev server.
    */
-  write(root: string, path: string, content: string): Promise<void>
+  write(relativePath: string, content: string): Promise<void>
 }
 
 const IDB_NAME = 'react-trace'
@@ -160,40 +158,27 @@ class FileSystemServiceImpl implements FileSystemService {
     return this.requestAccess()
   }
 
-  async read(root: string, path: string): Promise<string> {
+  async read(relativePath: string): Promise<string> {
     const ok = await this.ensureAccess()
     if (!ok || !this._handle)
       throw new Error('[react-trace] File system access denied')
 
-    const rel = toRelativePath(path, root)
-    if (rel == null) {
-      throw new Error(
-        `[react-trace] Cannot resolve "${path}" relative to "${this._handle.name}". ` +
-          'Make sure the picked folder is the project root.',
-      )
-    }
-
-    const file = await getFileHandle(this._handle, rel)
-    if (!file) throw new Error(`[react-trace] File not found: ${rel}`)
+    const file = await getFileHandle(this._handle, relativePath)
+    if (!file) throw new Error(`[react-trace] File not found: ${relativePath}`)
 
     return (await file.getFile()).text()
   }
 
-  async write(root: string, path: string, content: string): Promise<void> {
+  async write(relativePath: string, content: string): Promise<void> {
     const ok = await this.ensureAccess()
     if (!ok || !this._handle)
       throw new Error('[react-trace] File system access denied')
 
-    const rel = toRelativePath(path, root)
-    if (rel == null) {
-      throw new Error(
-        `[react-trace] Cannot resolve "${path}" relative to "${this._handle.name}".`,
-      )
-    }
-
-    const file = await getFileHandle(this._handle, rel, true)
+    const file = await getFileHandle(this._handle, relativePath, true)
     if (!file)
-      throw new Error(`[react-trace] Cannot open file for writing: ${rel}`)
+      throw new Error(
+        `[react-trace] Cannot open file for writing: ${relativePath}`,
+      )
 
     const writable = await file.createWritable()
     await writable.write(content)

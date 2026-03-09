@@ -1,29 +1,18 @@
 import type { TracePlugin } from '@react-trace/core'
-import {
-  resolveSource,
-  toRelativePath,
-  useClearSelectedContext,
-  useProjectRoot,
-  useSelectedSource,
-} from '@react-trace/core'
+import { useClearSelectedContext, useSelectedSource } from '@react-trace/core'
 import { ClipboardIcon, DropdownMenu } from '@react-trace/ui-components'
 
 function CopyToClipboardActionPanel() {
   const selectedSource = useSelectedSource()
-  const projectRoot = useProjectRoot()
   const clearSelectedContext = useClearSelectedContext()
 
   if (!selectedSource) return null
 
-  const handleCopy = async () => {
+  const handleCopy = () => {
     clearSelectedContext()
-
-    try {
-      const resolved = await resolveSource(selectedSource)
-      const path = toRelativePath(resolved.fileName, projectRoot)
-
-      await navigator.clipboard.writeText(`${path}:${resolved.lineNumber}`)
-    } catch {}
+    navigator.clipboard
+      .writeText(`${selectedSource.relativePath}:${selectedSource.lineNumber}`)
+      .catch(() => {})
   }
 
   return (

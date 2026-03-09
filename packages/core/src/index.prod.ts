@@ -5,7 +5,7 @@
 
 import type { WritableAtom } from 'jotai'
 
-import type { ComponentSource, TraceSettings } from './types'
+import type { TraceSettings } from './types'
 
 const NOOP = () => {}
 
@@ -18,10 +18,6 @@ export const useSelectedContext = () => null
 export const useClearSelectedContext = () => NOOP
 export const useSelectedSource = () => null
 export const useWidgetPortalContainer = () => null
-
-export const resolveSource = async (source: ComponentSource) => source
-export const toAbsolutePath = (path: string) => path
-export const toRelativePath = (path: string) => path
 
 export { IS_MAC, MOD_KEY } from './utils/platform'
 

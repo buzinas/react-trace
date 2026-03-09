@@ -91,13 +91,17 @@ Returns a callback that clears the current selection. Use this when a plugin flo
 
 ### `useSelectedSource()`
 
-Returns the currently selected `ComponentSource | null`. This is a convenience for accessing just the source location.
+Returns the currently selected `ComponentSource | null`. Each source includes source-mapped file coordinates and pre-computed project-relative and absolute paths.
 
 ```ts
 interface ComponentSource {
   fileName: string
   lineNumber: number
   columnNumber: number
+  /** Path relative to the project root, e.g. "src/App.tsx" */
+  relativePath: string
+  /** Absolute filesystem path, e.g. "/Users/you/project/src/App.tsx" */
+  absolutePath: string
 }
 ```
 
@@ -121,26 +125,23 @@ function MyToolbarButton() {
 
 ## Utilities and constants
 
-| Export                            | Description                                                            |
-| --------------------------------- | ---------------------------------------------------------------------- |
-| `resolveSource(source)`           | Resolves URL-based source locations to original source-map positions.  |
-| `toAbsolutePath(fileName, root?)` | Converts a source filename or Vite URL to an absolute filesystem path. |
-| `toRelativePath(fileName, root?)` | Converts a source filename or Vite URL to a project-relative path.     |
-| `settingsPluginAtom(pluginKey)`   | Returns a writable Jotai atom for a section of `TraceSettings`.        |
-| `IS_MAC`                          | `true` on macOS/iOS user agents.                                       |
-| `MOD_KEY`                         | Platform-specific modifier key label (`⌘` on Mac, `Ctrl` elsewhere).   |
+| Export                          | Description                                                          |
+| ------------------------------- | -------------------------------------------------------------------- |
+| `settingsPluginAtom(pluginKey)` | Returns a writable Jotai atom for a section of `TraceSettings`.      |
+| `IS_MAC`                        | `true` on macOS/iOS user agents.                                     |
+| `MOD_KEY`                       | Platform-specific modifier key label (`⌘` on Mac, `Ctrl` elsewhere). |
 
 ## Types
 
 All types are exported from `@react-trace/core`:
 
-| Type               | Description                                                                         |
-| ------------------ | ----------------------------------------------------------------------------------- |
-| `ComponentContext` | Full context of an inspected component (element, name, breadcrumb, props, sources). |
-| `ComponentSource`  | Source file location (fileName, lineNumber, columnNumber).                          |
-| `TracePlugin`      | The plugin contract (name + optional toolbar/actionPanel/settings components).      |
-| `TraceProps`       | Props accepted by the `Trace` component.                                            |
-| `TraceSettings`    | Shape of the widget settings state.                                                 |
+| Type               | Description                                                                            |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| `ComponentContext` | Full context of an inspected component (element, name, breadcrumb, props, sources).    |
+| `ComponentSource`  | Source file location (fileName, lineNumber, columnNumber, relativePath, absolutePath). |
+| `TracePlugin`      | The plugin contract (name + optional toolbar/actionPanel/settings components).         |
+| `TraceProps`       | Props accepted by the `Trace` component.                                               |
+| `TraceSettings`    | Shape of the widget settings state.                                                    |
 
 ## Production stubs
 
