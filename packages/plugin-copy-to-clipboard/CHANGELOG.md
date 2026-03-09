@@ -1,5 +1,15 @@
 # @react-trace/plugin-copy-to-clipboard
 
+## 0.0.4
+
+### Patch Changes
+
+- 204ec50: Improve how source location is resolved and compute relative and absolute paths
+- Updated dependencies [fde948b]
+- Updated dependencies [204ec50]
+  - @react-trace/ui-components@0.0.2
+  - @react-trace/core@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes
