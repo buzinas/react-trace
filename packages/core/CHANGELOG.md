@@ -1,5 +1,11 @@
 # @react-trace/core
 
+## 0.0.3
+
+### Patch Changes
+
+- 7e2c9dc: Deduplicate toRelativePath and add support for rspack / rsbuild / rspress
+
 ## 0.0.2
 
 ### Patch Changes

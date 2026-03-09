@@ -1,5 +1,16 @@
 # @react-trace/kit
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [7e2c9dc]
+  - @react-trace/plugin-preview@0.0.3
+  - @react-trace/core@0.0.3
+  - @react-trace/plugin-comments@0.0.3
+  - @react-trace/plugin-copy-to-clipboard@0.0.3
+  - @react-trace/plugin-open-editor@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes
