@@ -1,3 +1,5 @@
+import { toRelativePath } from '@react-trace/core'
+
 export interface FileSystemService {
   /** Whether the File System Access API is available in this browser */
   isSupported: boolean
@@ -23,12 +25,12 @@ export interface FileSystemService {
    * Read a file by its path (absolute filesystem path or Vite dev URL).
    * If no access has been granted yet, triggers requestAccess() first.
    */
-  read(path: string): Promise<string>
+  read(root: string, path: string): Promise<string>
   /**
    * Write content to a file. Triggers requestAccess() if needed.
    * Written files trigger HMR automatically in the dev server.
    */
-  write(path: string, content: string): Promise<void>
+  write(root: string, path: string, content: string): Promise<void>
 }
 
 const IDB_NAME = 'react-trace'
@@ -67,39 +69,6 @@ async function loadHandle(): Promise<FileSystemDirectoryHandle | null> {
   } catch {
     return null
   }
-}
-
-/**
- * Converts an absolute path or Vite dev URL into a path relative to the
- * picked directory handle.
- *
- * - Vite dev URL  (http://localhost:5173/src/App.tsx) -> src/App.tsx
- * - Absolute path (/Users/you/project/src/App.tsx) with handle.name = 'project'
- *   -> src/App.tsx  (finds the handle name as a segment and takes everything after)
- */
-function toRelativePath(path: string, handleName: string): string | null {
-  let normalized = path.split('?')[0]! // strip HMR timestamp
-
-  // If it's a URL, the pathname is already relative to the Vite root
-  try {
-    normalized = new URL(normalized).pathname
-    return normalized.replace(/^\//, '') // strip leading /
-  } catch {
-    // not a URL — treat as absolute filesystem path
-  }
-
-  // Normalize to forward slashes (Windows compat)
-  normalized = normalized.replace(/\\/g, '/')
-
-  // Find the handle's directory name as a path segment
-  const pattern = `/${handleName}/`
-  const idx = normalized.lastIndexOf(pattern)
-  if (idx !== -1) return normalized.slice(idx + pattern.length)
-
-  // Edge case: path ends with the handle name (the root itself)
-  if (normalized.endsWith(`/${handleName}`)) return ''
-
-  return null
 }
 
 /**
@@ -191,12 +160,12 @@ class FileSystemServiceImpl implements FileSystemService {
     return this.requestAccess()
   }
 
-  async read(path: string): Promise<string> {
+  async read(root: string, path: string): Promise<string> {
     const ok = await this.ensureAccess()
     if (!ok || !this._handle)
       throw new Error('[react-trace] File system access denied')
 
-    const rel = toRelativePath(path, this._handle.name)
+    const rel = toRelativePath(path, root)
     if (rel == null) {
       throw new Error(
         `[react-trace] Cannot resolve "${path}" relative to "${this._handle.name}". ` +
@@ -210,12 +179,12 @@ class FileSystemServiceImpl implements FileSystemService {
     return (await file.getFile()).text()
   }
 
-  async write(path: string, content: string): Promise<void> {
+  async write(root: string, path: string, content: string): Promise<void> {
     const ok = await this.ensureAccess()
     if (!ok || !this._handle)
       throw new Error('[react-trace] File system access denied')
 
-    const rel = toRelativePath(path, this._handle.name)
+    const rel = toRelativePath(path, root)
     if (rel == null) {
       throw new Error(
         `[react-trace] Cannot resolve "${path}" relative to "${this._handle.name}".`,

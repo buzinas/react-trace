@@ -64,7 +64,7 @@ export function SourcePreview({ options }: SourcePreviewProps) {
     const val = editorRef.current?.getValue()
     if (val != null) {
       fileSystemService
-        .write(currentPath, val)
+        .write(root, currentPath, val)
         .then(() => setDirty(false))
         .catch(() => {})
     }
@@ -153,8 +153,9 @@ export function SourcePreview({ options }: SourcePreviewProps) {
 
           const key = cleanPath(source.fileName)
           const uri = pathToUri(monaco, key)
+
           fileSystemService
-            .read(key)
+            .read(root, key)
             .then((fileContent) => {
               if (!monaco.editor.getModel(uri)) {
                 monaco.editor.createModel(fileContent, detectLanguage(key), uri)

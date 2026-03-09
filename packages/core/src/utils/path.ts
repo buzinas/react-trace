@@ -13,6 +13,7 @@
  *
  *   Vite URL    http://localhost:5173/src/App.tsx         → src/App.tsx
  *   /@fs/ URL   http://localhost:5173/@fs/abs/root/src/…  → src/App.tsx  (root required)
+ *   Abs URL     http://localhost:5173//abs/root/src/…     → src/App.tsx  (root required)
  *   Abs path    /Users/you/project/src/App.tsx            → src/App.tsx  (root required)
  */
 export function toRelativePath(fileName: string, root?: string): string {
@@ -21,8 +22,10 @@ export function toRelativePath(fileName: string, root?: string): string {
   try {
     const { pathname } = new URL(clean)
 
-    if (pathname.startsWith('/@fs/')) {
-      const absPath = pathname.slice('/@fs'.length)
+    if (pathname.startsWith('/@fs/') || pathname.startsWith('/Users/')) {
+      const absPath = pathname.startsWith('/@fs/')
+        ? pathname.slice('/@fs'.length)
+        : pathname
       if (root) {
         const normalizedRoot = root.replace(/\\/g, '/').replace(/\/$/, '')
         if (absPath.startsWith(normalizedRoot + '/')) {
@@ -53,6 +56,7 @@ export function toRelativePath(fileName: string, root?: string): string {
  *
  *   Vite /@fs/ URL   → strip /@fs prefix → /abs/path/src/App.tsx
  *   Vite URL         → prepend root if provided → /project/src/App.tsx
+ *   Abs URL          → strip host → /abs/root/src/App.tsx
  *   Abs path         → used as-is
  *
  * Returns null if the path is empty or cannot be resolved.
@@ -63,6 +67,7 @@ export function toAbsolutePath(fileName: string, root?: string): string | null {
 
   try {
     const { pathname } = new URL(clean)
+    if (pathname.startsWith('/Users/')) return pathname
     // Vite embeds the absolute path after /@fs/
     if (pathname.startsWith('/@fs/')) return pathname.slice('/@fs'.length)
     // Standard Vite URL — resolve against root if provided
