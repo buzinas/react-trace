@@ -1,8 +1,15 @@
 # react-trace
 
-React Trace is a development-time React inspector that helps you identify rendered components, resolve their source locations, and run source-aware actions such as previewing code, adding comments, copying paths, and opening files in your editor.
+A development-time React inspector for your components.
 
-Use `@react-trace/kit` for the recommended all-in-one setup, or compose `@react-trace/core` with the official plugins when you want explicit control over the plugin list.
+[Video demonstration](https://github.com/user-attachments/assets/281b712e-bd0e-4f67-8ee5-f829effa3034)
+
+Identify rendered components, find their source locations, and choose what to do:
+
+- Open the file in your editor, on the exact line of your component definition
+- Preview the code and edit it directly in the browser
+- Add comments and then copy & paste to your AI agents
+- Or even send them to your session on OpenCode for a seamless review experience
 
 ## Installation
 
