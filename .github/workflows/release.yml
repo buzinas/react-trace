@@ -40,8 +40,8 @@ jobs:
         with:
           version: pnpm run version
           publish: pnpm changeset publish
-          title: 'chore: version packages'
-          commit: 'chore: version packages'
+          title: 'Bump packages version'
+          commit: 'bump packages version'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
