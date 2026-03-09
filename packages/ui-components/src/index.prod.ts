@@ -20,6 +20,7 @@ export const PanelHeader = () => null
 export const Textarea = () => null
 export const Separator = () => null
 
+export const ChevronLeftIcon = () => null
 export const ClipboardIcon = () => null
 export const XIcon = () => null
 export const ChevronRightIcon = () => null

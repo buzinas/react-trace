@@ -1,7 +1,7 @@
-import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useAtom, useSetAtom } from 'jotai'
+import { useEffect, useRef } from 'react'
 
-import { inspectorActiveAtom } from '../store'
+import { coreSettingsAtom, inspectorActiveAtom } from '../store'
 import { IS_MAC } from '../utils/platform'
 
 const LONGPRESS_MS = 600
@@ -13,6 +13,9 @@ const LONGPRESS_MS = 600
  */
 export function useLongPressHotkey() {
   const setInspectorActive = useSetAtom(inspectorActiveAtom)
+  const [coreSettings, setCoreSettings] = useAtom(coreSettingsAtom)
+  const settingsRef = useRef(coreSettings)
+  settingsRef.current = coreSettings
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null
@@ -24,6 +27,9 @@ export function useLongPressHotkey() {
         timer = setTimeout(() => {
           timer = null
           setInspectorActive(true)
+          if (settingsRef.current.minimized) {
+            setCoreSettings({ ...settingsRef.current, minimized: false })
+          }
         }, LONGPRESS_MS)
       }
     }

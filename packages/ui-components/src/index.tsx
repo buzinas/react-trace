@@ -23,6 +23,7 @@ export type { SeparatorProps } from './Separator'
 
 export {
   ChatBubbleIcon,
+  ChevronLeftIcon,
   ChevronRightIcon,
   ClipboardIcon,
   CollapseIcon,

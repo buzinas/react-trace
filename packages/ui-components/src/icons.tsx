@@ -1,6 +1,7 @@
 import {
-  Clipboard,
+  ChevronLeft,
   ChevronRight,
+  Clipboard,
   ExternalLink,
   Folder,
   Maximize2,
@@ -27,6 +28,12 @@ export function ClipboardIcon({ size = DEFAULT_SIZE }: { size?: number }) {
 
 export function XIcon({ size = DEFAULT_SIZE }: { size?: number }) {
   return <X size={size} strokeWidth={DEFAULT_STROKE_WIDTH} aria-hidden />
+}
+
+export function ChevronLeftIcon({ size = DEFAULT_SIZE }: { size?: number }) {
+  return (
+    <ChevronLeft size={size} strokeWidth={DEFAULT_STROKE_WIDTH} aria-hidden />
+  )
 }
 
 export function ChevronRightIcon({ size = DEFAULT_SIZE }: { size?: number }) {

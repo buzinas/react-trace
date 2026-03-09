@@ -45,5 +45,6 @@ export interface TraceProps {
 export interface TraceSettings {
   core: {
     position: WidgetPosition
+    minimized?: boolean
   }
 }
