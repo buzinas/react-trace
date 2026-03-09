@@ -1,23 +1,16 @@
+---
+description: Comments plugin for React Trace — add inline review comments anchored to components, then copy them to the clipboard or send directly to OpenCode.
+---
+
+import { Video } from '../_components/Video'
 import commentsDemo from '../../theme/videos/comments-demo.mp4'
+import commentsDemoPoster from '../../theme/videos/comments-demo.webp'
 
 # Comments Plugin
 
 `@react-trace/plugin-comments` adds lightweight review comments to the Trace widget. Collect comments anchored to specific components, then copy them to the clipboard or send them directly to OpenCode.
 
-<video
-  autoPlay
-  muted
-  loop
-  style={{
-    width: '100%',
-    borderRadius: '0.75rem',
-    border: '1px solid var(--rp-c-divider)',
-    marginTop: '1.5rem',
-    marginBottom: '1.5rem',
-  }}
->
-  <source src={commentsDemo} type="video/mp4" />
-</video>
+<Video demoPoster={commentsDemoPoster} demoVideo={commentsDemo} />
 
 ## Installation
 

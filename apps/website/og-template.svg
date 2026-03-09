@@ -1,0 +1,57 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient y2="100%" x2="100%" y1="0%" x1="0%" id="prefix__svg_1">
+      <stop stop-color="#2196f3" offset="0%" />
+      <stop stop-color="#345580" offset="100%" />
+    </linearGradient>
+    <linearGradient y2="0%" x2="0%" y1="0%" x1="100%" id="prefix__svg_2">
+      <stop stop-color="#2196f3" offset="0%" />
+      <stop stop-color="#345580" offset="100%" />
+    </linearGradient>
+    <linearGradient y2="100%" x2="100%" y1="0%" x1="0%" id="prefix__svg_3">
+      <stop stop-color="#4dabf5" offset="0%" />
+      <stop stop-color="#58a0c3" offset="50%" />
+      <stop stop-color="#4dabf5" offset="100%" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#09090b" />
+
+  <rect x="0" y="0" width="1200" height="4" fill="#3b82f6" />
+
+  <g fill="none" transform="translate(60 60) scale(2)">
+    <g transform="matrix(.13 0 0 .13 20 10)">
+      <g stroke-width="1.5" stroke="url(#prefix__svg_3)" transform="matrix(5.5 0 0 5.5 63 59)">
+        <circle cx="-29.427" cy="-10.489" fill="url(#prefix__svg_3)" r="2" />
+        <ellipse cx="-29.427" cy="-10.489" ry="4.5" rx="10" />
+        <ellipse transform="rotate(60 -29.427 -10.49)" cx="-29.427" cy="-10.489" ry="4.5" rx="10" />
+        <ellipse transform="rotate(120 -29.427 -10.49)" cx="-29.427" cy="-10.489" ry="4.5" rx="10" />
+      </g>
+      <circle fill="#09090b" r="38" cy="21.308" cx="-78.846" />
+      <g transform="matrix(3.2 0 0 3.2 58 54)">
+        <circle fill="#fff" r="8" cy="-10.029" cx="-42.577" />
+        <circle opacity=".8" fill="url(#prefix__svg_1)" r="8" cy="-10.029" cx="-42.577" />
+        <path d="M-36.577-4.029l6 6" stroke-linecap="round" stroke-width="4" stroke="url(#prefix__svg_2)" />
+        <circle stroke-width="3" stroke="url(#prefix__svg_1)" r="8" cy="-10.029" cx="-42.577" />
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5" stroke="#fff"
+          d="M-44.577-12.529l-2 2.5 2 2.5m4 0l2-2.5-2-2.5" />
+      </g>
+    </g><text letter-spacing="-.01em" fill="#fafafa" font-weight="600" font-size="17"
+      font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" y="15.5"
+      x="20.96">react</text><text letter-spacing="-.01em" fill="#2196f3" font-weight="600" font-size="17"
+      font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" y="15.5"
+      x="65.96">trace</text>
+  </g>
+
+  <text x="60" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="700"
+    fill="#fafafa">
+    <tspan x="60" dy="0">{{line1}}</tspan>
+  </text>
+  <text x="60" y="360" font-family="system-ui, -apple-system, sans-serif" font-size="26" fill="#a1a1aa">
+    <tspan x="60" dy="0">{{desc1}}</tspan>
+    <tspan x="60" dy="36">{{desc2}}</tspan>
+    <tspan x="60" dy="36">{{desc3}}</tspan>
+  </text>
+  <text x="60" y="590" font-family="system-ui, -apple-system, sans-serif" font-size="22"
+    fill="#52525b">react-trace.js.org</text>
+</svg>

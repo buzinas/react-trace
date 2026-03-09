@@ -2,9 +2,33 @@ import { join } from 'node:path'
 
 import { pluginNodePolyfill } from '@rsbuild/plugin-node-polyfill'
 import { defineConfig } from '@rspress/core'
+import { pluginSitemap } from '@rspress/plugin-sitemap'
+
+import { ogPlugin } from './ogPlugin'
+
+const SITE_URL = 'https://react-trace.js.org'
 
 export default defineConfig({
   root: 'docs',
+  plugins: [
+    ogPlugin(SITE_URL),
+    pluginSitemap({
+      siteUrl: SITE_URL,
+    }),
+  ],
+  llms: true,
+  head: [
+    (route) => [
+      'link',
+      { rel: 'canonical', href: `${SITE_URL}${route.routePath}` },
+    ],
+    (route) => [
+      'meta',
+      { property: 'og:url', content: `${SITE_URL}${route.routePath}` },
+    ],
+    ['meta', { property: 'og:site_name', content: 'React Trace' }],
+    ['meta', { name: 'twitter:site', content: '@vbuzinas' }],
+  ],
   globalStyles: join(__dirname, 'tailwind.css'),
   title: 'React Trace',
   description:
@@ -16,6 +40,27 @@ export default defineConfig({
   },
   builderConfig: {
     plugins: [pluginNodePolyfill()],
+    html: {
+      tags: [
+        {
+          tag: 'script',
+          attrs: { type: 'application/ld+json' },
+          children: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'React Trace',
+            url: SITE_URL,
+            description:
+              'A development-time React inspector that helps you identify rendered components, resolve their source locations, and run source-aware actions.',
+            author: {
+              '@type': 'Person',
+              name: 'Vitor Buzinas',
+              url: 'https://x.com/vbuzinas',
+            },
+          }),
+        },
+      ],
+    },
     output: {
       sourceMap: true,
     },

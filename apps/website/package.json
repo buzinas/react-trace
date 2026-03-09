@@ -10,13 +10,16 @@
   "devDependencies": {
     "@react-trace/kit": "workspace:^",
     "@rsbuild/plugin-node-polyfill": "^1.4.4",
-    "@rspress/core": "^2.0.0-beta",
+    "@rspress/core": "^2.0.5",
+    "@rspress/plugin-sitemap": "^2.0.5",
     "@tailwindcss/postcss": "^4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "ufo": "^1.6.3"
   }
 }

@@ -4,7 +4,9 @@ import { Link } from '@rspress/core/theme'
 import { SvgWrapper, IconGithub } from '@rspress/core/theme-original'
 import type { ReactNode } from 'react'
 
+import { Video } from '../docs/_components/Video'
 import demoVideo from './videos/react-trace-demo.mp4'
+import demoPoster from './videos/react-trace-demo.webp'
 
 function IconDot({ width, height }: { width: number; height: number }) {
   return (
@@ -39,10 +41,10 @@ function Hero() {
           <span className="text-text-3">$</span>
           <code className="text-text-1">pnpm add -D @react-trace/kit</code>
         </div>
-        <div className="inline-flex flex-col justify-centere mt-4 mb-12">
-          <p className="text-lg text-text-2 max-w-200 leading-relaxed text-balanc text-left">
+        <div className="inline-flex flex-col justify-center mt-4 mb-12">
+          <p className="text-lg text-text-2 max-w-200 leading-relaxed text-balance text-left">
             Identify rendered components, find their source locations, and
-            choose what do
+            choose what to do
           </p>
           <ul className="text-left ml-4 mt-6 flex flex-col gap-3">
             <li className="flex gap-2">
@@ -84,13 +86,7 @@ function Hero() {
           </Link>
         </div>
 
-        <div className="w-full max-w-200 mt-12 rounded-xl overflow-hidden border border-border bg-surface">
-          <div className="aspect-video flex items-center justify-center text-text-3 text-sm">
-            <video autoPlay muted loop>
-              <source src={demoVideo} type="video/mp4" />
-            </video>
-          </div>
-        </div>
+        <Video demoPoster={demoPoster} demoVideo={demoVideo} />
       </div>
     </section>
   )

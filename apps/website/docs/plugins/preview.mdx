@@ -1,23 +1,16 @@
+---
+description: Preview plugin for React Trace — Monaco-based source preview with syntax highlighting, inline editing, and project folder access via the File System Access API.
+---
+
+import { Video } from '../_components/Video'
 import previewDemo from '../../theme/videos/preview-demo.mp4'
+import previewDemoPoster from '../../theme/videos/preview-demo.webp'
 
 # Preview Plugin
 
 `@react-trace/plugin-preview` adds a Monaco-based source preview to the Trace action panel with syntax highlighting, optional inline editing, and project folder access.
 
-<video
-  autoPlay
-  muted
-  loop
-  style={{
-    width: '100%',
-    borderRadius: '0.75rem',
-    border: '1px solid var(--rp-c-divider)',
-    marginTop: '1.5rem',
-    marginBottom: '1.5rem',
-  }}
->
-  <source src={previewDemo} type="video/mp4" />
-</video>
+<Video demoPoster={previewDemoPoster} demoVideo={previewDemo} />
 
 ## Installation
 
