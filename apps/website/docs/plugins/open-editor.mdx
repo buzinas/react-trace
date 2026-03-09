@@ -1,0 +1,88 @@
+import openEditorDemo from '../../theme/videos/open-editor-demo.mp4'
+
+# Open Editor Plugin
+
+`@react-trace/plugin-open-editor` adds an **Open in Editor** action to the Trace action panel and a settings control for choosing the default editor.
+
+<video
+  autoPlay
+  muted
+  loop
+  style={{
+    width: '100%',
+    borderRadius: '0.75rem',
+    border: '1px solid var(--rp-c-divider)',
+    marginTop: '1.5rem',
+    marginBottom: '1.5rem',
+  }}
+>
+  <source src={openEditorDemo} type="video/mp4" />
+</video>
+
+## Installation
+
+```bash
+pnpm add --dev @react-trace/core @react-trace/ui-components @react-trace/plugin-open-editor
+```
+
+If you are already using `@react-trace/kit`, this plugin is included by default.
+
+## Usage
+
+```tsx
+import { Trace } from '@react-trace/core'
+import { OpenEditorPlugin } from '@react-trace/plugin-open-editor'
+
+import App from './App'
+
+export function AppWithTrace() {
+  return (
+    <>
+      <App />
+      <Trace
+        root={import.meta.env.VITE_ROOT}
+        plugins={[OpenEditorPlugin({ editor: 'vscode' })]}
+      />
+    </>
+  )
+}
+```
+
+## Options
+
+```ts
+interface OpenEditorPluginOptions {
+  editor?: EditorPreset
+}
+```
+
+| Option   | Type           | Default    | Description                          |
+| -------- | -------------- | ---------- | ------------------------------------ |
+| `editor` | `EditorPreset` | `'vscode'` | The default editor to open files in. |
+
+If the user changes the editor in the widget settings, that selection takes precedence.
+
+## Supported editors
+
+| Preset     | Editor             |
+| ---------- | ------------------ |
+| `vscode`   | Visual Studio Code |
+| `cursor`   | Cursor             |
+| `windsurf` | Windsurf           |
+| `webstorm` | WebStorm           |
+| `intellij` | IntelliJ IDEA      |
+
+## Behavior
+
+When a source location is selected, the plugin resolves the file path relative to the Trace `root` and opens the generated editor URL with `window.open(...)`.
+
+## Settings
+
+The plugin contributes a settings dropdown inside the widget where users can switch the active editor at runtime.
+
+## API
+
+| Export                       | Type          | Description                               |
+| ---------------------------- | ------------- | ----------------------------------------- |
+| `OpenEditorPlugin(options?)` | `TracePlugin` | Creates the open-editor plugin instance.  |
+| `EditorPreset`               | Type          | Union of supported editor preset strings. |

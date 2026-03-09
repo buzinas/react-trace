@@ -1,0 +1,91 @@
+# UI Components
+
+`@react-trace/ui-components` provides UI primitives for building plugins that match the widget's look and feel.
+
+## Installation
+
+```bash
+pnpm add --dev @react-trace/ui-components
+```
+
+This package is a peer dependency of all official plugins. If you're building a custom plugin, add it alongside `@react-trace/core`.
+
+## Available components
+
+### Action and input primitives
+
+| Component       | Description                             |
+| --------------- | --------------------------------------- |
+| `Button`        | Standard button with `variant` support. |
+| `IconButton`    | Compact icon-only button.               |
+| `ToolbarButton` | Styled for the widget toolbar.          |
+| `Textarea`      | Multi-line text input.                  |
+
+### Layout and helpers
+
+| Component     | Description                                                          |
+| ------------- | -------------------------------------------------------------------- |
+| `PanelHeader` | Header bar for action panels with title and optional action buttons. |
+| `Separator`   | Visual divider.                                                      |
+| `Kbd`         | Keyboard key indicator.                                              |
+| `KbdGroup`    | Groups multiple `Kbd` elements.                                      |
+
+### Overlay and selection primitives
+
+| Component         | Description                                                     |
+| ----------------- | --------------------------------------------------------------- |
+| `Tooltip`         | Hover tooltip, accepts a `container` prop for portal targeting. |
+| `Popover`         | Click-triggered overlay.                                        |
+| `DropdownMenu`    | Menu with items triggered by a button.                          |
+| `Select`          | Dropdown select input.                                          |
+| `Combobox`        | Searchable select input.                                        |
+| `panelPopupStyle` | Shared style object for popup panels.                           |
+
+### Icons
+
+`ChatBubbleIcon`, `ChevronRightIcon`, `ClipboardIcon`, `CollapseIcon`, `ExpandIcon`, `FolderIcon`, `OpencodeIcon`, `OpenInEditorIcon`, `SaveIcon`, `SettingsIcon`, `TrashIcon`, `XIcon`
+
+If you need to add an icon that we currently don't export, consider contributing to the package. Otherwise, use icons from Lucide React (`pnpm add lucide-react`).
+
+### Logo
+
+`Logo` — the React Trace logo component.
+
+## Example
+
+```tsx
+import { useWidgetPortalContainer } from '@react-trace/core'
+import {
+  Button,
+  IconButton,
+  OpenInEditorIcon,
+  PanelHeader,
+  Tooltip,
+} from '@react-trace/ui-components'
+
+export function ExamplePanel() {
+  const portalContainer = useWidgetPortalContainer()
+
+  return (
+    <div>
+      <PanelHeader
+        title="Preview"
+        actionsRender={
+          <Tooltip label="Open in editor" container={portalContainer}>
+            <IconButton aria-label="Open in editor">
+              <OpenInEditorIcon size={14} />
+            </IconButton>
+          </Tooltip>
+        }
+      />
+      <Button variant="secondary">Refresh</Button>
+    </div>
+  )
+}
+```
+
+## Guidelines
+
+- **Prefer these primitives** over package-local replacements when you need standard buttons, headers, menus, selects, or text inputs.
+- **Keep styling inline.** These components are designed to be extended with `style` props, consistent with the inline-style approach used throughout the repo.
+- **Use the widget portal.** For portal-based UI inside the Trace widget, render into the container returned by `useWidgetPortalContainer()` instead of `document.body`.

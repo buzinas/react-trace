@@ -1,0 +1,45 @@
+# Production Stubs
+
+React Trace is a development-only tool. Every package ships **conditional exports** that resolve to zero-cost no-op stubs in production builds.
+
+## How it works
+
+Each package's `package.json` uses the `exports` field with `development`, `production`, and `default` conditions:
+
+```json
+{
+  "exports": {
+    ".": {
+      "development": "./dist/index.js",
+      "production": "./dist/index.prod.js",
+      "default": "./dist/index.js"
+    }
+  }
+}
+```
+
+- **Development** — full inspector implementation
+- **Production** — all exports are no-ops (empty components, identity functions, constant values)
+- **Default** — falls back to the full implementation for tools that don't resolve conditions
+
+## What gets stubbed
+
+In production mode:
+
+- The `Trace` component renders `null`
+- All hooks return static defaults (`null`, `false`, empty functions)
+- All plugin factories return inert `TracePlugin` objects
+- All utilities become identity functions or constants
+
+The result is **zero runtime overhead** — no inspector UI, no event listeners, no source-map resolution. Tree-shaking removes the dead code entirely.
+
+## Adding stubs to new packages
+
+When adding a new public export to any `@react-trace/*` package, you must mirror it in `src/index.prod.ts`:
+
+- **Components** — export a function returning `null`
+- **Hooks** — export a function returning the appropriate default
+- **Types** — re-export with `export type`
+- **Constants** — export the same constant value
+
+This ensures production builds never pull in the development implementation.

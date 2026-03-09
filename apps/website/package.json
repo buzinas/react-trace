@@ -1,0 +1,22 @@
+{
+  "name": "website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "ROOT=$(pwd) rspress dev",
+    "build": "rspress build",
+    "preview": "rspress preview"
+  },
+  "devDependencies": {
+    "@react-trace/kit": "workspace:^",
+    "@rsbuild/plugin-node-polyfill": "^1.4.4",
+    "@rspress/core": "^2.0.0-beta",
+    "@tailwindcss/postcss": "^4",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

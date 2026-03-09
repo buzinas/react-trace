@@ -1,0 +1,33 @@
+import { Hotkey } from '../_components/Hotkey'
+
+# Introduction
+
+React Trace is a development-time React inspector that helps you identify rendered components, resolve their source locations, and run source-aware actions such as previewing and editing code, adding comments to send to your AI agent, copying paths, and opening files in your editor.
+
+## How it works
+
+When mounted alongside your app, React Trace adds a small floating toolbar to your page. Activating inspector mode (click the toolbar or long-press <Hotkey />) lets you hover over any element to see:
+
+- The React **component name** that rendered it
+- The full **component tree breadcrumb** from the nearest React component down to the hovered DOM element
+- The component's **props**
+- The exact **source file and line number** via source maps
+
+Clicking an element opens the **action panel** where plugins provide contextual actions — preview the source, copy the path, open it in your editor, or add a review comment.
+
+## Two installation paths
+
+**Recommended:** Use [`@react-trace/kit`](/guide/installation#recommended-react-tracekit) for the standard setup with all official plugins pre-wired.
+
+**Alternative:** Use [`@react-trace/core`](/guide/installation#alternative-react-tracecore-and-specific-plugins) with individual `@react-trace/plugin-*` packages when you want explicit control over the plugin list.
+
+## Zero production cost
+
+Every package ships conditional exports with a production stub. In production builds, all exports resolve to no-ops — the inspector adds zero runtime overhead to your production bundle. See [Production Stubs](/guide/production-stubs) for details.
+
+## Next steps
+
+- [Installation](/guide/installation) — get the inspector running in your project
+- [Configuration](/guide/configuration) — customize position, plugins, and editor
+- [Plugins](/plugins/) — explore the official plugin suite
+- [Creating Plugins](/extending/plugin-api) — build your own plugins

@@ -1,0 +1,82 @@
+import commentsDemo from '../../theme/videos/comments-demo.mp4'
+
+# Comments Plugin
+
+`@react-trace/plugin-comments` adds lightweight review comments to the Trace widget. Collect comments anchored to specific components, then copy them to the clipboard or send them directly to OpenCode.
+
+<video
+  autoPlay
+  muted
+  loop
+  style={{
+    width: '100%',
+    borderRadius: '0.75rem',
+    border: '1px solid var(--rp-c-divider)',
+    marginTop: '1.5rem',
+    marginBottom: '1.5rem',
+  }}
+>
+  <source src={commentsDemo} type="video/mp4" />
+</video>
+
+## Installation
+
+```bash
+pnpm add --dev @react-trace/core @react-trace/ui-components @react-trace/plugin-comments
+```
+
+If you are already using `@react-trace/kit`, this plugin is included by default.
+
+## Usage
+
+```tsx
+import { Trace } from '@react-trace/core'
+import { CommentsPlugin } from '@react-trace/plugin-comments'
+
+import App from './App'
+
+export function AppWithTrace() {
+  return (
+    <>
+      <App />
+      <Trace root={import.meta.env.VITE_ROOT} plugins={[CommentsPlugin()]} />
+    </>
+  )
+}
+```
+
+## What it adds
+
+### Toolbar
+
+A **Comments** button with a live count badge. Opening it shows a menu of collected comments where you can:
+
+- Review comments grouped as `file:line` entries
+- Click a comment to edit its text
+- Remove individual comments
+- Copy all comments to the clipboard
+- Clear the full comment list
+- Open the **Send to OpenCode** flow
+
+#### OpenCode integration
+
+Users can choose an existing session or create a new one, optionally add a general message, and send comments plus related file references to a locally running OpenCode instance.
+
+If OpenCode is not available, the send form shows a connection error.
+
+### Action panel
+
+When the inspector has an active selection, the plugin adds an **Add comment** action, which:
+
+1. Resolves the selected source location
+2. Opens a small editor anchored to the selected element
+3. Records the comment against the resolved relative file path and line number
+
+The inline editor supports `Enter` to submit and `Escape` to cancel.
+
+## API
+
+| Export             | Type          | Description                           |
+| ------------------ | ------------- | ------------------------------------- |
+| `CommentsPlugin()` | `TracePlugin` | Creates the comments plugin instance. |
+| `CommentEntry`     | Type          | Shape of a single comment entry.      |

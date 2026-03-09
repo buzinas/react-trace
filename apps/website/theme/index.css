@@ -1,0 +1,63 @@
+/* Brand color (applies to both modes) */
+:root {
+  --rp-c-brand: #3b82f6;
+  --rp-c-brand-light: #60a5fa;
+  --rp-c-brand-dark: #2563eb;
+  --rp-home-hero-secondary-color: #60a5fa;
+}
+
+/* Dark mode overrides — rspress uses .dark class on html */
+html.dark {
+  --rp-c-bg-default: #09090b;
+  --rp-c-bg-soft: #18181b;
+  --rp-c-bg-mute: #27272a;
+  --rp-c-bg-sidebar: #09090b;
+  --rp-c-divider: #27272a;
+  --rp-c-text-1: #fafafa;
+  --rp-c-text-2: #d4d4d8;
+  --rp-c-text-3: #71717a;
+  --rp-c-text-4: #52525b;
+  --rp-c-gray-light-1: #3f3f46;
+  --rp-c-gray-light-2: #27272a;
+  --rp-c-gray-light-3: #18181b;
+  --rp-c-gray-light-4: #09090b;
+}
+
+/* Home page background — blue instead of default purple */
+html:not(.dark) {
+  --rp-home-background-bg:
+    radial-gradient(
+      42.12% 56.13% at 100% 0%,
+      rgba(59, 130, 246, 0.1) 0%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    radial-gradient(
+      42.01% 79.63% at 52.86% 0%,
+      rgba(59, 130, 246, 0.2) 0%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(59, 130, 246, 0.06) 0%,
+      rgba(255, 255, 255, 0) 30%
+    ),
+    #fff;
+}
+
+html.dark {
+  --rp-home-background-bg:
+    radial-gradient(42.12% 56.13% at 100% 0%, #0c1d48 0%, #12121200 100%),
+    radial-gradient(55.81% 87.78% at 48.37% 0%, #000 0%, #12121200 89.55%),
+    radial-gradient(122.65% 88.24% at 0% 0%, #0c2461 0%, #12121200 100%),
+    #121212;
+}
+
+/* Transparent nav on home page so gradient shows through */
+.rp-home .rp-nav {
+  background: transparent !important;
+  backdrop-filter: none !important;
+}
+
+.rspress-logo {
+  height: 1.75rem !important;
+}

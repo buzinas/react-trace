@@ -1,0 +1,90 @@
+# Installation
+
+## Recommended: `@react-trace/kit`
+
+Use the `@react-trace/kit` package when you want the standard inspector setup with all official plugins already wired for you.
+
+```bash
+pnpm add --dev @react-trace/kit
+```
+
+Peer requirements: `react >= 18` and `react-dom >= 18`.
+
+### Setup
+
+**1. Export the project root in your dev script:**
+
+```diff
+-    "dev": "vite"
++    "dev": "VITE_ROOT=$(pwd) vite",
+```
+
+**2. Mount the Trace component next to your app:**
+
+```tsx
+import Trace from '@react-trace/kit'
+
+import App from './App'
+
+export function Root() {
+  return (
+    <>
+      <App />
+      <Trace root={import.meta.env.VITE_ROOT} />
+    </>
+  )
+}
+```
+
+`root` should be the absolute path to the project being inspected. Exporting `VITE_ROOT=$(pwd)` in your dev script is the standard approach for Vite projects.
+
+:::tip
+That's it — start your dev server and click the floating toolbar to begin inspecting.
+:::
+
+## Alternative: `@react-trace/core` and specific plugins
+
+Use `@react-trace/core` when you want to choose plugins yourself.
+
+```bash
+pnpm add --dev @react-trace/core @react-trace/ui-components \
+  @react-trace/plugin-preview \
+  @react-trace/plugin-copy-to-clipboard \
+  @react-trace/plugin-open-editor \
+  @react-trace/plugin-comments
+```
+
+```tsx
+import { Trace } from '@react-trace/core'
+import { CommentsPlugin } from '@react-trace/plugin-comments'
+import { CopyToClipboardPlugin } from '@react-trace/plugin-copy-to-clipboard'
+import { OpenEditorPlugin } from '@react-trace/plugin-open-editor'
+import { PreviewPlugin } from '@react-trace/plugin-preview'
+
+import App from './App'
+
+export function Root() {
+  return (
+    <>
+      <App />
+      <Trace
+        root={import.meta.env.VITE_ROOT}
+        plugins={[
+          PreviewPlugin(),
+          CopyToClipboardPlugin(),
+          OpenEditorPlugin(),
+          CommentsPlugin(),
+        ]}
+      />
+    </>
+  )
+}
+```
+
+## Which to choose?
+
+|          | `@react-trace/kit`                                     | `@react-trace/core`             |
+| -------- | ------------------------------------------------------ | ------------------------------- |
+| Plugins  | All 4 official plugins pre-wired                       | You choose which to include     |
+| Config   | Props for common options (`editor`, `editingDisabled`) | Full control via plugin options |
+| Best for | Getting started quickly                                | Custom plugin setups            |

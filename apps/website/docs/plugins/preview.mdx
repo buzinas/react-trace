@@ -1,0 +1,92 @@
+import previewDemo from '../../theme/videos/preview-demo.mp4'
+
+# Preview Plugin
+
+`@react-trace/plugin-preview` adds a Monaco-based source preview to the Trace action panel with syntax highlighting, optional inline editing, and project folder access.
+
+<video
+  autoPlay
+  muted
+  loop
+  style={{
+    width: '100%',
+    borderRadius: '0.75rem',
+    border: '1px solid var(--rp-c-divider)',
+    marginTop: '1.5rem',
+    marginBottom: '1.5rem',
+  }}
+>
+  <source src={previewDemo} type="video/mp4" />
+</video>
+
+## Installation
+
+```bash
+pnpm add --dev @react-trace/core @react-trace/ui-components @react-trace/plugin-preview
+```
+
+If you are already using `@react-trace/kit`, this plugin is included by default.
+
+## Usage
+
+```tsx
+import { Trace } from '@react-trace/core'
+import { PreviewPlugin } from '@react-trace/plugin-preview'
+
+import App from './App'
+
+export function AppWithTrace() {
+  return (
+    <>
+      <App />
+      <Trace
+        root={import.meta.env.VITE_ROOT}
+        plugins={[PreviewPlugin({ theme: 'one-dark-pro' })]}
+      />
+    </>
+  )
+}
+```
+
+## What it adds
+
+- A **toolbar button** for project-folder access
+- An **action-panel** source preview for the currently selected component source
+- An inline **Monaco editor** with syntax highlighting
+- Optional **save and expand** controls when editing is enabled
+- A **settings UI** for defining the preview theme and editing mode
+
+## Folder access
+
+The preview plugin reads files through the browser's File System Access API, so users must grant folder access before the preview can load file contents.
+
+- Pass the absolute project root to `<Trace root="..." />`
+- When prompted, select the same project folder that contains the source files Trace resolves
+- The plugin copies the root path to the clipboard to make the folder picker easier
+- Until access is granted, the toolbar button and action panel show the access flow
+- When editing is enabled, saves are written back through the same file-system access
+
+To disable editing entirely, use `disabled: true`.
+
+## Options
+
+```ts
+interface PreviewPluginOptions {
+  disabled?: boolean
+  theme?: BundledTheme
+}
+```
+
+| Option     | Type           | Default          | Description                                         |
+| ---------- | -------------- | ---------------- | --------------------------------------------------- |
+| `disabled` | `boolean`      | `false`          | Starts in read-only mode, hides editing controls.   |
+| `theme`    | `BundledTheme` | `'one-dark-pro'` | Any bundled Shiki theme ID for syntax highlighting. |
+
+## Settings
+
+The plugin contributes a settings panel where users can:
+
+- Toggle code editing on or off
+- Switch the preview theme
+
+These controls adjust behavior at runtime without changing plugin registration code.

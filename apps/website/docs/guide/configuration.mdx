@@ -1,0 +1,90 @@
+# Configuration
+
+## `@react-trace/kit` props
+
+When using the batteries-included `@react-trace/kit`, the default export accepts these props:
+
+| Prop              | Type                                                           | Default          | Description                                                                  |
+| ----------------- | -------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------- |
+| `root`            | `string`                                                       | —                | **Required.** Absolute path to the project root.                             |
+| `position`        | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | Where the floating toolbar is placed on screen.                              |
+| `editingDisabled` | `boolean`                                                      | `false`          | Disables inline editing in the preview panel and hides save/expand controls. |
+| `editor`          | `EditorPreset`                                                 | `'vscode'`       | Default editor for the "Open in Editor" action.                              |
+| `plugins`         | `TracePlugin[]`                                                | `[]`             | Additional plugin instances, appended after the 4 built-in plugins.          |
+
+### Editor presets
+
+`EditorPreset` supports these values:
+
+- `vscode`
+- `cursor`
+- `windsurf`
+- `webstorm`
+- `intellij`
+
+### Example
+
+```tsx
+import Trace from '@react-trace/kit'
+
+import App from './App'
+
+export function AppWithTrace() {
+  return (
+    <>
+      <App />
+      <Trace
+        root={import.meta.env.VITE_ROOT}
+        position="bottom-left"
+        editor="cursor"
+        editingDisabled={false}
+      />
+    </>
+  )
+}
+```
+
+## `@react-trace/core` props
+
+When using `@react-trace/core` directly, the `Trace` component accepts:
+
+| Prop       | Type                                                           | Default          | Description                                      |
+| ---------- | -------------------------------------------------------------- | ---------------- | ------------------------------------------------ |
+| `root`     | `string`                                                       | —                | **Required.** Absolute path to the project root. |
+| `plugins`  | `TracePlugin[]`                                                | `[]`             | Plugin instances to mount.                       |
+| `position` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | Where the floating toolbar is placed on screen.  |
+
+### Example
+
+```tsx
+import { Trace } from '@react-trace/core'
+import { PreviewPlugin } from '@react-trace/plugin-preview'
+import { OpenEditorPlugin } from '@react-trace/plugin-open-editor'
+
+import App from './App'
+
+export function AppWithTrace() {
+  return (
+    <>
+      <App />
+      <Trace
+        root={import.meta.env.VITE_ROOT}
+        plugins={[
+          PreviewPlugin({ theme: 'one-dark-pro' }),
+          OpenEditorPlugin({ editor: 'cursor' }),
+        ]}
+      />
+    </>
+  )
+}
+```
+
+## The `root` prop
+
+The `root` prop tells the inspector the absolute path to your project so it can:
+
+- Resolve source-map locations to real file paths
+- Display project-relative paths in the UI
+- Enable plugins to read and write files
+
+For Vite projects, the standard approach is exporting `VITE_ROOT=$(pwd)` in your dev script and passing `import.meta.env.VITE_ROOT` as the prop value.

@@ -1,0 +1,59 @@
+import copyToClipboardDemo from '../../theme/videos/copy-to-clipboard-demo.mp4'
+
+# Copy to Clipboard Plugin
+
+`@react-trace/plugin-copy-to-clipboard` adds a **Copy path** action to the Trace action panel for copying the file:line of the seleced component.
+
+<video
+  autoPlay
+  muted
+  loop
+  style={{
+    width: '100%',
+    borderRadius: '0.75rem',
+    border: '1px solid var(--rp-c-divider)',
+    marginTop: '1.5rem',
+    marginBottom: '1.5rem',
+  }}
+>
+  <source src={copyToClipboardDemo} type="video/mp4" />
+</video>
+
+## Installation
+
+```bash
+pnpm add --dev @react-trace/core @react-trace/ui-components @react-trace/plugin-copy-to-clipboard
+```
+
+If you are already using `@react-trace/kit`, this plugin is included by default.
+
+## Usage
+
+```tsx
+import { Trace } from '@react-trace/core'
+import { CopyToClipboardPlugin } from '@react-trace/plugin-copy-to-clipboard'
+
+import App from './App'
+
+export function AppWithTrace() {
+  return (
+    <>
+      <App />
+      <Trace
+        root={import.meta.env.VITE_ROOT}
+        plugins={[CopyToClipboardPlugin()]}
+      />
+    </>
+  )
+}
+```
+
+## Copied output
+
+When triggered, the plugin copies a project-relative `path:lineNumber` reference to the clipboard:
+
+```
+src/components/Button.tsx:42
+```
+
+This format works with most editors and tools that support `file:line` navigation.

@@ -1,0 +1,161 @@
+# Creating Plugins
+
+Extend React Trace by building your own plugins. A plugin is a `TracePlugin` object with a `name` and optional React components for the widget's `toolbar`, `actionPanel`, and `settings` slots.
+
+## Scaffolding
+
+The fastest way to start is with the scaffolding CLI:
+
+```bash
+pnpm create react-trace-plugin
+```
+
+This generates a complete plugin package with build config, production stubs, and optional toolbar/action-panel/settings scaffolding. The CLI prompts for a plugin name, description, and which slots to scaffold.
+
+## The `TracePlugin` interface
+
+```ts
+interface TracePlugin {
+  name: string
+  /** Component rendered inside the widget toolbar. */
+  toolbar?: ComponentType
+  /** Component rendered inside the action panel when a context is selected. */
+  actionPanel?: ComponentType
+  /** Component rendered inside the settings dropdown. */
+  settings?: ComponentType
+}
+```
+
+### Slots
+
+- **`toolbar`** — renders directly inside the core toolbar. Use this for persistent controls like toggle buttons or status badges.
+- **`actionPanel`** — renders inside the selected-component action menu. Use this for actions that operate on the currently inspected element.
+- **`settings`** — renders inside the widget settings popover. Use this for plugin configuration UI.
+
+Plugin components receive **no props**. Read shared state through the hooks below.
+
+## Minimal example
+
+```tsx
+import { Trace, useSelectedContext, type TracePlugin } from '@react-trace/core'
+
+function SelectionInfo() {
+  const context = useSelectedContext()
+  return context ? <button type="button">{context.displayName}</button> : null
+}
+
+const myPlugin: TracePlugin = {
+  name: 'My Plugin',
+  toolbar: SelectionInfo,
+}
+
+export function App() {
+  return <Trace root="/path/to/project" plugins={[myPlugin]} />
+}
+```
+
+## Hooks
+
+All hooks are exported from `@react-trace/core`.
+
+### `useProjectRoot()`
+
+Returns the current project root string passed to `<Trace root="..." />`.
+
+### `useInspectorActive()`
+
+Returns `true` when inspector mode is currently active (the user is hovering to select elements).
+
+### `useDeactivateInspector()`
+
+Returns a callback that turns inspector mode off. Call this before opening plugin-owned interactive UI (like a modal or form) to prevent the inspector from capturing clicks.
+
+### `useSelectedContext()`
+
+Returns the currently selected `ComponentContext | null`. This is the primary hook for reading what the user has inspected.
+
+```ts
+interface ComponentContext {
+  element: HTMLElement
+  displayName: string
+  /** e.g. ['Card', 'p', 'code'] */
+  breadcrumb: string[]
+  all: Array<{ source: ComponentSource | null; names: string[] }>
+  props: Record<string, unknown>
+}
+```
+
+### `useClearSelectedContext()`
+
+Returns a callback that clears the current selection. Use this when a plugin flow should dismiss the current inspection.
+
+### `useSelectedSource()`
+
+Returns the currently selected `ComponentSource | null`. This is a convenience for accessing just the source location.
+
+```ts
+interface ComponentSource {
+  fileName: string
+  lineNumber: number
+  columnNumber: number
+}
+```
+
+### `useWidgetPortalContainer()`
+
+Returns the widget portal container element. Use this for popovers, dropdowns, tooltips, and other portal-mounted UI so they render inside the widget shell instead of `document.body`.
+
+```tsx
+import { useWidgetPortalContainer } from '@react-trace/core'
+import { Tooltip } from '@react-trace/ui-components'
+
+function MyToolbarButton() {
+  const portalContainer = useWidgetPortalContainer()
+  return (
+    <Tooltip label="My action" container={portalContainer}>
+      <button type="button">Click me</button>
+    </Tooltip>
+  )
+}
+```
+
+## Utilities and constants
+
+| Export                            | Description                                                            |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| `resolveSource(source)`           | Resolves URL-based source locations to original source-map positions.  |
+| `toAbsolutePath(fileName, root?)` | Converts a source filename or Vite URL to an absolute filesystem path. |
+| `toRelativePath(fileName, root?)` | Converts a source filename or Vite URL to a project-relative path.     |
+| `settingsPluginAtom(pluginKey)`   | Returns a writable Jotai atom for a section of `TraceSettings`.        |
+| `IS_MAC`                          | `true` on macOS/iOS user agents.                                       |
+| `MOD_KEY`                         | Platform-specific modifier key label (`⌘` on Mac, `Ctrl` elsewhere).   |
+
+## Types
+
+All types are exported from `@react-trace/core`:
+
+| Type               | Description                                                                         |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| `ComponentContext` | Full context of an inspected component (element, name, breadcrumb, props, sources). |
+| `ComponentSource`  | Source file location (fileName, lineNumber, columnNumber).                          |
+| `TracePlugin`      | The plugin contract (name + optional toolbar/actionPanel/settings components).      |
+| `TraceProps`       | Props accepted by the `Trace` component.                                            |
+| `TraceSettings`    | Shape of the widget settings state.                                                 |
+
+## Production stubs
+
+When adding a new public export to your plugin, mirror it in `src/index.prod.ts`:
+
+- **Components** — export a function returning `null`
+- **Hooks** — export a function returning the appropriate default
+- **Types** — re-export with `export type`
+- **Plugin factories** — export a function returning `{ name: '...' }`
+
+This ensures production builds never pull in the development implementation. See [Production Stubs](/guide/production-stubs) for more details.
+
+## Tips
+
+- Use `useWidgetPortalContainer()` for all portal UI so it stays inside the widget shell.
+- Call `useDeactivateInspector()` before opening interactive plugin UI to prevent click conflicts.
+- Use `@react-trace/ui-components` for [UI primitives](/extending/ui-components) that match the widget's look and feel.
+- Keep styling inline with `style` props — the widget uses inline styles exclusively, no CSS classes.
