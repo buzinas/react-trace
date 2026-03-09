@@ -1,6 +1,6 @@
 {
   "name": "@react-trace/plugin-preview",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "react-trace plugin: Monaco-powered source code preview for inspected components",
   "keywords": [
     "react-trace",

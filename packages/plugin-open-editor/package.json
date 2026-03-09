@@ -1,6 +1,6 @@
 {
   "name": "@react-trace/plugin-open-editor",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "react-trace plugin: open inspected component source in your code editor",
   "keywords": [
     "react-trace",

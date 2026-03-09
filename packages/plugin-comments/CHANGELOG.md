@@ -1,5 +1,12 @@
 # @react-trace/plugin-comments
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [7e2c9dc]
+  - @react-trace/core@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes
