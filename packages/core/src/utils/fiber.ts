@@ -343,10 +343,11 @@ export async function getComponentContext(
     }
   })
 
-  // remove files without a source
+  // remove files without a source and deduplicate same files
   const files = all.reduce<typeof all>((acc, part) => {
     if (!part.source) return acc
-    acc.push(part)
+    const file = part.source.fileName
+    if (!acc.some((p) => p.source?.fileName === file)) acc.push(part)
     return acc
   }, [])
 
