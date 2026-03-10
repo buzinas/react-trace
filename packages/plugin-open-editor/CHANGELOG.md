@@ -1,5 +1,11 @@
 # @react-trace/plugin-open-editor
 
+## 0.0.5
+
+### Patch Changes
+
+- 3264788: Add Zed support for open-editor plugin
+
 ## 0.0.4
 
 ### Patch Changes
