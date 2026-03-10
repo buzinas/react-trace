@@ -4,5 +4,8 @@
   "singleQuote": true,
   "semi": false,
   "sortImports": {},
-  "ignorePatterns": []
+  "ignorePatterns": [
+    ".changeset",
+    "apps/website/docs/public/google8a4eb9eb5a234514.html"
+  ]
 }
