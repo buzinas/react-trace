@@ -1,5 +1,12 @@
 # @react-trace/plugin-copy-to-clipboard
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [47feb9f]
+  - @react-trace/core@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes
