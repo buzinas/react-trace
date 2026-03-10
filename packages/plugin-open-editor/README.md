@@ -62,6 +62,7 @@ These are the currently implemented presets:
 - `vscode`
 - `cursor`
 - `windsurf`
+- `zed`
 - `webstorm`
 - `intellij`
 

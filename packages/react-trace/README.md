@@ -60,6 +60,7 @@ The default export supports the following props today:
 - `vscode`
 - `cursor`
 - `windsurf`
+- `zed`
 - `webstorm`
 - `intellij`
 

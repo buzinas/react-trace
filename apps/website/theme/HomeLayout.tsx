@@ -239,7 +239,7 @@ const plugins = [
     name: 'Open Editor',
     pkg: '@react-trace/plugin-open-editor',
     description:
-      'Open the selected source in VS Code, Cursor, Windsurf, WebStorm, or IntelliJ.',
+      'Open the selected source in VS Code, Cursor, Windsurf, Zed, WebStorm, or IntelliJ.',
   },
 ]
 
