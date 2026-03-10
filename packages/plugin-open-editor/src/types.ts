@@ -4,3 +4,4 @@ export type EditorPreset =
   | 'windsurf'
   | 'webstorm'
   | 'intellij'
+  | 'zed'

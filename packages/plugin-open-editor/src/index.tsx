@@ -29,6 +29,7 @@ const EDITOR_LABELS: Record<EditorPreset, string> = {
   vscode: 'VS Code',
   cursor: 'Cursor',
   windsurf: 'Windsurf',
+  zed: 'Zed',
   webstorm: 'WebStorm',
   intellij: 'IntelliJ',
 }
@@ -62,7 +63,7 @@ function buildEditorUrl(
   if (editor === 'intellij') {
     return `idea://open?file=${encodeURIComponent(path)}&line=${line}`
   }
-  // VS Code family: vscode, cursor, windsurf — identical format, different protocol
+  // VS Code family + Zed: vscode, cursor, windsurf, zed — identical format, different protocol
   return `${editor}://file/${path}:${line}:${col}`
 }
 
