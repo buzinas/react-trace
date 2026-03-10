@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "ROOT=$(pwd) rspress dev",
-    "build": "rspress build",
+    "dev": "FONTCONFIG_PATH=$(pwd)/fonts ROOT=$(pwd) rspress dev",
+    "build": "FONTCONFIG_PATH=$(pwd)/fonts rspress build",
     "preview": "rspress preview"
   },
   "devDependencies": {
