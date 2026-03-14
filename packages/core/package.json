@@ -1,6 +1,6 @@
 {
   "name": "@react-trace/core",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Core runtime for react-trace: inspector overlay, plugin API, and shared hooks",
   "keywords": [
     "react-find",
