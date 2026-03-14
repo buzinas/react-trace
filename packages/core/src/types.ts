@@ -44,11 +44,12 @@ export interface TraceProps {
   root: string
   plugins?: TracePlugin[]
   position?: WidgetPosition
+  minimized?: boolean
 }
 
 export interface TraceSettings {
   core: {
     position: WidgetPosition
-    minimized?: boolean
+    minimized: boolean
   }
 }

@@ -21,11 +21,14 @@ export function Trace({
   root,
   plugins = [],
   position = 'bottom-right',
+  minimized = false,
 }: TraceProps) {
   const [jotaiStore] = useState(() => {
     const store = createWidgetStore()
     store.set(projectRootAtom, root)
-    store.set(coreSettingsAtom, { position })
+    if (!store.get(coreSettingsAtom)) {
+      store.set(coreSettingsAtom, { position, minimized })
+    }
     return store
   })
 

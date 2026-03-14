@@ -63,6 +63,7 @@ export function Root() {
 - `root: string` — absolute project root path
 - `plugins?: TracePlugin[]` — plugin instances to mount
 - `position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'` — initial toolbar position
+- `minimized?: boolean` — whether the widget starts minimized by default
 
 ## Plugin model
 

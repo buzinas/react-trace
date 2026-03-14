@@ -23,7 +23,7 @@ export const projectRootAtom = atom<string>('')
 const settingsAtom = atomFamily((root: string) =>
   atomWithStorage<TraceSettings>(
     `react-trace:settings:${root}`,
-    { core: { position: 'bottom-right' } },
+    { core: { position: 'bottom-right', minimized: false } },
     createJSONStorage<TraceSettings>(() => localStorage),
     { getOnInit: typeof window !== 'undefined' },
   ),

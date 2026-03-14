@@ -52,6 +52,7 @@ The default export supports the following props today:
 | ----------------- | -------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------ |
 | `root`            | `string`                                                       | —                | Required absolute path to the project root.                                          |
 | `position`        | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | Controls where the Trace widget is placed on screen.                                 |
+| `minimized`       | `boolean`                                                      | `false`          | Controls whether the widget starts minimized or not.                                 |
 | `editingDisabled` | `boolean`                                                      | `false`          | Disables inline editing in the preview panel and hides the Save and expand controls. |
 | `editor`          | `EditorPreset`                                                 | `'vscode'`       | Sets the default editor used by the Open in Editor action.                           |
 
@@ -87,8 +88,9 @@ export function Root() {
       <Trace
         root={import.meta.env.VITE_ROOT}
         position="bottom-left"
+        minimized
         editor="cursor"
-        editingDisabled={false}
+        editingDisabled
       />
     </>
   )
