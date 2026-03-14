@@ -1,5 +1,12 @@
 # @react-trace/plugin-open-editor
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [65f51aa]
+  - @react-trace/core@0.0.6
+
 ## 0.0.6
 
 ### Patch Changes

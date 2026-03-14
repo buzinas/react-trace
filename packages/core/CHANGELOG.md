@@ -1,5 +1,11 @@
 # @react-trace/core
 
+## 0.0.6
+
+### Patch Changes
+
+- 65f51aa: Ensure minimizer is correctly persisted
+
 ## 0.0.5
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @react-trace/kit
 
+## 0.0.7
+
+### Patch Changes
+
+- 65f51aa: Ensure minimizer is correctly persisted
+- Updated dependencies [65f51aa]
+  - @react-trace/core@0.0.6
+  - @react-trace/plugin-comments@0.0.6
+  - @react-trace/plugin-copy-to-clipboard@0.0.6
+  - @react-trace/plugin-open-editor@0.0.7
+  - @react-trace/plugin-preview@0.0.6
+
 ## 0.0.6
 
 ### Patch Changes
