@@ -1,6 +1,8 @@
 import { IS_MAC } from '@react-trace/core'
 import { Button, FolderIcon, Kbd, KbdGroup } from '@react-trace/ui-components'
 
+import { getFileSystemSupport } from './fs'
+
 export function FolderAccessPrompt({
   root,
   onGrant,
@@ -10,6 +12,15 @@ export function FolderAccessPrompt({
   onGrant(): void
   onCancel(): void
 }) {
+  const support = getFileSystemSupport()
+
+  // When the File System Access API isn't available, "Grant access" would
+  // silently do nothing (the native folder picker never opens). Explain why
+  // and how to fix it instead — this is what WSL users hit (issue #8).
+  if (!support.supported) {
+    return <UnsupportedPrompt reason={support.reason} onCancel={onCancel} />
+  }
+
   return (
     <div
       style={{
@@ -75,6 +86,67 @@ export function FolderAccessPrompt({
           Grant access
         </Button>
       </div>
+    </div>
+  )
+}
+
+function UnsupportedPrompt({
+  reason,
+  onCancel,
+}: {
+  reason: 'insecure-context' | 'unsupported-browser'
+  onCancel(): void
+}) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 12,
+        padding: '20px 16px',
+        height: '100%',
+        boxSizing: 'border-box',
+        textAlign: 'center',
+        fontFamily: 'system-ui, sans-serif',
+      }}
+    >
+      <span style={{ color: '#52525b' }}>
+        <FolderIcon />
+      </span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <span style={{ fontSize: 13, fontWeight: 600, color: '#fafafa' }}>
+          Folder access unavailable
+        </span>
+        <span style={{ fontSize: 12, color: '#71717a', lineHeight: 1.5 }}>
+          {reason === 'insecure-context' ? (
+            <span style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <span>
+                Source preview needs a secure context. Open the app from{' '}
+                <span
+                  style={{
+                    fontFamily: 'ui-monospace, monospace',
+                    color: '#3b82f6',
+                  }}
+                >
+                  http://localhost
+                </span>{' '}
+                (or HTTPS) rather than an IP address.
+              </span>
+              <span>
+                In WSL, reach the dev server via localhost instead of the VM's
+                IP.
+              </span>
+            </span>
+          ) : (
+            "Your browser doesn't support the File System Access API. Use a Chromium-based browser such as Chrome or Edge."
+          )}
+        </span>
+      </div>
+      <Button variant="secondary" onClick={onCancel}>
+        Close
+      </Button>
     </div>
   )
 }
