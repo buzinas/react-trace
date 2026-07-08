@@ -37,6 +37,9 @@
       "esbuild",
       "sharp",
       "core-js"
-    ]
+    ],
+    "overrides": {
+      "dompurify@3.2.7": "^3.4.11"
+    }
   }
 }
