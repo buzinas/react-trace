@@ -1,5 +1,14 @@
 # @react-trace/kit
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [eaaa374]
+- Updated dependencies [9c8efa9]
+  - @react-trace/plugin-comments@0.0.7
+  - @react-trace/plugin-preview@0.0.7
+
 ## 0.0.7
 
 ### Patch Changes
