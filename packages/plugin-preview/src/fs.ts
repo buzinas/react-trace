@@ -31,6 +31,34 @@ export interface FileSystemService {
   write(relativePath: string, content: string): Promise<void>
 }
 
+/**
+ * Why the File System Access API can't be used, when it can't:
+ * - `insecure-context`: `showDirectoryPicker` is only exposed in secure
+ *   contexts (localhost or HTTPS). This is the common WSL case, where the dev
+ *   server is reached via the VM's IP address (e.g. http://172.x.x.x:3000)
+ *   rather than http://localhost — see issue #8.
+ * - `unsupported-browser`: a non-Chromium browser (Firefox, Safari) that
+ *   doesn't implement the File System Access API at all.
+ */
+export type FileSystemSupport =
+  | { supported: true }
+  | { supported: false; reason: 'insecure-context' | 'unsupported-browser' }
+
+export function getFileSystemSupport(): FileSystemSupport {
+  if (typeof window === 'undefined')
+    return { supported: false, reason: 'unsupported-browser' }
+  // Read before the `in` check below: lib.dom types `showDirectoryPicker` as
+  // always-present, so that narrowing collapses `window` to `never` and any
+  // later `window.*` access stops type-checking.
+  const secureContext = window.isSecureContext
+  if ('showDirectoryPicker' in window) return { supported: true }
+  // The API is missing. In an insecure context it's stripped from `window`
+  // even on Chromium, so treat that as the more actionable reason.
+  if (!secureContext)
+    return { supported: false, reason: 'insecure-context' }
+  return { supported: false, reason: 'unsupported-browser' }
+}
+
 const IDB_NAME = 'react-trace'
 const IDB_STORE = 'handles'
 const IDB_KEY = 'root-directory'
@@ -103,7 +131,7 @@ class FileSystemServiceImpl implements FileSystemService {
   private _listeners = new Set<() => void>()
 
   get isSupported(): boolean {
-    return typeof window !== 'undefined' && 'showDirectoryPicker' in window
+    return getFileSystemSupport().supported
   }
 
   get hasAccess(): boolean {
