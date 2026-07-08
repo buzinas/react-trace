@@ -10,15 +10,20 @@ import {
   TrashIcon,
   XIcon,
 } from '@react-trace/ui-components'
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 
-import { SendToOpencodeForm } from './SendToOpencode'
 import {
   type CommentEntry,
   useCommentEntries,
   useCommentsActions,
 } from './store'
 import { formatCommentNote } from './utils'
+
+// Loaded lazily so `@opencode-ai/sdk` lands in its own chunk and is only
+// fetched when the user actually opens the "Send to OpenCode" form.
+const SendToOpencodeForm = lazy(() =>
+  import('./SendToOpencode').then((m) => ({ default: m.SendToOpencodeForm })),
+)
 
 function CommentRow({
   comment,
@@ -264,15 +269,31 @@ export function CommentsMenu({ onClose }: { onClose(): void }) {
         <>
           <div style={{ borderTop: '1px solid #27272a', margin: '4px 0 0' }} />
           {showSendForm ? (
-            <SendToOpencodeForm
-              root={root}
-              comments={comments}
-              onClearComments={clearAllComments}
-              onDone={() => {
-                setShowSendForm(false)
-                onClose()
-              }}
-            />
+            <Suspense
+              fallback={
+                <div
+                  style={{
+                    padding: '12px',
+                    textAlign: 'center',
+                    fontSize: 12,
+                    color: '#71717a',
+                    fontFamily: 'system-ui, sans-serif',
+                  }}
+                >
+                  Loading…
+                </div>
+              }
+            >
+              <SendToOpencodeForm
+                root={root}
+                comments={comments}
+                onClearComments={clearAllComments}
+                onDone={() => {
+                  setShowSendForm(false)
+                  onClose()
+                }}
+              />
+            </Suspense>
           ) : (
             <div style={{ padding: '4px 6px' }}>
               <DropdownMenu.Item

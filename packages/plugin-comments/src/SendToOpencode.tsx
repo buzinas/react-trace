@@ -1,5 +1,8 @@
-import { createOpencodeClient } from '@opencode-ai/sdk'
-import type { Session } from '@opencode-ai/sdk'
+// Import from the `/client` subpath — the package root re-exports `server.js`,
+// which pulls in Node-only APIs (`node:child_process`, `process`) that break
+// browser bundlers such as Vite. The client entry is browser-safe.
+import { createOpencodeClient } from '@opencode-ai/sdk/client'
+import type { Session } from '@opencode-ai/sdk/client'
 import { useWidgetPortalContainer } from '@react-trace/core'
 import { Button, Select, Textarea } from '@react-trace/ui-components'
 import { useEffect, useRef, useState } from 'react'
