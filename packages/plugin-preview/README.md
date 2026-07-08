@@ -12,6 +12,46 @@ pnpm add --dev @react-trace/core @react-trace/ui-components @react-trace/plugin-
 
 If you are already using `@react-trace/kit`, this plugin is included there by default.
 
+## Security note: `dompurify`
+
+This plugin renders source through Monaco (`@monaco-editor/react` → `monaco-editor`). `monaco-editor` pins `dompurify` to an exact version that currently sits inside the affected range of [CVE-2026-41238 / GHSA-v9jr-rg53-9pgp](https://github.com/advisories/GHSA-v9jr-rg53-9pgp) (prototype pollution → XSS bypass, fixed in `dompurify` `3.4.0`).
+
+`monaco-editor` has not yet released a version that bumps `dompurify`, so a security scanner will flag the transitive `dompurify` in your install. Until an upstream fix ships, force a patched version in **your own app** with a package-manager override, then reinstall:
+
+**pnpm** — in `package.json`:
+
+```json
+{
+  "pnpm": {
+    "overrides": {
+      "dompurify": "^3.4.11"
+    }
+  }
+}
+```
+
+**npm** — in `package.json`:
+
+```json
+{
+  "overrides": {
+    "dompurify": "^3.4.11"
+  }
+}
+```
+
+**Yarn** — in `package.json`:
+
+```json
+{
+  "resolutions": {
+    "dompurify": "^3.4.11"
+  }
+}
+```
+
+An override has to live in the consuming application's `package.json` — it cannot be shipped from within this package — which is why the fix is documented here rather than resolved by a dependency bump.
+
 ## Usage
 
 ```tsx
