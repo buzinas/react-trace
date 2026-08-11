@@ -7,7 +7,7 @@ import {
 } from '@react-trace/ui-components'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { ReactNode } from 'react'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
   portalContainerAtom,
@@ -257,6 +257,8 @@ export function ActionPanel({ plugins }: ActionPanelProps) {
   )
 }
 
+const SUBMENU_CLOSE_DELAY_MS = 150
+
 function Submenu({
   entryContent,
   plugins,
@@ -268,15 +270,40 @@ function Submenu({
 }) {
   const portalContainer = useAtomValue(portalContainerAtom)
   const setSelectedSource = useSetAtom(selectedSourceAtom)
+  const [open, setOpen] = useState(false)
+  const closeTimerRef = useRef<number | undefined>(undefined)
+
+  useEffect(() => {
+    return () => window.clearTimeout(closeTimerRef.current)
+  }, [])
+
+  const keepOpen = useCallback(() => {
+    window.clearTimeout(closeTimerRef.current)
+    setOpen(true)
+    setSelectedSource(source)
+  }, [source, setSelectedSource])
+
+  const scheduleClose = useCallback(() => {
+    window.clearTimeout(closeTimerRef.current)
+    closeTimerRef.current = window.setTimeout(() => setOpen(false), SUBMENU_CLOSE_DELAY_MS)
+  }, [])
 
   return (
     <DropdownMenu.Root
-      onOpenChange={(open) => open && setSelectedSource(source)}
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next)
+        if (next) {
+          window.clearTimeout(closeTimerRef.current)
+          setSelectedSource(source)
+        }
+      }}
     >
       <DropdownMenu.Trigger
-        openOnHover
-        delay={0}
-        closeDelay={0}
+        onMouseEnter={keepOpen}
+        onMouseLeave={scheduleClose}
+        onFocus={keepOpen}
+        onBlur={scheduleClose}
         style={(state) => entryStyle(state.open)}
       >
         {entryContent}
@@ -301,6 +328,8 @@ function Submenu({
           style={{ zIndex: 999999, pointerEvents: 'auto' }}
         >
           <DropdownMenu.Popup
+            onMouseEnter={keepOpen}
+            onMouseLeave={scheduleClose}
             style={{
               minWidth: 200,
               paddingBlock: plugins.length > 0 ? 4 : 0,
